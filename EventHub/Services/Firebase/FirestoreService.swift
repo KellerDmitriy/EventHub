@@ -1,5 +1,5 @@
 //
-//  FirestoreManager.swift
+//  FirestoreService.swift
 //  EventHub
 //
 //  Created by Даниил Сивожелезов on 02.12.2024.
@@ -15,7 +15,7 @@ struct UserData: Identifiable {
     let info: String
 }
 
-final class FirestoreManager: ObservableObject {
+final class FirestoreService: ObservableObject {
     @Published var avatarUrl: String?
     
     func saveUserData(userId: String, name: String, email: String) {
@@ -62,12 +62,12 @@ final class FirestoreManager: ObservableObject {
             .collection("users")
             .document(userId)
             .updateData(data) { error in
-            if let error = error {
-                print("Ошибка обновления данных: \(error.localizedDescription)")
-            } else {
-                print("Данные пользователя обновлены")
+                if let error = error {
+                    print("Ошибка обновления данных: \(error.localizedDescription)")
+                } else {
+                    print("Данные пользователя обновлены")
+                }
             }
-        }
     }
     
     func loadAvatarUrl(userId: String) {

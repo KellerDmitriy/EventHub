@@ -22,7 +22,7 @@ struct EventHubApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     @StateObject private var coreDataManager = CoreDataManager()
-    @StateObject private var firebaseManager = FirebaseManager()
+    @StateObject private var firebaseManager = FirebaseService()
     @StateObject private var appState = AppState()
     
     init() {

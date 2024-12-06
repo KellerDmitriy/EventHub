@@ -9,7 +9,7 @@ import Kingfisher
 import SwiftUI
 
 struct ProfileEditeView: View {
-    @EnvironmentObject var firebaseManager: FirebaseManager
+    @EnvironmentObject var firebaseManager: FirebaseService
     @ObservedObject var viewModel: ProfileViewModel
     @Environment(\.dismiss) var dismiss
     

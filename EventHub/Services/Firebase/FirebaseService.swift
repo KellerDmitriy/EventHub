@@ -9,14 +9,14 @@ import Foundation
 import FirebaseAuth
 
 
-final class FirebaseManager: ObservableObject {
+final class FirebaseService: ObservableObject {
     @Published var user: UserData?
     
     @Published var name: String = ""
     @Published var info: String = ""
     @Published var userAvatar: String?
     
-    private let firestoreManager = FirestoreManager()
+    private let firestoreManager = FirestoreService()
     private var authStateHandler: AuthStateDidChangeListenerHandle?
     
     init() {

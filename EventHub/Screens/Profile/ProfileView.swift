@@ -11,7 +11,7 @@ import SwiftUI
 
 struct ProfileView: View {
     
-    @EnvironmentObject var firebaseManager: FirebaseManager
+    @EnvironmentObject var firebaseManager: FirebaseService
     @StateObject var viewModel: ProfileViewModel
     
     @State private var showMore = false

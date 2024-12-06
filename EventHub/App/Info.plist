@@ -11,8 +11,12 @@
 			<string>Google SignIn</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.603639697889-aspmk4d9bpb8ca5919bffdm4st8tk1df</string>
+				<string>com.googleusercontent.apps.897742527343-2t4727uqoqk0j7mnp3k9gc6hofl0nbas</string>
 			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
 		</dict>
 	</array>
 	<key>LSApplicationQueriesSchemes</key>

@@ -11,7 +11,7 @@ import FirebaseAuth
 final class ProfileViewModel: ObservableObject {
     private let router: StartRouter
     let currentUser = Auth.auth().currentUser
-    private let firestoreManager = FirestoreManager()
+    private let firestoreManager = FirestoreService()
     
     init(router: StartRouter) {
         self.router = router

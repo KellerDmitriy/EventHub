@@ -102,7 +102,7 @@ enum ErrorMessages {
 @MainActor
 final class AuthViewModel: ObservableObject{
     
-    private let firestoreManager = FirestoreManager()
+    private let firestoreManager = FirestoreService()
     private let router: StartRouter
     
     @Published var name: String = ""

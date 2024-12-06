@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AboutMeInfo: View {
-    @EnvironmentObject var firebaseManager: FirebaseManager
+    @EnvironmentObject var firebaseManager: FirebaseService
     let text: String
     
     var body: some View {
