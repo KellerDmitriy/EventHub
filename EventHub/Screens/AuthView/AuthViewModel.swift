@@ -2,8 +2,9 @@
 //  AuthViewModel.swift
 //  EventHub
 //
-//  Created by Emir Byashimov on 24.11.2024.
+//  Created by Келлер Дмитрий on 10.12.2024.
 //
+
 
 import SwiftUI
 import FirebaseAuth
@@ -11,16 +12,12 @@ import FirebaseCore
 import FirebaseAuthCombineSwift
 import GoogleSignIn
 
-
-enum authStatus {
+enum AuthStatus {
     case authenticated
     case unauthenticated
     case authenticating
 }
-enum AuthenticationFlow {
-    case login
-    case signUp
-}
+
 
 enum AuthenticationError: LocalizedError, Equatable {
     case tokenError(message: String)
@@ -86,41 +83,21 @@ enum AuthenticationError: LocalizedError, Equatable {
     }
 }
 
-enum ErrorMessages {
-    static let emailError = "Email or password cannot be empty"
-    static let passwordError = "Passwords do not match"
-    static let noId = "No client ID found in Firebase configuration"
-    static let controllerError = "There is no root view controller!"
-    static let idMissing = "ID token missing"
-    static let unknownError = "unknown"
-    static let withEmail = "signed in with email"
-    static let userPrompt: String = "User"
-}
-
-
 
 @MainActor
 final class AuthViewModel: ObservableObject{
     
-    private let firestoreManager = FirestoreService()
+    private let authService: IAuthService
+    private let userService: IUserService
     private let router: StartRouter
     
-    @Published var name: String = ""
-    @Published var email: String = ""
-    @Published var password2: String = ""
-    @Published var password: String = ""
-    
-    @Published var nameSU: String = ""
-    @Published var emailSU: String = ""
-    @Published var passwordSU: String = ""
-    @Published var confirmPasswordSU: String = ""
+    var name: String = ""
+    var email: String = ""
+    var password: String = ""
+    var confirmPassword: String = ""
     
     
-    
-    @Published var user: UserData?
-    @Published var errorMessage: String = ""
-    @Published var authenticationState: authStatus = .unauthenticated
-    @Published var displayName: String = ""
+    @Published var authenticationState: AuthStatus = .unauthenticated
     @Published var authError: AuthenticationError?
     
     @Published var isLoading: Bool = false
@@ -130,18 +107,23 @@ final class AuthViewModel: ObservableObject{
     }
     
     var signUpFormIsValid: Bool {
-        return !emailSU.isEmpty &&
-        !passwordSU.isEmpty &&
-        passwordSU.count >= 5 &&
-        passwordSU == confirmPasswordSU &&
-        !nameSU.isEmpty &&
-        !passwordSU.contains(" ") &&
-        !emailSU.contains(" ")
+        return !email.isEmpty &&
+        password.count >= 5 &&
+        password == confirmPassword &&
+        !name.isEmpty &&
+        !password.contains(" ") &&
+        !email.contains(" ")
     }
     
     //    MARK: - INIT
-    init(router: StartRouter) {
+    init(
+        router: StartRouter,
+        authService: IAuthService = DIContainer.resolve(forKey: .authService) ?? AuthService(),
+        userService: IUserService = DIContainer.resolve(forKey: .userService) ?? UserService()
+    ) {
         self.router = router
+        self.authService = authService
+        self.userService = userService
     }
     
     func cancelErrorAlert() {
@@ -155,53 +137,30 @@ final class AuthViewModel: ObservableObject{
             return
         }
         do {
-            try await Auth.auth().signIn(withEmail: email, password: password)
-            userAuthenticated()
-            print("Verification was successful")
+            try await authService.signInUser(email: email, password: password)
+            routeToMainFlow()
         } catch {
-            print(error.localizedDescription)
             authError = .signInError(error: error)
-            errorMessage = error.localizedDescription
         }
     }
     
     
     //MARK: - Sign Up
-    func createUser(name: String, email: String, password: String, repeatPassword: String) async {
+    func registerUser() async {
         guard signUpFormIsValid else {
             authError = .validationSignUpError
             return
         }
         
-        Task {
-            do {
-                let authResult = try await Auth.auth().createUser(withEmail: email, password: password)
-                firestoreManager.saveUserData(userId: authResult.user.uid, name: name, email: email)
-                try await authResult.user.sendEmailVerification()
-                // Уведомление об успешной регистрации
-                await MainActor.run {
-                    authError = .signUpSuccess
-                }
-                
-            } catch {
-                
-                await MainActor.run {
-                    authError = .signUpError(error: error)
-                }
-            }
-        }
-    }
-    
-    //MARK: - Sign out
-    func signOut() async -> Bool {
         do {
-            try Auth.auth().signOut()
-            return true
-        }
-        catch {
-            print(error)
-            errorMessage = error.localizedDescription
-            return false
+            var authDataResult = try await authService.createUser(email: email, password: password)
+            authDataResult.userName = name
+            let user = DBUser(auth: authDataResult)
+            try await userService.createNewUser(user)
+            
+            authError = .signUpSuccess
+        } catch {
+            authError = .signUpError(error: error)
         }
     }
     
@@ -213,80 +172,24 @@ final class AuthViewModel: ObservableObject{
             print("Password reset email sent to \(email)")
             return true
         } catch {
-            print(error.localizedDescription)
-            errorMessage = error.localizedDescription
             authenticationState = .unauthenticated
             return false
         }
     }
     
-    //MARK: - Save User to UserDefaults by id
-    func saveUsernameToUserDefaults(username: String) {
-        guard let user = Auth.auth().currentUser else {
-            print("No authenticated user found")
-            return
-        }
-        
-        let uid = user.uid
-        let key = "username_\(uid)"
-        UserDefaults.standard.set(username, forKey: key)
-        print("Username '\(username)' saved for user: \(uid)")
-    }
-    
-    //MARK: - Validate Email and Password
-    func validateFields() -> Bool {
-        if email.isEmpty || password.isEmpty {
-            errorMessage = ErrorMessages.emailError
-            return false
-        }
-        
-        if password != password2 {
-            errorMessage = ErrorMessages.passwordError
-            return false
-        }
-        
-        return true
-    }
-    
-    
     // MARK: Google
-    func signInWithGoogle() async -> Bool {
-        guard let clientID = FirebaseApp.app()?.options.clientID else {
-            errorMessage = ErrorMessages.noId
-            return false
-        }
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let rootViewController = windowScene.windows.first?.rootViewController else {
-            errorMessage = ErrorMessages.controllerError
-            return false
-        }
+    func signInWithGoogle() async throws {
         do {
-            let config = GIDConfiguration(clientID: clientID)
-            GIDSignIn.sharedInstance.configuration = config
-            
-            let userAuthentication = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
-            guard let idToken = userAuthentication.user.idToken else {
-                throw AuthenticationError.tokenError(message: ErrorMessages.idMissing)
-            }
-            
-            let credential = GoogleAuthProvider.credential(
-                withIDToken: idToken.tokenString,
-                accessToken: userAuthentication.user.accessToken.tokenString
-            )
-            _ = try await Auth.auth().signIn(with: credential)
-            
-            await MainActor.run {
-                userAuthenticated()
-            }
-            return true
+            let authDataResult = try await authService.signInWithGoogle()
+            let user = DBUser(auth: authDataResult)
+            try await userService.createNewUser(user)
+            routeToMainFlow()
         } catch {
-            errorMessage = error.localizedDescription
-            return false
+            authError = .signInError(error: error)
         }
     }
-    
     //MARK: - NavigationState
-    func userAuthenticated() {
+    func routeToMainFlow() {
         router.updateRouterState(with: .userAuthorized)
     }
 }

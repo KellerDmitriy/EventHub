@@ -32,24 +32,16 @@ struct APIClient {
         request.httpMethod = apiSpec.method.rawValue
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = apiSpec.body
-
-
-        // Send the request and unwrap the response
-        do {
-            let (data, response) = try await URLSession.data(for: request)
-            // Unwrap the response using unwrapResponse method
-            let unwrappedResult = unwrapResponse((data, response))
-            switch unwrappedResult {
-            case .success(let responseData):
-                let decoder = JSONDecoder()
-                let decodedData = try decoder.decode(apiSpec.returnType, from: responseData)
-                return decodedData
-            case .failure(let error):
-                print("err: \(error)")
-                throw error
-            }
-            
-        } catch {
+        
+        
+        let (data, response) = try await URLSession.data(for: request)
+        let unwrappedResult = unwrapResponse((data, response))
+        switch unwrappedResult {
+        case .success(let responseData):
+            let decoder = JSONDecoder()
+            let decodedData = try decoder.decode(apiSpec.returnType, from: responseData)
+            return decodedData
+        case .failure(let error):
             print("err: \(error)")
             throw error
         }

@@ -9,20 +9,29 @@ import Kingfisher
 import SwiftUI
 
 struct ProfileEditeView: View {
-    @EnvironmentObject var firebaseManager: FirebaseService
-    @ObservedObject var viewModel: ProfileViewModel
     @Environment(\.dismiss) var dismiss
     
-    @Binding var image: String
     @Binding var userName: String
     @Binding var userInfo: String
+    var profileImage: Image
+    
+    var onAvatarSelected: ((String) -> Void)?
     
     @State private var editName = false
     @State private var editInfo = false
     @State private var showMore = false
     
-    @State private var showImagePicker = false
-    @Binding var avatarImage: UIImage
+    @State private var isChangeUserPhoto = false
+    
+    // MARK: - Constants
+    private enum Drawing {
+        static let titleTopPadding: CGFloat = 68
+        static let horizontalPadding: CGFloat = 20
+        static let headerPadding: CGFloat = 20
+        static let bottomPadding: CGFloat = 20
+        static let blurRadius: CGFloat = 5
+        static let changePhotoViewHeight: CGFloat = 300
+    }
     
     var body: some View {
         ZStack {
@@ -30,33 +39,25 @@ struct ProfileEditeView: View {
             
             VStack(spacing: 90) {
                 VStack {
-                    ToolBarView(title: "Profile".localized, foregroundStyle: .titleFont, isTitleLeading: false)
-                        .padding(.bottom, 16)
+                    ToolBarView(title: "Profile".localized,
+                                foregroundStyle: .titleFont
+                    )
+                    .padding(.bottom, 16)
                     
-                    VStack {
-                        KFImage(URL(string: firebaseManager.userAvatar ?? ""))
-                            .placeholder {
-                                Image(uiImage: avatarImage)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 96, height: 96)
-                                    .clipShape(Circle())
-                            }
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 96, height: 96)
-                            .clipShape(Circle())
-                    }
-                    .onTapGesture {
-                        showImagePicker = true
-                    }
-                    .sheet(isPresented: $showImagePicker) { ImagePicker(image: $avatarImage) }
+                    profileImage
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 96, height: 96)
+                        .clipShape(Circle())
+                        .onTapGesture {
+                            isChangeUserPhoto.toggle()
+                        }
                     
                     HStack(spacing: 17) {
                         
                         if editName {
                             HStack {
-                                TextField("\(firebaseManager.user?.name ?? "")", text: $userName)
+                                TextField("\(userName)", text: $userName)
                                     .textFieldStyle(.roundedBorder)
                                 
                                 VStack {
@@ -138,23 +139,34 @@ struct ProfileEditeView: View {
                     .padding(.bottom, 30)
             }
             .padding(.horizontal, 20)
+            if isChangeUserPhoto {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        isChangeUserPhoto = false
+                    }
+                
+                ChangePhotoView(onAvatarSelected: { avatar in
+                    onAvatarSelected?(avatar)
+                    isChangeUserPhoto = false
+                })
+                .frame(height: Drawing.changePhotoViewHeight)
+            }
+            
         }
-        .navigationBarBackButtonHidden()
+        .blur(radius: isChangeUserPhoto ? Drawing.blurRadius : 0)
+        .ignoresSafeArea()
+        
+        
+        .navigationBarHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 BackBarButtonView(foregroundStyle: .black)
             }
         }
-        .sheet(isPresented: $showMore){
+        .sheet(isPresented: $showMore) {
             AboutMeInfo(text: userInfo)
         }
-        .onDisappear {
-            print("updateUserProfile")
-            viewModel.updateUserProfile(name: userName,
-                                        info: userInfo,
-                                        image: "")
-            
-            firebaseManager.loadUserData(userId: viewModel.currentUser?.uid ?? "")
-        }
+        
     }
 }

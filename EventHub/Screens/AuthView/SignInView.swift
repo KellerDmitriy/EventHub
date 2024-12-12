@@ -150,7 +150,7 @@ struct SignInView: View {
             
             GoogleButton {
                 Task {
-                    await viewModel.signInWithGoogle()
+                    try await viewModel.signInWithGoogle()
                 }
             }
             .padding(.horizontal, horizontalPadding)

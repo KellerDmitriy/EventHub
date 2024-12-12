@@ -5,13 +5,10 @@
 //  Created by Руслан on 18.11.2024.
 //
 
-import PhotosUI
 import Kingfisher
 import SwiftUI
 
 struct ProfileView: View {
-    
-    @EnvironmentObject var firebaseManager: FirebaseService
     @StateObject var viewModel: ProfileViewModel
     
     @State private var showMore = false
@@ -29,31 +26,29 @@ struct ProfileView: View {
                 
                 
                 VStack {
-                    ToolBarView(title: "Profile".localized, foregroundStyle: .titleFont, isTitleLeading: false)
+                    ToolBarView(title: "Profile".localized,
+                                foregroundStyle: .titleFont
+                    )
                         .padding(.bottom, 16)
-                    KFImage(URL(string: firebaseManager.userAvatar ?? ""))
-                        .placeholder {
                             Image(uiImage: avatarImage)
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 96, height: 96)
                                 .clipShape(Circle())
-                        }
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 96, height: 96)
-                        .clipShape(Circle())
+
                     
                     VStack(alignment: .center, spacing: 15) {
-                        Text(firebaseManager.user?.name ?? "No Name")
+                        Text(viewModel.userName)
                             .airbnbCerealFont(.book, size: 24)
                         
                         NavigationLink{
-                            ProfileEditeView(viewModel: viewModel,
-                                             image: $firebaseManager.name,
-                                             userName: $firebaseManager.name,
-                                             userInfo: $firebaseManager.info,
-                                             avatarImage: $avatarImage)
+                            ProfileEditeView(
+                                userName: $viewModel.userName,
+                                userInfo: $viewModel.userInfo,
+                                profileImage: Image(viewModel.profileImageName)
+                            )
+                               
+                            
                         } label: {
                             EditButton()
                         }
@@ -65,7 +60,7 @@ struct ProfileView: View {
                         .airbnbCerealFont( AirbnbCerealFont.medium, size: 18)
                     
                     VStack(alignment: .leading) {
-                        Text(firebaseManager.user?.info ?? "No Info")
+                        Text(viewModel.userInfo ?? "No Info")
                             .airbnbCerealFont( AirbnbCerealFont.book, size: 16)
                             .lineLimit(4)
                         
@@ -85,7 +80,7 @@ struct ProfileView: View {
             }
         }
         .sheet(isPresented: $showMore) {
-            AboutMeInfo(text: $firebaseManager.info.wrappedValue)
+            AboutMeInfo(text: viewModel.userInfo)
         }
         .padding(.horizontal, 20)
     }

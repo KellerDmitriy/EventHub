@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AboutMeInfo: View {
-    @EnvironmentObject var firebaseManager: FirebaseService
+   
     let text: String
     
     var body: some View {
@@ -23,7 +23,7 @@ struct AboutMeInfo: View {
                     .padding(20)
                 
                 ScrollView {
-                    Text(firebaseManager.user?.info ?? "No Info")
+                    Text(text)
                         .padding(20)
                 }
                 .frame(width: 360)

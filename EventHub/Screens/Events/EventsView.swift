@@ -24,18 +24,19 @@ struct EventsView: View {
                     .frame(height: 44)
                     .zIndex(1)
                 
-                ChangeModeButton(selectedMode: $viewModel.selectedMode)
-                    .onChange(of: viewModel.selectedMode) { newValue in
-                        Task {
-                            await loadEvents(for: newValue)
-                        }
-                    }
-                
                 Group {
                     switch currentPhase(for: viewModel.selectedMode) {
                     case .empty:
                         ShimmerEventView()
                     case .success(let events):
+                        
+                        ChangeModeButton(selectedMode: $viewModel.selectedMode)
+                            .onChange(of: viewModel.selectedMode) { newValue in
+                                Task {
+                                    await loadEvents(for: newValue)
+                                }
+                            }
+                            .padding(.top, 20)
                         if events.isEmpty {
                             EmptyEventsView(selectedMode: viewModel.selectedMode)
                         } else {
@@ -52,7 +53,17 @@ struct EventsView: View {
                                 }
                                 .padding(.horizontal, 24)
                             }
+                            .padding(.top, 20)
                         }
+                        BlueButtonWithArrow(text: "Explore Events".localized) {
+                            Task {
+                                await viewModel.updateAllEvents()
+                            }
+                            showAllEvents = true
+                        }
+                        .padding(.horizontal, 53)
+                        .padding(.bottom, 20)
+                        
                     case .failure:
                         Text("Error occurred. Pull to refresh.")
                             .foregroundColor(.red)
@@ -62,14 +73,6 @@ struct EventsView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
-                BlueButtonWithArrow(text: "Explore Events".localized) {
-                    Task {
-                        await viewModel.updateAllEvents()
-                    }
-                    showAllEvents = true
-                }
-                .padding(.horizontal, 53)
-                .padding(.bottom, 40)
                 .background(
                     NavigationLink(
                         destination: SeeAllEvents(allEvents: viewModel.allEvents),

@@ -7,46 +7,40 @@
 
 import SwiftUI
 
+// MARK: - ImagePicker
 struct ImagePicker: UIViewControllerRepresentable {
-    @Binding var image: UIImage
+    @Binding var image: UIImage?
     
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
         picker.delegate = context.coordinator
-        picker.sourceType = .photoLibrary
         picker.allowsEditing = true
         return picker
     }
     
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
     
-    func makeCoordinator() -> ImagePickerCoordinator {
-        ImagePickerCoordinator { image in
-            self.image = image
-        }
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
     }
     
-    final class ImagePickerCoordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-        let storageManager = StorageManager()
+    class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+        let parent: ImagePicker
         
-        var completion: ((UIImage) -> Void)
-        
-        init(completion: @escaping (UIImage) -> Void) {
-            self.completion = completion
+        init(_ parent: ImagePicker) {
+            self.parent = parent
         }
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            if let image = info[.editedImage] as? UIImage {
-                completion(image)
-
-                if let imageData = image.pngData() {
-                    print("PNG Image")
-                    storageManager.uploadImage(imageData: imageData)
-                } else if let imageData = image.jpegData(compressionQuality: 0.1) {
-                    print("JPEG Image")
-                    storageManager.uploadImage(imageData: imageData)
-                }
+            if let uiImage = info[.editedImage] as? UIImage {
+                parent.image = uiImage
+            } else if let uiImage = info[.originalImage] as? UIImage {
+                parent.image = uiImage
             }
+            picker.dismiss(animated: true)
+        }
+        
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
             picker.dismiss(animated: true)
         }
     }
