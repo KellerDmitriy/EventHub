@@ -17,88 +17,86 @@ struct EventsView: View {
     
     // MARK: - BODY
     var body: some View {
-        ZStack {
-            Color.appBackground.ignoresSafeArea(.all)
-            VStack {
-                ToolBarView(title: "Event".localized)
-                    .frame(height: 44)
-                    .zIndex(1)
-                
-                Group {
-                    switch currentPhase(for: viewModel.selectedMode) {
-                    case .empty:
-                        ShimmerEventView()
-                    case .success(let events):
-                        
-                        ChangeModeButton(selectedMode: $viewModel.selectedMode)
-                            .onChange(of: viewModel.selectedMode) { newValue in
-                                Task {
-                                    await loadEvents(for: newValue)
-                                }
-                            }
-                            .padding(.top, 20)
-                        if events.isEmpty {
-                            EmptyEventsView(selectedMode: viewModel.selectedMode)
-                        } else {
-                            ScrollView(.vertical) {
-                                ForEach(events) { event in
-                                    NavigationLink(destination: DetailView(detailID: event.id)) {
-                                        SmallEventCard(
-                                            image: event.image,
-                                            date: event.date,
-                                            title: event.title,
-                                            place: event.location
-                                        )
-                                    }
-                                }
-                                .padding(.horizontal, 24)
-                            }
-                            .padding(.top, 20)
-                        }
-                        BlueButtonWithArrow(text: "Explore Events".localized) {
+            ZStack {
+                Color.appBackground.ignoresSafeArea(.all)
+                VStack {
+                    ToolBarView(title: "Event".localized)
+                        .frame(height: 44)
+                        .zIndex(1)
+                    
+                    ChangeModeButton(selectedMode: $viewModel.selectedMode)
+                        .onChange(of: viewModel.selectedMode) { newValue in
                             Task {
-                                await viewModel.updateAllEvents()
+                                await loadEvents(for: newValue)
                             }
-                            showAllEvents = true
                         }
-                        .padding(.horizontal, 53)
-                        .padding(.bottom, 20)
-                        
-                    case .failure:
-                        Text("Error occurred. Pull to refresh.")
-                            .foregroundColor(.red)
-                            .padding()
-                        
+                    
+                    Group {
+                        switch currentPhase(for: viewModel.selectedMode) {
+                        case .empty:
+                            ShimmerEventView()
+                                .padding(.horizontal, 24)
+                        case .success(let events):
+                            if events.isEmpty {
+                                EmptyEventsView(selectedMode: viewModel.selectedMode)
+                            } else {
+                                ScrollView(.vertical) {
+                                    ForEach(events) { event in
+                                        NavigationLink(destination: DetailView(detailID: event.id)) {
+                                            SmallEventCard(
+                                                image: event.image,
+                                                date: event.date,
+                                                title: event.title,
+                                                place: event.location
+                                            )
+                                        }
+                                    }
+                                    .padding(.horizontal, 24)
+                                }
+                            }
+                        case .failure:
+                            Text("Error occurred. Pull to refresh.")
+                                .foregroundColor(.red)
+                                .padding()
+                            
+                        }
                     }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                
-                .background(
-                    NavigationLink(
-                        destination: SeeAllEvents(allEvents: viewModel.allEvents),
-                        isActive: $showAllEvents,
-                        label: { EmptyView() }
-                    )
-                )
-            }
-            .navigationBarHidden(true)
-            .task {
-                await viewModel.fetchUpcomingEvents()
-            }
-            .alert(isPresented: isPresentedAlert(for: $viewModel.upcomingEventsPhase)) {
-                Alert(
-                    title: Text("Error"),
-                    message: Text(viewModel.errorMessage(for: viewModel.upcomingEventsPhase)),
-                    dismissButton: .default(Text("OK")) {
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    
+                    BlueButtonWithArrow(text: "Explore Events".localized) {
                         Task {
-                            await loadEvents(for: viewModel.selectedMode)
+                            await viewModel.updateAllEvents()
                         }
+                        showAllEvents = true
                     }
-                )
+                    .padding(.horizontal, 53)
+                    .padding(.bottom, 40)
+                    .background(
+                        NavigationLink(
+                            destination: SeeAllEvents(allEvents: viewModel.allEvents),
+                            isActive: $showAllEvents,
+                            label: { EmptyView() }
+                        )
+                    )
+                }
+                .navigationBarHidden(true)
+                .task {
+                    await viewModel.fetchUpcomingEvents()
+                }
+                .alert(isPresented: isPresentedAlert(for: $viewModel.upcomingEventsPhase)) {
+                    Alert(
+                        title: Text("Error"),
+                        message: Text(viewModel.errorMessage(for: viewModel.upcomingEventsPhase)),
+                        dismissButton: .default(Text("OK")) {
+                            Task {
+                                await loadEvents(for: viewModel.selectedMode)
+                            }
+                        }
+                    )
+                }
             }
         }
-    }
-    
+
     // MARK: - Helper Methods
     private func currentPhase(for mode: EventsMode) -> DataFetchPhase<[EventModel]> {
         switch mode {

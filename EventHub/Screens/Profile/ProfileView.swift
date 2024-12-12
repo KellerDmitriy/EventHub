@@ -12,7 +12,7 @@ struct ProfileView: View {
     @StateObject var viewModel: ProfileViewModel
     
     @State private var showMore = false
-    @State private var avatarImage: UIImage = UIImage(resource: .avatar)
+    
     
     init(router: StartRouter) {
         self._viewModel = StateObject(wrappedValue: ProfileViewModel(router: router))
@@ -29,13 +29,13 @@ struct ProfileView: View {
                     ToolBarView(title: "Profile".localized,
                                 foregroundStyle: .titleFont
                     )
-                        .padding(.bottom, 16)
-                            Image(uiImage: avatarImage)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 96, height: 96)
-                                .clipShape(Circle())
-
+                    .padding(.bottom, 16)
+                    Image(viewModel.profileImageName)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 96, height: 96)
+                        .clipShape(Circle())
+                    
                     
                     VStack(alignment: .center, spacing: 15) {
                         Text(viewModel.userName)
@@ -45,10 +45,8 @@ struct ProfileView: View {
                             ProfileEditeView(
                                 userName: $viewModel.userName,
                                 userInfo: $viewModel.userInfo,
-                                profileImage: Image(viewModel.profileImageName)
+                                profileImageName: $viewModel.profileImageName
                             )
-                               
-                            
                         } label: {
                             EditButton()
                         }
@@ -60,7 +58,7 @@ struct ProfileView: View {
                         .airbnbCerealFont( AirbnbCerealFont.medium, size: 18)
                     
                     VStack(alignment: .leading) {
-                        Text(viewModel.userInfo ?? "No Info")
+                        Text(viewModel.userInfo)
                             .airbnbCerealFont( AirbnbCerealFont.book, size: 16)
                             .lineLimit(4)
                         

@@ -5,15 +5,14 @@
 //  Created by Marat Fakhrizhanov on 28.11.2024.
 //
 
-import Kingfisher
+
 import SwiftUI
 
 struct ProfileEditeView: View {
-    @Environment(\.dismiss) var dismiss
     
     @Binding var userName: String
     @Binding var userInfo: String
-    var profileImage: Image
+    @Binding var profileImageName: String
     
     var onAvatarSelected: ((String) -> Void)?
     
@@ -36,15 +35,18 @@ struct ProfileEditeView: View {
     var body: some View {
         ZStack {
             Color.appBackground
-            
+            VStack {
+            ToolBarView(
+                title: "Profile".localized,
+                foregroundStyle: .titleFont,
+                isTitleLeading: true,
+                showBackButton: true
+            )
+            .padding(.bottom, 16)
             VStack(spacing: 90) {
-                VStack {
-                    ToolBarView(title: "Profile".localized,
-                                foregroundStyle: .titleFont
-                    )
-                    .padding(.bottom, 16)
+             
                     
-                    profileImage
+                    Image(profileImageName)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 96, height: 96)
@@ -154,16 +156,8 @@ struct ProfileEditeView: View {
             }
             
         }
-        .blur(radius: isChangeUserPhoto ? Drawing.blurRadius : 0)
-        .ignoresSafeArea()
-        
-        
         .navigationBarHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                BackBarButtonView(foregroundStyle: .black)
-            }
-        }
+        .blur(radius: isChangeUserPhoto ? Drawing.blurRadius : 0)
         .sheet(isPresented: $showMore) {
             AboutMeInfo(text: userInfo)
         }

@@ -34,10 +34,9 @@ struct ExploreView: View {
     // MARK: - BODY
     var body: some View {
         ZStack {
-            Color.appMainBackground // zIndex // UIScreen.main.bounds.width
+            Color.appMainBackground
+            
             VStack(spacing: 0) {
-                ZStack {
-                    
                     CustomToolBar(
                         currentLocation: $viewModel.currentLocation,
                         title: $viewModel.currentPosition,
@@ -51,79 +50,72 @@ struct ExploreView: View {
                     CategoryScroll(
                         categories:viewModel.categories,
                         onCategorySelected: { selectedCategory in
-                            viewModel.currentCategory = selectedCategory.category.slug ;
-                            viewModel.upcomingEvents = []
-                            viewModel.nearbyYouEvents = []
+                            viewModel.currentCategory = selectedCategory.category.slug
                         })
-                    .offset(y: 87)
+                    .offset(y: -23)
                     
-                    // LVL2
                     FunctionalButtonsView(
                         names: viewModel.functionalButtonsNames,
                         actions: [
-                            {
-                                Task {
-                                    await loadData(for: .today)
-                                }
-                            },
-                            {
-                                Task {
-                                    await loadData(for: .films)
-                                }
-                            },
-                            {
-                                Task {
-                                    await loadData(for: .lists)
-                                }
-                            }
+                            { Task { await loadData(for: .today)}},
+                            { Task { await loadData(for: .films)}},
+                            { Task { await loadData(for: .lists)}}
                         ],
                         chooseButton: $viewModel.choosedButton
                     )
-                    .offset(y: 155)
-                }
                 .zIndex(1)
-                
                 ScrollView(showsIndicators: false) {
-                                   VStack {
-                                       
-                                       MainCategorySectionView(isPresented: $isSeeAllUpcomingEvents, title: "Upcoming Events", linkActive: !viewModel.emptyUpcoming /*viewModel.searchText + " - " + String(viewModel.searchedEvents.count)*/)
-                                           .padding(.bottom, 10)
-                                       
-                                       if viewModel.emptyUpcoming {
-                                           NoEventsView()
-                                       } else {
-                                           ScrollEventCardsView(emptyArray: false, events: viewModel.upcomingEvents,
-                                                                                           showDetail: { event in
-                                                                          selectedEventID = event
-                                                                          isDetailPresented = true
-                                                                      })
-                                                                      .padding(.bottom, 10)
-                                       }
-                                       
-                                       MainCategorySectionView(isPresented: $isSeeAllNearbyEvents, title: "Nearby You", linkActive: !viewModel.emptyNearbyYou)
-                                           .padding(.bottom, 10)
-                                       
-                                       if viewModel.emptyNearbyYou {
-                                           NoEventsView()
-                                               .padding(.bottom, 180)
-                                       } else {
-                                           ScrollEventCardsView(emptyArray: false, events: viewModel.nearbyYouEvents,
-                                                                                           showDetail: { event in
-                                                                          selectedEventID = event
-                                                                          isDetailPresented = true
-                                                                      })
-                                                                      .padding(.bottom, 180)
-                                       }
-                                   }
-                                   .offset(y: 100)
+                    VStack {
+                        MainCategorySectionView(
+                            isPresented: $isSeeAllUpcomingEvents,
+                            title: "Upcoming Events",
+                            linkActive: !viewModel.emptyUpcoming
+                        )
+                        .padding(.top, 10)
+                        
+                       
+                        if viewModel.emptyUpcoming {
+                            NoEventsView()
+                        } else {
+                            ScrollEventCardsView(
+                                emptyArray: false,
+                                events: viewModel.upcomingEvents,
+                                showDetail: { event in
+                                    selectedEventID = event
+                                    isDetailPresented = true
+                                })
+                            .padding(.bottom, 10)
+                        }
+                        
+                        MainCategorySectionView(
+                            isPresented: $isSeeAllNearbyEvents,
+                            title: "Nearby You",
+                            linkActive: !viewModel.emptyNearbyYou
+                        )
+                        .padding(.bottom, 10)
+                        
+                        if viewModel.emptyNearbyYou {
+                            NoEventsView()
+                                .padding(.bottom, 180)
+                        } else {
+                            ScrollEventCardsView(
+                                emptyArray: false,
+                                events: viewModel.nearbyYouEvents,
+                                showDetail: { event in
+                                    selectedEventID = event
+                                    isDetailPresented = true
+                                })
+                            .padding(.bottom, 180)
+                        }
+                    }
+//                    .offset(y: 100)
                 }
-                //                    .offset(y: -10)
                 .zIndex(0)
                 .navigationBarHidden(true)
             }
             .ignoresSafeArea()
         }
-        // //
+
         .navigationLink(
             destination: SeeAllEventsView(events: viewModel.upcomingEvents),
             isActive: $isSeeAllUpcomingEvents

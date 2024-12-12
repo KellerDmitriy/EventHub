@@ -18,7 +18,7 @@ final class ProfileViewModel: ObservableObject {
     @Published var userName: String = ""
     @Published var userEmail: String = ""
     @Published var userInfo: String = ""
-    @Published var profileImageName: String = ""
+    @Published var profileImageName: String = "avatar"
     
     //    MARK: - INIT
     init(
