@@ -11,8 +11,10 @@ import FirebaseFirestore
 protocol IUserService {
     func createNewUser(_ user: DBUser) async throws
     func getUser(userId: String) async throws -> DBUser
+    
     func updateUserName(_ name: String, userID: String) async throws
     func updateUserEmail(_ email: String, userID: String) async throws
+    func updateUserInformations(_ info: String, userID: String) async throws 
     func updateUserProfileImage(name: String, userId: String) async throws
 }
 
@@ -55,6 +57,12 @@ final class UserService: IUserService {
     // Updates the user's email in the Firestore database
     func updateUserEmail(_ email: String, userID: String) async throws {
         let data: [String : Any] = [DBUser.CodingKeys.email.rawValue : email]
+        try await userDocument(userID).updateData(data)
+    }
+    
+    // Updates the user's Informations in the Firestore database
+    func updateUserInformations(_ info: String, userID: String) async throws {
+        let data: [String : Any] = [DBUser.CodingKeys.userInfo.rawValue : info]
         try await userDocument(userID).updateData(data)
     }
     

@@ -22,9 +22,7 @@ struct ChangePhotoView: View {
         "avatar9"
     ]
     
-    @State private var selectedAvatar: String?
-    
-    var onAvatarSelected: ((String) -> Void)?
+    @Binding var selectedAvatar: String
     
     var body: some View {
         GeometryReader { geometry in
@@ -36,7 +34,6 @@ struct ChangePhotoView: View {
                                 withAnimation {
                                     selectedAvatar = avatar
                                 }
-                                onAvatarSelected?(avatar)
                             }
                     }
                 }

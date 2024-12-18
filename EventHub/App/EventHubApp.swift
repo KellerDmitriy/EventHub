@@ -19,7 +19,6 @@ struct EventHubApp: App {
         FirebaseApp.configure()
         DIContainer.register({ UserService() }, forKey: .userService, lifecycle: .transient)
         DIContainer.register({ AuthService() }, forKey: .authService, lifecycle: .singleton)
-        DIContainer.register({ FirebaseStorageService() }, forKey: .storageService, lifecycle: .singleton)
         DIContainer.register({ UDStorageService() as IStorageService}, forKey: .storageService, lifecycle: .singleton)
         DIContainer.register({ EventAPIService() as IAPIServiceForExplore & IAPIServiceForDetail }, forKey: .networkService, lifecycle: .singleton)
     }

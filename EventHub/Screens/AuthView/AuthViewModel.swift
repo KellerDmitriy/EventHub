@@ -18,7 +18,6 @@ enum AuthStatus {
     case authenticating
 }
 
-
 enum AuthenticationError: LocalizedError, Equatable {
     case tokenError(message: String)
     case validationError

@@ -7,6 +7,8 @@
 
 import Foundation
 
+
+@MainActor
 final class ProfileViewModel: ObservableObject {
     private let router: StartRouter
     
@@ -18,7 +20,9 @@ final class ProfileViewModel: ObservableObject {
     @Published var userName: String = ""
     @Published var userEmail: String = ""
     @Published var userInfo: String = ""
-    @Published var profileImageName: String = "avatar"
+    @Published var profileImageName: String = ""
+    
+    @Published var error: ProfileError? = nil
     
     //    MARK: - INIT
     init(
@@ -31,43 +35,57 @@ final class ProfileViewModel: ObservableObject {
         self.userService = userService
     }
     
+    // MARK: - Methods
+    func showLogoutAlert() { error = .logout }
+    func cancelErrorAlert() { error = nil }
     
-    func loadCurrentUser() async throws {
-        let authDataResult = try authService.getAuthenticatedUser()
-        self.currentUser = try await userService.getUser(userId: authDataResult.uid)
-        if let currentUser = currentUser {
-            userName = currentUser.name
-            userEmail = currentUser.email
-            userInfo = currentUser.userInfo
-            profileImageName = currentUser.profileImageName
+    func tapErrorOk() {
+        switch error {
+        case .logout:
+            logOut()
+        default: return
         }
     }
     
+    //    MARK: - AuthService Methods
+    func loadCurrentUser() async {
+        do {
+            let authDataResult = try authService.getAuthenticatedUser()
+            self.currentUser = try await userService.getUser(userId: authDataResult.uid)
+            if let currentUser = currentUser {
+                userName = currentUser.name
+                userEmail = currentUser.email
+                userInfo = currentUser.userInfo
+                profileImageName = currentUser.profileImageName
+            }
+        } catch {
+            self.error = ProfileError.map(error)
+        }
+    }
     
-    func signOut() {
+    func updateProfileInformation() async {
+          guard let userID = currentUser?.userID else { return }
+          do {
+              try await userService.updateUserEmail(userEmail, userID: userID)
+              try await userService.updateUserName(userName, userID: userID)
+              try await userService.updateUserInformations(userInfo, userID: userID)
+              try await userService.updateUserProfileImage(name: profileImageName, userId: userID)
+          } catch {
+              self.error = ProfileError.map(error)
+          }
+      }
+    
+    
+    func logOut() {
         do {
             try authService.signOut()
             openApp()
         } catch {
-            print("error SIGN OUT")
+            self.error = ProfileError.map(error)
         }
     }
-    
-//    func updateUserProfile(name: String, info: String, image: String) {
-//        guard let currentUser = currentUser else { return }
-//        
-//        let userId = currentUser.userID
-//            let updatedData: [String: Any] = [
-//                "name": name,
-//                "image": image,
-//                "info": info
-//            ]
-//            
-//            firestoreManager.updateUserData(userId: userId, data: updatedData)
-//        }
     
     func openApp() {
         router.updateRouterState(with: .userLoggedOut)
     }
-    
 }
