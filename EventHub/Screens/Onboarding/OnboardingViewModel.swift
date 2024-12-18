@@ -29,11 +29,12 @@ final class OnboardingViewModel: ObservableObject {
         ),
     ]
     
-    
+    //MARK: - Init
     init(router: StartRouter) {
         self.router = router
     }
     
+    //MARK: - Methods
     func nextStep() {
         if currentStep < onboardingItems.count - 1 {
             currentStep += 1
@@ -47,10 +48,9 @@ final class OnboardingViewModel: ObservableObject {
     }
     
     private func completeOnboarding() {
-    
         onboardingCompleted()
     }
-
+    
     //MARK: - NavigationState
     func onboardingCompleted() {
         router.updateRouterState(with: .onboardingCompleted)

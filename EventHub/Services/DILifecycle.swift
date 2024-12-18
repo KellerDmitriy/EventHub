@@ -17,6 +17,7 @@ enum DILifecycle {
 // DIKey remains unchanged
 enum DIKey {
     case networkService
+    case userService
     case authService
     case storageService
 }

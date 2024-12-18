@@ -27,7 +27,7 @@ struct SignUpView: View {
                         ToolBarView(title: "Sign up".localized, showBackButton: true)
                         VStack {
                             AuthTextField(
-                                textFieldText: $viewModel.nameSU,
+                                textFieldText: $viewModel.name,
                                 placeholder: "Full name".localized,
                                 imageName: "profile",
                                 isSecure: false
@@ -35,22 +35,30 @@ struct SignUpView: View {
                             .padding(.top, smallPadding / 2)
                             
                             AuthTextField(
-                                textFieldText:  $viewModel.emailSU,
+                                textFieldText:  $viewModel.email,
                                 placeholder: "Your email".localized,
                                 imageName: "mail",
                                 isSecure: false
                             )
                             .padding(.top, smallPadding)
                             
-                            passwordTextField(horizontalPadding: horizontalPadding, placeholder: "Your password".localized, textFieldText: $viewModel.passwordSU)
+                            passwordTextField(
+                                horizontalPadding: horizontalPadding,
+                                placeholder: "Your password".localized,
+                                textFieldText: $viewModel.password
+                            )
                                 .padding(.top, smallPadding)
                             
-                            passwordTextField(horizontalPadding: horizontalPadding, placeholder: "Confirm password".localized, textFieldText: $viewModel.confirmPasswordSU)
+                            passwordTextField(
+                                horizontalPadding: horizontalPadding,
+                                placeholder: "Confirm password".localized,
+                                textFieldText: $viewModel.confirmPassword
+                            )
                                 .padding(.top, smallPadding)
                             
                             BlueButtonWithArrow(text: "Sign up".localized) {
                                 Task {
-                                    await viewModel.createUser(name: viewModel.nameSU, email: viewModel.emailSU, password: viewModel.passwordSU, repeatPassword: viewModel.confirmPasswordSU)
+                                    await viewModel.registerUser()
                                 }
                                 
                             }
@@ -63,7 +71,7 @@ struct SignUpView: View {
                             
                             GoogleButton() {
                                 Task {
-                                    await viewModel.signInWithGoogle()
+                                 try await viewModel.signInWithGoogle()
                                 }
                             }
                             

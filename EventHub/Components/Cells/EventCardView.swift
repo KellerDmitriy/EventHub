@@ -235,4 +235,5 @@ struct EventCardView: View {
 
 #Preview {
     EventCardView(event: ExploreModel.example, showDetail: {_ in })
+        .environmentObject(CoreDataManager())
 }
