@@ -20,8 +20,7 @@ struct FavoritesView: View {
         VStack {
             ToolBarView(
                 title: "Favorites".localized,
-                foregroundStyle: .titleFont,
-                isTitleLeading: false,
+                foregroundStyle: .appForegroundStyle,
                 showBackButton: false,
                 actions: [
                     ToolBarAction(

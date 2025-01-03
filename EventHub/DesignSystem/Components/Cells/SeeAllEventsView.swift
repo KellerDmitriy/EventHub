@@ -14,10 +14,10 @@ enum EventType {
 }
 
 struct SeeAllEventsView: View {
-    @Environment(\.dismiss) var dismiss
+    
     let events: [ExploreModel]
     var eventType: EventType = .regular
-
+    
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack {
@@ -28,17 +28,16 @@ struct SeeAllEventsView: View {
             }
             .padding(.horizontal, 20)
         }
-        .navigationTitle("See All")
-        .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                BackBarButtonView(foregroundStyle: .black)
-            }
+            ToolBarView(
+                title: "See All".localized,
+                showBackButton: true
+            )
         }
     }
     
-
+    
     func eventView(for event: ExploreModel) -> some View {
         switch eventType {
         case .list:

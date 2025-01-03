@@ -50,7 +50,6 @@ enum Tab: String, CaseIterable {
 
 struct TabBarView: View {
     // MARK: - Properties
-    @EnvironmentObject var appState: AppState
     @Binding var selectedTab: Tab
     var switchTab: (Tab) -> Void
     @Namespace private var animationNamespace
@@ -68,7 +67,6 @@ struct TabBarView: View {
     }
     
     var body: some View {
-        if !appState.isShareViewPresented {
             ZStack {
                 // Background with shadow
                 Rectangle()
@@ -93,7 +91,6 @@ struct TabBarView: View {
                 .frame(height: Drawing.tabBarHeight)
                 .padding(.horizontal, calculateEdgeSpacing())
             }
-        }
     }
     
     

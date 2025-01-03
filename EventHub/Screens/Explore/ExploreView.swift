@@ -34,8 +34,14 @@ struct ExploreView: View {
     // MARK: - BODY
     var body: some View {
         ZStack {
-            Color.appMainBackground
-            
+            Color.appBackground.ignoresSafeArea(.all)
+            NavigationLink(
+                destination: DetailView(detailID: selectedEventID ?? 0),
+                isActive: $isDetailPresented
+            ) {
+                EmptyView()
+            }
+        
             VStack(spacing: 0) {
                     CustomToolBar(
                         currentLocation: $viewModel.currentLocation,
@@ -128,10 +134,10 @@ struct ExploreView: View {
             destination: SearchView(searchScreenType: .withoutData),
             isActive: $isSearchPresented
         )
-        .navigationLink(
-            destination: DetailView(detailID: selectedEventID ?? 0),
-            isActive: $isDetailPresented
-        )
+//        .navigationLink(
+//            destination: DetailView(detailID: selectedEventID ?? 0),
+//            isActive: $isDetailPresented
+//        )
         
         .navigationLink(
             destination: SeeAllEventsView(events: viewModel.todayEvents),
@@ -154,6 +160,8 @@ struct ExploreView: View {
             await viewModel.featchNearbyYouEvents()
         }
     }
+    
+    
     
     // MARK: - Task to load data
     private func loadData(for type: CategoryType) async {

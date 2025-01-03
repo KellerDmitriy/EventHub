@@ -487,9 +487,6 @@
         }
       }
     },
-    "Error occurred. Pull to refresh." : {
-
-    },
     "Event" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1621,6 +1618,7 @@
       }
     },
     "Search" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ru" : {
           "stringUnit" : {
@@ -1659,7 +1657,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "посмотреть все"
+            "value" : "Смотреть все"
           }
         }
       }

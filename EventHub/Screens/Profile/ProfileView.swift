@@ -19,7 +19,7 @@ struct ProfileView: View {
         static let profileImageSize: CGFloat = 96
         static let spacingBetweenSections: CGFloat = 50
         static let toolbarBottomPadding: CGFloat = 16
-        static let signOutButtonBottomPadding: CGFloat = 50
+        static let signOutButtonBottomPadding: CGFloat = 40
         static let horizontalPadding: CGFloat = 20
         static let cornerRadius: CGFloat = profileImageSize / 2
         
@@ -50,14 +50,21 @@ struct ProfileView: View {
     var body: some View {
         ZStack {
             Color.appBackground
-            ScrollView { 
+                .ignoresSafeArea()
                 VStack(spacing: Drawing.spacingBetweenSections) {
                     profileHeaderSection
+ 
                     aboutMeSection
                     Spacer()
                     signOutButtonSection
-                }
+            }
                 .padding(.horizontal, Drawing.horizontalPadding)
+        }
+        .toolbar {
+            ToolbarItem(placement: .principal ) {
+                ToolBarView(
+                    title: Drawing.profileTitle.localized
+                )
             }
         }
         .onAppear { onViewAppear() }
@@ -77,11 +84,6 @@ private extension ProfileView {
     // Profile Header Section
     var profileHeaderSection: some View {
         VStack {
-            ToolBarView(
-                title: Drawing.profileTitle.localized,
-                foregroundStyle: .titleFont
-            )
-            .padding(.bottom, Drawing.toolbarBottomPadding)
             
             Image(viewModel.profileImageName)
                 .resizable()
@@ -114,21 +116,26 @@ private extension ProfileView {
     // About Me Section
     var aboutMeSection: some View {
         VStack(alignment: .leading, spacing: 30) {
-            Text(Drawing.aboutMeTitle)
+            Text(Drawing.aboutMeTitle.localized)
                 .airbnbCerealFont(AirbnbCerealFont.medium, size: Drawing.aboutMeFontSize)
-            
-            VStack(alignment: .leading) {
-                Text(viewModel.userInfo)
-                    .airbnbCerealFont(AirbnbCerealFont.book, size: Drawing.infoFontSize)
-                    .lineLimit(showMore ? nil : Drawing.maxTextLines)
-                    .animation(.easeInOut, value: showMore)
-                
-                if viewModel.userInfo.count > Drawing.largeTextThreshold {
-                    Button {
-                        withAnimation(.easeInOut) { showMore.toggle() }
-                    } label: {
-                        Text(showMore ? Drawing.readLess : Drawing.readMore)
+            ScrollView {
+                VStack(alignment: .leading) {
+                    Text(viewModel.userInfo)
+                        .airbnbCerealFont(AirbnbCerealFont.book, size: Drawing.infoFontSize)
+                        .lineLimit(showMore ? nil : Drawing.maxTextLines)
+                        .animation(.easeInOut, value: showMore)
+                    
+                    if viewModel.userInfo.count > Drawing.largeTextThreshold {
+                        Button {
+                            withAnimation(.easeInOut) { showMore.toggle() }
+                        } label: {
+                            Text(
+                                showMore
+                                ? Drawing.readLess.localized
+                                : Drawing.readMore.localized
+                            )
                             .foregroundStyle(.appBlue)
+                        }
                     }
                 }
             }

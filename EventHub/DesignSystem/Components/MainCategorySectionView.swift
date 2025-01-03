@@ -18,7 +18,7 @@ struct MainCategorySectionView: View {
             Text(title.localized)
                 .airbnbCerealFont(AirbnbCerealFont.medium, size: 18)
                 .frame(width: 200, height: 24, alignment: .leading)
-                .foregroundStyle(.black)
+                .foregroundStyle(Color.appForegroundStyle)
                 .opacity(0.84)
             
             Spacer()

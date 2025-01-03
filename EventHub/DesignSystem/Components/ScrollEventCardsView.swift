@@ -15,15 +15,6 @@ struct ScrollEventCardsView: View {
     
     
     var body: some View {
-        
-//        if emptyArray {
-//            
-//            Text("No results")
-//                .airbnbCerealFont(AirbnbCerealFont.book, size: 23)
-//                .frame(width: 237, height: 255)
-//            
-//        } else {
-           
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
                     if events.isEmpty  {
@@ -31,9 +22,6 @@ struct ScrollEventCardsView: View {
                             ShimmerView(ratio: 1)
                         }
                     } else {
-//                        ForEach(1..<6) { plug in
-//                            ShimmerView(ratio: 1)
-//                        }
                         ForEach(events) { event in
                             EventCardView(event: event, showDetail: showDetail)
                                 .padding(.vertical, 10)
@@ -42,10 +30,9 @@ struct ScrollEventCardsView: View {
                 }
                 .padding(.leading, 24)
             }
-//        }
     }
 }
 
 #Preview {
-    ScrollEventCardsView(emptyArray: true, events: [ExploreModel.example, ExploreModel.example], showDetail: {_ in } ) // or nil
+    ScrollEventCardsView(emptyArray: true, events: [ExploreModel.example, ExploreModel.example], showDetail: {_ in } )
 }

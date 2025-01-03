@@ -149,10 +149,7 @@ final class ExploreViewModel: ObservableObject {
     }
 }
 
-
 extension ExploreViewModel {
-    
-    
     func getToDayEvents() async {
         do {
             let fetchedTodayEvents = try await apiService.getToDayEvents(location: currentLocation, language: language, page: page)
@@ -184,7 +181,6 @@ extension ExploreViewModel {
             let fetchedList = try await apiService.getLists(location: currentLocation, language: language, page: page)
             
             let apiSpecLoc = EventAPISpec.getLists(location: currentLocation, language: language, page: page)
-            print("getFilms: \(apiSpecLoc.endpoint)")
             
             self.lists = fetchedList.map { ExploreModel(listDto: $0 )}
         } catch {

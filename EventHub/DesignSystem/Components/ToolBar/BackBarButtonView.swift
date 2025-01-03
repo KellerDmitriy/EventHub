@@ -9,7 +9,7 @@ import SwiftUI
 struct BackBarButtonView: View {
     // MARK: - Properties
     @Environment(\.dismiss) var dismiss
-    let foregroundStyle: Color
+    let foregroundStyle: Color = Color.appForegroundStyle
     
     // MARK: - Drawing Constants
     private struct Drawing {

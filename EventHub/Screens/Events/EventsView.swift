@@ -9,93 +9,108 @@ import SwiftUI
 struct EventsView: View {
     @StateObject var viewModel: EventsViewModel
     @State private var showAllEvents = false
-    
+
+    // MARK: - Drawing Constants
+    private enum Drawing {
+        // Padding and Sizes
+        static let horizontalPadding: CGFloat = 24
+        static let buttonHorizontalPadding: CGFloat = 53
+        static let buttonBottomPadding: CGFloat = 40
+        
+        // Texts
+        static let errorText: String = "Error occurred. Pull to refresh."
+        static let exploreEventsText: String = "Explore Events".localized
+        static let toolbarTitle: String = "Event".localized
+        static let alertTitle: String = "Error"
+        static let alertOkButton: String = "OK"
+    }
+
     // MARK: - INIT
     init() {
         self._viewModel = StateObject(wrappedValue: EventsViewModel())
     }
-    
+
     // MARK: - BODY
     var body: some View {
-            ZStack {
-                Color.appBackground.ignoresSafeArea(.all)
-                VStack {
-                    ToolBarView(title: "Event".localized)
-                        .frame(height: 44)
-                        .zIndex(1)
-                    
-                    ChangeModeButton(selectedMode: $viewModel.selectedMode)
-                        .onChange(of: viewModel.selectedMode) { newValue in
-                            Task {
-                                await loadEvents(for: newValue)
-                            }
-                        }
-                    
-                    Group {
-                        switch currentPhase(for: viewModel.selectedMode) {
-                        case .empty:
-                            ShimmerEventView()
-                                .padding(.horizontal, 24)
-                        case .success(let events):
-                            if events.isEmpty {
-                                EmptyEventsView(selectedMode: viewModel.selectedMode)
-                            } else {
-                                ScrollView(.vertical) {
-                                    ForEach(events) { event in
-                                        NavigationLink(destination: DetailView(detailID: event.id)) {
-                                            SmallEventCard(
-                                                image: event.image,
-                                                date: event.date,
-                                                title: event.title,
-                                                place: event.location
-                                            )
-                                        }
-                                    }
-                                    .padding(.horizontal, 24)
-                                }
-                            }
-                        case .failure:
-                            Text("Error occurred. Pull to refresh.")
-                                .foregroundColor(.red)
-                                .padding()
-                            
-                        }
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    
-                    BlueButtonWithArrow(text: "Explore Events".localized) {
+        ZStack {
+            Color.appBackground.ignoresSafeArea(.all)
+            VStack {
+                ModeEventsSegmentedControl(state: $viewModel.selectedMode)
+                    .padding(.horizontal, Drawing.horizontalPadding)
+                    .onChange(of: viewModel.selectedMode) { newValue in
                         Task {
-                            await viewModel.updateAllEvents()
+                            await loadEvents(for: newValue)
                         }
-                        showAllEvents = true
                     }
-                    .padding(.horizontal, 53)
-                    .padding(.bottom, 40)
-                    .background(
-                        NavigationLink(
-                            destination: SeeAllEvents(allEvents: viewModel.allEvents),
-                            isActive: $showAllEvents,
-                            label: { EmptyView() }
-                        )
-                    )
-                }
-                .navigationBarHidden(true)
-                .task {
-                    await viewModel.fetchUpcomingEvents()
-                }
-                .alert(isPresented: isPresentedAlert(for: $viewModel.upcomingEventsPhase)) {
-                    Alert(
-                        title: Text("Error"),
-                        message: Text(viewModel.errorMessage(for: viewModel.upcomingEventsPhase)),
-                        dismissButton: .default(Text("OK")) {
-                            Task {
-                                await loadEvents(for: viewModel.selectedMode)
+
+                Group {
+                    switch currentPhase(for: viewModel.selectedMode) {
+                    case .empty:
+                        ShimmerEventView()
+                            .padding(.horizontal, Drawing.horizontalPadding)
+                    case .success(let events):
+                        if events.isEmpty {
+                            EmptyEventsView(selectedMode: viewModel.selectedMode)
+                        } else {
+                            ScrollView(.vertical) {
+                                ForEach(events) { event in
+                                    NavigationLink(destination: DetailView(detailID: event.id)) {
+                                        SmallEventCard(
+                                            image: event.image,
+                                            date: event.date,
+                                            title: event.title,
+                                            place: event.location
+                                        )
+                                    }
+                                }
+                                .padding(.horizontal, Drawing.horizontalPadding)
                             }
                         }
+                    case .failure:
+                        Text(Drawing.errorText)
+                            .foregroundColor(.red)
+                            .padding()
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                BlueButtonWithArrow(text: Drawing.exploreEventsText) {
+                    Task {
+                        await viewModel.updateAllEvents()
+                    }
+                    showAllEvents = true
+                }
+                .padding(.horizontal, Drawing.buttonHorizontalPadding)
+                .padding(.bottom, Drawing.buttonBottomPadding)
+                .background(
+                    NavigationLink(
+                        destination: SeeAllEvents(allEvents: viewModel.allEvents),
+                        isActive: $showAllEvents,
+                        label: { EmptyView() }
                     )
+                )
+            }
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    ToolBarView(title: Drawing.toolbarTitle)
                 }
             }
+            .task {
+                await viewModel.fetchUpcomingEvents()
+            }
+            .alert(isPresented: isPresentedAlert(for: $viewModel.upcomingEventsPhase)) {
+                Alert(
+                    title: Text(Drawing.alertTitle),
+                    message: Text(viewModel.errorMessage(for: viewModel.upcomingEventsPhase)),
+                    dismissButton: .default(Text(Drawing.alertOkButton)) {
+                        Task {
+                            await loadEvents(for: viewModel.selectedMode)
+                        }
+                    }
+                )
+            }
         }
+    }
 
     // MARK: - Helper Methods
     private func currentPhase(for mode: EventsMode) -> DataFetchPhase<[EventModel]> {
@@ -106,7 +121,7 @@ struct EventsView: View {
             return viewModel.pastEventsPhase
         }
     }
-    
+
     private func isPresentedAlert(for phase: Binding<DataFetchPhase<[EventModel]>>) -> Binding<Bool> {
         Binding(
             get: {
@@ -122,7 +137,7 @@ struct EventsView: View {
             }
         )
     }
-    
+
     private func loadEvents(for mode: EventsMode) async {
         switch mode {
         case .upcoming:

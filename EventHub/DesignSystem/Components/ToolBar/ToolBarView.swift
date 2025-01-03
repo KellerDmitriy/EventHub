@@ -12,9 +12,8 @@ struct ToolBarView: View {
     
     // MARK: - Properties
     var title: String
-    var foregroundStyle: Color = .black
-    
-    var isTitleLeading: Bool = false
+    var foregroundStyle: Color = .appForegroundStyle
+
     var showBackButton: Bool = false
     var actions: [ToolBarAction] = []
     
@@ -32,11 +31,10 @@ struct ToolBarView: View {
     var body: some View {
         HStack {
             if showBackButton {
-                BackBarButtonView(foregroundStyle: foregroundStyle)
+                BackBarButtonView()
                     .padding(.leading, Drawing.leadingSpacing)
-            } else {
-                Spacer().frame(width: Drawing.leadingSpacing)
             }
+            Spacer()
             // Title
             Text(title)
                 .airbnbCerealFont(
@@ -45,11 +43,8 @@ struct ToolBarView: View {
                 )
                 .foregroundStyle(foregroundStyle)
                 .lineLimit(1)
-                .frame(
-                    maxWidth: .infinity,
-                    alignment: isTitleLeading ? .leading : .center
-                )
-
+                
+            Spacer()
             // Right Buttons
             HStack(spacing: Drawing.spacingBetweenButtons) {
                 ForEach(actions) { action in
@@ -58,9 +53,6 @@ struct ToolBarView: View {
             }
             .padding(.trailing, Drawing.trailingSpacing)
             
-            if actions.isEmpty {
-                Spacer().frame(width: Drawing.trailingSpacing)
-            }
         }
         .frame(height: Drawing.tabBarHeight)
     }

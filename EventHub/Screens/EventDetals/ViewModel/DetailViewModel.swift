@@ -10,7 +10,7 @@ import Foundation
 @MainActor
 final class DetailViewModel: ObservableObject {
     
-    private let eventID: Int
+    let eventID: Int
     private let eventService: IAPIServiceForDetail
     private let language = Language.ru
     

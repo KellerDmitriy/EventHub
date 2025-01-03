@@ -7,20 +7,6 @@
 
 import SwiftUI
 
-
-extension View {
-    func placeholder<Content: View>(
-        when shouldShow: Bool,
-        alignment: Alignment = .leading,
-        @ViewBuilder placeholder: () -> Content) -> some View {
-
-        ZStack(alignment: alignment) {
-            placeholder().opacity(shouldShow ? 1 : 0)
-            self
-        }
-    }
-}
-
 struct SearchBarViewForMap: View {
     @Binding var isSearchPresented: Bool
     @Binding var searchText: String
@@ -68,12 +54,9 @@ struct SearchBarViewForMap: View {
                     .onTapGesture {
                         isSearchPresented = true
                     }
-                
-                
             }
             FiltersButtonView(filterAction: fiterAction)
         }
-        
     }
 }
 

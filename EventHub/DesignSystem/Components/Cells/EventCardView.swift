@@ -22,7 +22,7 @@ struct EventCardView: View {
     var body: some View {
         
         ZStack {
-            Color.white
+            Color.appBackground.ignoresSafeArea(.all)
             VStack(alignment: .leading) {
                 
                 ZStack(alignment: .top) {
@@ -85,7 +85,7 @@ struct EventCardView: View {
                     .airbnbCerealFont(AirbnbCerealFont.medium, size: 18)
                     .frame(width: 207, height: 21, alignment: .leading)
                     .padding(.bottom,10)
-                
+                    .foregroundStyle(Color.appForegroundStyle)
                 
                 if event.visitors?.count == 0 {
                     HStack {

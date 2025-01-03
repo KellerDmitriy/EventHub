@@ -9,11 +9,18 @@ import SwiftUI
 
 struct DetailView: View {
     @EnvironmentObject private var coreDataManager: CoreDataManager
-    @EnvironmentObject private var appState: AppState
     @StateObject private var viewModel: DetailViewModel
     
     @State private var isPresented: Bool = false
+    @State private var isShareViewPresented: Bool = false
+    @State private var headerHeight: CGFloat = 250
+    @State private var headerMinHeight: CGFloat = 100
     
+    private var isFavorite: Bool {
+        coreDataManager.events.contains { event in
+            Int(event.id) == viewModel.event?.id
+        }
+    }
     // MARK: - Init
     init(detailID: Int) {
         self._viewModel = StateObject(wrappedValue: DetailViewModel(eventID: detailID))
@@ -22,37 +29,37 @@ struct DetailView: View {
     var body: some View {
         ZStack {
             VStack {
-                if let event = viewModel.event {
-                    ScrollView(showsIndicators: false) {
-                        VStack(alignment: .leading, spacing: 0) {
-                            ZStack {
-                                ImageDetailView(imageUrl: viewModel.image)
-                                DetailToolBar(isPresented: $isPresented, event: event)
-                                    .padding(.vertical, 35)
+                if viewModel.event != nil {
+                    ScrollViewWithCollapsibleHeader(
+                        content: {
+                            VStack {
+                                ImageDetailView(
+                                    imageUrl: viewModel.image,
+                                    isPresented: $isPresented
+                                )
+                                .scaledToFill()
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .clipped()
+                                DetailInformationView(
+                                    title: viewModel.title,
+                                    startDate: viewModel.startDate,
+                                    endDate: viewModel.endDate,
+                                    adress: viewModel.adress,
+                                    location: viewModel.location,
+                                    agentTitle: viewModel.agentTitle,
+                                    role: viewModel.role,
+                                    bodyText: viewModel.bodyText
+                                )
                             }
-                            
-                            DetailInformationView(
-                                title: viewModel.title,
-                                startDate: viewModel.startDate,
-                                endDate: viewModel.endDate,
-                                adress: viewModel.adress,
-                                location: viewModel.location,
-                                agentTitle: viewModel.agentTitle,
-                                role: viewModel.role,
-                                bodyText: viewModel.bodyText
-                            )
                         }
-                    }
-                    .ignoresSafeArea()
+                    )
                 } else {
                     ShimmerDetailView()
                         .ignoresSafeArea(.all)
                 }
             }
             
-            // Затемненный фон и ShareView при isPresented == true
             if isPresented {
-                // Полупрозрачный черный слой
                 Color.black.opacity(0.5)
                     .edgesIgnoringSafeArea(.all)
                     .transition(.opacity)
@@ -62,19 +69,44 @@ struct DetailView: View {
                     .zIndex(1)
             }
         }
-        .ignoresSafeArea()
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading ) {
+                ToolBarView(
+                    title: Resources.Text.eventDetails.localized,
+                    foregroundStyle: .white,
+                    showBackButton: true,
+                    actions: [
+                        ToolBarAction(
+                            icon:
+                                isFavorite
+                            ? ToolBarButtonType.bookmarkFill.icon
+                            : ToolBarButtonType.bookmark.icon,
+                            action: {
+                                if !isFavorite {
+                                    if let event = viewModel.event {
+                                        coreDataManager.createEvent(event: event)
+                                    }
+                                } else {
+                                    coreDataManager.deleteEvent(eventID: viewModel.eventID)
+                                }
+                            },
+                            hasBackground: true,
+                            foregroundStyle: .white
+                        )
+                    ]
+                )
+            }
+        }
+       
         .animation(.easeInOut(duration: 0.3), value: isPresented)
         .task {
             await viewModel.fetchEventDetails()
-        }
-        
-        .navigationBarHidden(true)
-        .onChange(of: isPresented) { newValue in
-            appState.isShareViewPresented = newValue // Обновляем AppState
         }
     }
 }
 
 #Preview {
     DetailView(detailID: 32532)
+        .environmentObject(CoreDataManager())
 }

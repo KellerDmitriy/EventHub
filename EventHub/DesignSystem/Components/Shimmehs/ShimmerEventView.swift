@@ -11,7 +11,7 @@ struct ShimmerEventView: View {
     var body: some View {
         VStack {
             Spacer()
-            ForEach (1..<6) { _ in
+            ForEach (1..<5) { _ in
                 VStack(alignment: .leading, spacing: 20) {
                     RoundedRectangle(cornerRadius: 30)
                         .foregroundStyle(.appLightGray)

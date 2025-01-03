@@ -13,7 +13,6 @@ import FirebaseCore
 struct EventHubApp: App {
     
     @StateObject private var coreDataManager = CoreDataManager()
-    @StateObject private var appState = AppState()
 
     init() {
         FirebaseApp.configure()
@@ -27,8 +26,8 @@ struct EventHubApp: App {
     var body: some Scene {
         WindowGroup {
             StartRouterView()
+                .preferredColorScheme(.dark)
                 .environmentObject(coreDataManager)
-                .environmentObject(appState)
         }
     }
 }

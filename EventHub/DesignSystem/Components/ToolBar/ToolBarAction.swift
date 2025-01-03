@@ -9,7 +9,7 @@ import SwiftUI
 
 // MARK: - ToolBarAction
 struct ToolBarAction: Identifiable {
-    // MARK: - Properties
+    // MARK: - Prop erties
     let id = UUID()
     let icon: String
     let action: () -> Void
