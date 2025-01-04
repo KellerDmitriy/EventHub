@@ -55,7 +55,7 @@ struct SearchBarViewForMap: View {
                         isSearchPresented = true
                     }
             }
-            FiltersButtonView(filterAction: fiterAction)
+            FiltersButton(filterAction: fiterAction)
         }
     }
 }

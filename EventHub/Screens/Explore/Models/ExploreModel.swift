@@ -69,6 +69,7 @@ extension ExploreModel {
     }
 }
 
+#warning("в приложении несколько экранов с похожими ячейками, но все же с отличиями, но для сохранения избранного, и так же для использования одного ТД в SeeALL использовал мапинг с помощью подготовленных инитов, насколько это норм?!")
 extension ExploreModel {
     init(movieDto: MovieDTO) {
         self.id = movieDto.id
@@ -140,6 +141,7 @@ struct EventIdentifier: Hashable {
     let title: String
 }
 
+#warning("так же из-за того что не получилось получить от апи отсортированные данные пришлось делать этот метод, насколько это норм и где он может хранится?")
 extension ExploreModel {
     static func filterExploreEvents(_ events: [ExploreModel]) -> [ExploreModel] {
         let currentDate = Date()

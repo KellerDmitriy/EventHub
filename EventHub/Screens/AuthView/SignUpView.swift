@@ -17,6 +17,7 @@ struct SignUpView: View {
     var body: some View {
         ZStack {
             BackgroundWithEllipses()
+                .background(Color.appBackground)
             GeometryReader { geometry in
                 let screenWidth = geometry.size.width
                 let horizontalPadding = screenWidth * 0.1
@@ -80,6 +81,7 @@ struct SignUpView: View {
                             HStack {
                                 Text("Already have an account?".localized)
                                     .airbnbCerealFont(.book, size: 15)
+                                    .foregroundColor(.titleFont)
                                 
                                 Text("Sign In".localized)
                                     .airbnbCerealFont(.book, size: 15)

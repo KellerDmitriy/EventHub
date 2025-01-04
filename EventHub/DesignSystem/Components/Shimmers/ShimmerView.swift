@@ -124,14 +124,6 @@ struct ShimmerView: View {
             
             VStack(alignment: .leading) {
                 Spacer()
-                Text("EVENT")
-                    .airbnbCerealFont( AirbnbCerealFont.medium, size: 20)
-                    .foregroundStyle(.appPurple)
-                    .shimmering()
-                    .padding(.top, 50)
-                    
-                Spacer()
-                
                 
                 Text("                      ")
                     .redacted(reason: .placeholder)
@@ -150,7 +142,6 @@ struct ShimmerView: View {
                         .redacted(reason: .placeholder)
                 }
                 .padding(.bottom, 20)
-                
             }
         }
         .frame(width: 237/ratio, height: 255/ratio)

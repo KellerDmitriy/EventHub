@@ -10,7 +10,7 @@ import Foundation
 import FirebaseAuth
 
 final class StartRouter: ObservableObject {
-    
+#warning("здесь как раз я не смог проверить при изменении экранов у меня освободжается предыдущий или он удерживается и в целом интересны варианты дебагинга от View Hierarhy, Memory Graph и др ")
     // MARK: - Published Properties
     @Published var routerState: RouterState = .onboarding
     

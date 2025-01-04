@@ -7,61 +7,116 @@
 
 import SwiftUI
 
+// MARK: - EventType
 enum EventType {
+    case upcomingEvents
+    case nearbyYouEvents
     case movie
-    case list
-    case regular
+    case lists
+    case today
+    
+    var title: String {
+        switch self {
+        case .upcomingEvents:
+            return "Upcoming Events"
+        case .nearbyYouEvents:
+            return "Nearby You"
+        case .movie:
+            return "Movies"
+        case .lists:
+            return "Lists"
+        case .today:
+            return "Today"
+        }
+    }
 }
 
+
+
+// MARK: - SeeAllEventsView
 struct SeeAllEventsView: View {
     
+    // MARK: - Properties
     let events: [ExploreModel]
-    var eventType: EventType = .regular
+    let eventType: EventType
     
+    // MARK: - Drawing Constants
+    enum Drawing {
+        static let cardSpacing: CGFloat = 10
+        static let cardPadding: CGFloat = 5
+        static let scrollPadding: CGFloat = 20
+        static let noImagePlaceholder = "No image"
+        static let noImageCrashPlaceholder = "No image/crach"
+    }
+    
+    // MARK: - Body
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack {
+            VStack(spacing: Drawing.cardSpacing) {
                 ForEach(events) { event in
-                    eventView(for: event)
-                        .padding(.bottom, 5)
+                    if allowsDetailNavigation {
+                        NavigationLink(destination: DetailView(detailID: event.id)) {
+                            eventView(for: event)
+                                .padding(.bottom, Drawing.cardPadding)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    } else {
+                        eventView(for: event)
+                            .padding(.bottom, Drawing.cardPadding)
+                    }
                 }
             }
-            .padding(.horizontal, 20)
+            .padding(Drawing.scrollPadding)
         }
+        .background(Color.appBackground)
         .navigationBarBackButtonHidden()
         .toolbar {
-            ToolBarView(
-                title: "See All".localized,
-                showBackButton: true
-            )
+            ToolbarItem(placement: .topBarLeading) {
+                ToolBarView(
+                    title: eventType.title.localized,
+                    showBackButton: true
+                )
+            }
         }
     }
     
+    // MARK: - Helper Properties
+    private var allowsDetailNavigation: Bool {
+        switch eventType {
+        case .movie, .lists, .today:
+            return false
+        default:
+            return true
+        }
+    }
     
+    // MARK: - Helper Methods
+    @ViewBuilder
     func eventView(for event: ExploreModel) -> some View {
         switch eventType {
-        case .list:
-            return AnyView(ThirdSmallEventCard(
+        case .lists:
+            ThirdSmallEventCard(
                 title: event.title,
                 link: event.adress
-            ))
+            )
         case .movie:
-            return AnyView(SmallEventCardForMovie(
-                image: event.image ?? "No image",
+            SmallEventCardForMovie(
+                image: event.image ?? Drawing.noImagePlaceholder,
                 title: event.title,
                 url: event.adress
-            ))
-        case .regular:
-            return AnyView(SmallEventCard(
-                image: event.image ?? "No image/crach",
+            )
+        case .today, .upcomingEvents, .nearbyYouEvents:
+            SmallEventCard(
+                image: event.image ?? Drawing.noImageCrashPlaceholder,
                 date: event.date,
                 title: event.title,
                 place: event.adress
-            ))
+            )
         }
     }
 }
 
+// MARK: - Preview
 #Preview {
-    SeeAllEventsView(events: [])
+    SeeAllEventsView(events: [], eventType: .nearbyYouEvents)
 }

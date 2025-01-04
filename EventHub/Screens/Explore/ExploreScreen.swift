@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ExploreView: View {
+struct ExploreScreen: View {
     enum CategoryType {
         case today, films, lists
     }
@@ -35,15 +35,9 @@ struct ExploreView: View {
     var body: some View {
         ZStack {
             Color.appBackground.ignoresSafeArea(.all)
-            NavigationLink(
-                destination: DetailView(detailID: selectedEventID ?? 0),
-                isActive: $isDetailPresented
-            ) {
-                EmptyView()
-            }
         
             VStack(spacing: 0) {
-                    CustomToolBar(
+                    ExploreToolBar(
                         currentLocation: $viewModel.currentLocation,
                         title: $viewModel.currentPosition,
                         isSearchPresented: $isSearchPresented,
@@ -114,7 +108,6 @@ struct ExploreView: View {
                             .padding(.bottom, 180)
                         }
                     }
-//                    .offset(y: 100)
                 }
                 .zIndex(0)
                 .navigationBarHidden(true)
@@ -123,24 +116,25 @@ struct ExploreView: View {
         }
 
         .navigationLink(
-            destination: SeeAllEventsView(events: viewModel.upcomingEvents),
+            destination: SeeAllEventsView(events: viewModel.upcomingEvents, eventType: .upcomingEvents),
             isActive: $isSeeAllUpcomingEvents
         )
         .navigationLink(
-            destination: SeeAllEventsView(events: viewModel.nearbyYouEvents),
+            destination: SeeAllEventsView(events: viewModel.nearbyYouEvents, eventType: .nearbyYouEvents),
             isActive: $isSeeAllNearbyEvents
         )
         .navigationLink(
             destination: SearchView(searchScreenType: .withoutData),
             isActive: $isSearchPresented
         )
-//        .navigationLink(
-//            destination: DetailView(detailID: selectedEventID ?? 0),
-//            isActive: $isDetailPresented
-//        )
         
         .navigationLink(
-            destination: SeeAllEventsView(events: viewModel.todayEvents),
+            destination: DetailView(detailID: selectedEventID ?? 0),
+            isActive: $isDetailPresented
+        )
+        
+        .navigationLink(
+            destination: SeeAllEventsView(events: viewModel.todayEvents, eventType: .today),
             isActive: $isTodayEvents
         )
         
@@ -150,7 +144,7 @@ struct ExploreView: View {
         )
         
         .navigationLink(
-            destination: SeeAllEventsView(events: viewModel.lists, eventType: .list),
+            destination: SeeAllEventsView(events: viewModel.lists, eventType: .lists),
             isActive: $isLists
         )
         .task {

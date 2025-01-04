@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CustomToolBar: View {
+struct ExploreToolBar: View {
     
     private let searchText: String = ""
     
@@ -106,7 +106,7 @@ struct CustomToolBar: View {
 }
 
 #Preview {
-    CustomToolBar(
+    ExploreToolBar(
         currentLocation: .constant("City "),
         title: .constant("City "),
         isSearchPresented: .constant(true),

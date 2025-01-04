@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct FavoritesView: View {
+struct FavoritesScreen: View {
     @EnvironmentObject private var coreDataManager: CoreDataManager
     @StateObject var viewModel: FavoritesViewModel
     @State private var showSearchFlow = false
@@ -27,7 +27,7 @@ struct FavoritesView: View {
                         icon: ToolBarButtonType.search.icon,
                         action: { showSearchFlow = true },
                         hasBackground: false,
-                        foregroundStyle: .titleFont
+                        foregroundStyle: Color.appBlue
                     )
                 ]
             )
@@ -65,6 +65,6 @@ struct FavoritesView: View {
 }
 
 #Preview {
-    FavoritesView()
+    FavoritesScreen()
         .environmentObject(CoreDataManager())
 }

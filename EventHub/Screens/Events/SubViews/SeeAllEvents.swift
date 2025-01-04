@@ -58,7 +58,8 @@ struct SeeAllEvents: View {
                         icon: ToolBarButtonType.search.icon,
                         action: { showSearchFlow = true },
                         hasBackground: false,
-                        foregroundStyle: Color.black)
+                        foregroundStyle: Color.appBlue
+                    )
                     ]
                 )
             }

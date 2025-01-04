@@ -1,5 +1,5 @@
 //
-//  MapView.swift
+//  MapScreen.swift
 //  EventHub
 //
 //  Created by Руслан on 18.11.2024.
@@ -8,7 +8,7 @@
 import SwiftUI
 import MapKit
 
-struct MapView: View {
+struct MapScreen: View {
     @StateObject private var viewModel: MapViewModel
     @State private var selectedEvent: MapEventModel?
     @EnvironmentObject private var coreDataManager: CoreDataManager
@@ -143,5 +143,5 @@ struct MapView: View {
 }
 
 #Preview {
-    MapView()
+    MapScreen()
 }

@@ -1,17 +1,17 @@
 //
-//  FiltersButtonView.swift
+//  FiltersButton.swift
 //  EventHub
 //
 //  Created by Marat Fakhrizhanov on 20.11.2024.
 //
 
-import SwiftUI
 
 import SwiftUI
 
-struct FiltersButtonView: View {
+struct FiltersButton: View {
     
     @State private var selectedOrder: DisplayOrderType = .alphabetical
+    
     let filterAction: (DisplayOrderType) -> Void
     
     var body: some View {
@@ -46,7 +46,7 @@ struct FiltersButtonView: View {
 
 
 #Preview {
-    FiltersButtonView() { selectedOrder in
+    FiltersButton() { selectedOrder in
         print("Selected filter: \(selectedOrder.name)")
     }
 }
