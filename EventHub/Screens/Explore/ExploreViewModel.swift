@@ -67,6 +67,7 @@ final class ExploreViewModel: ObservableObject {
         }
     }
     
+#warning("Так как экран нагружен запросами какие есть методы оптимизации? как правильно прекращать текущие запросы и передавать очередь?")
     // MARK: - Network API Methods
     func fetchLocations() async {
         do {
@@ -95,18 +96,14 @@ final class ExploreViewModel: ObservableObject {
                 language,
                 page
             )
-            let _ = EventAPISpec.getUpcomingEventsWith(
-                category: currentCategory,
-                language: language,
-                page: page
-            )
+
             let mappedEvents = fetchedEvents.map { ExploreModel(dto: $0) }
             
             let filteredEvents = ExploreModel.filterExploreEvents(mappedEvents)
             
             self.upcomingEvents = filteredEvents
             
-            if upcomingEvents.isEmpty {
+            if fetchedEvents.isEmpty {
                 emptyUpcoming = true
             }
 
@@ -116,6 +113,7 @@ final class ExploreViewModel: ObservableObject {
     }
     
     func featchNearbyYouEvents() async {
+#warning("бульки для отображения заглушек, но они не очень корректно работают, на экране Events я использую DataFetchPhase посмотри пожалуйста какие плюсы и минусы такого подхода")
         emptyNearbyYou = false
         do {
             let eventsDTO = try await apiService.getNearbyYouEvents(
@@ -128,7 +126,7 @@ final class ExploreViewModel: ObservableObject {
             let filteredEvents = ExploreModel.filterExploreEvents(mappedEvents)
             nearbyYouEvents = filteredEvents
             
-            if nearbyYouEvents.isEmpty {
+            if eventsDTO.isEmpty {
                 emptyNearbyYou = true
             }
             
@@ -150,6 +148,7 @@ final class ExploreViewModel: ObservableObject {
 }
 
 extension ExploreViewModel {
+#warning("если приходится использовать запрос в запросе как оптимально это реализовать?")
     func getToDayEvents() async {
         do {
             let fetchedTodayEvents = try await apiService.getToDayEvents(location: currentLocation, language: language, page: page)
@@ -179,8 +178,6 @@ extension ExploreViewModel {
     func getLists() async {
         do {
             let fetchedList = try await apiService.getLists(location: currentLocation, language: language, page: page)
-            
-            let apiSpecLoc = EventAPISpec.getLists(location: currentLocation, language: language, page: page)
             
             self.lists = fetchedList.map { ExploreModel(listDto: $0 )}
         } catch {

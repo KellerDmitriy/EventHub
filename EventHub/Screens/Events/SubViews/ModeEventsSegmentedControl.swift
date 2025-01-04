@@ -31,7 +31,7 @@ struct ModeEventsSegmentedControl: View {
         
         .background(
             Capsule()
-                .fill(Color.white)
+                .fill(Color.appBackground)
                 .matchedGeometryEffect(
                     id: state,
                     in: segmentedControl,

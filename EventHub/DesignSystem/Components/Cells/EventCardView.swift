@@ -32,8 +32,10 @@ struct EventCardView: View {
                                 ShimmeringImageView()
                             }
                             .resizable()
+                            .aspectRatio(contentMode: .fill)
                             .frame(width: 218, height: 131)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .clipped()
                     } else {
                         Image(.cardImg1)
                             .resizable()

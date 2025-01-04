@@ -8,21 +8,22 @@
 import SwiftUI
 import FirebaseCore
 
-
 @main
 struct EventHubApp: App {
     
     @StateObject private var coreDataManager = CoreDataManager()
-
+    
+    //MARK: - INIT
     init() {
         FirebaseApp.configure()
+        
         DIContainer.register({ UserService() }, forKey: .userService, lifecycle: .transient)
         DIContainer.register({ AuthService() }, forKey: .authService, lifecycle: .singleton)
         DIContainer.register({ UDStorageService() as IStorageService}, forKey: .storageService, lifecycle: .singleton)
-        DIContainer.register({ EventAPIService() as IAPIServiceForExplore & IAPIServiceForDetail }, forKey: .networkService, lifecycle: .singleton)
+        DIContainer.register({ EventAPIService() as IEventAPIService }, forKey: .networkService, lifecycle: .singleton)
     }
     
-
+    //MARK: - BODY
     var body: some Scene {
         WindowGroup {
             StartRouterView()

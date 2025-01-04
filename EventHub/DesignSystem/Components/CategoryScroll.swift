@@ -16,7 +16,7 @@ struct CategoryScroll: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(categories) { category in
-                    CategoryButtonView(
+                    CategoryButton(
                         categoryName: category.category.name.localized,
                         imageName: category.image,
                         backgroundColor: category.color,

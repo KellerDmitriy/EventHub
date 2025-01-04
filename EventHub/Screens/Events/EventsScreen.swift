@@ -1,12 +1,12 @@
 //
-//  EventsView.swift
+//  EventsScreen.swift
 //  EventHub
 //
 //  Created by Руслан on 18.11.2024.
 //
 import SwiftUI
 
-struct EventsView: View {
+struct EventsScreen: View {
     @StateObject var viewModel: EventsViewModel
     @State private var showAllEvents = false
 
@@ -149,5 +149,5 @@ struct EventsView: View {
 }
 
 #Preview {
-    EventsView()
+    EventsScreen()
 }

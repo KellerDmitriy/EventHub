@@ -19,11 +19,6 @@ struct ShimmeringImageView: View {
                     .foregroundStyle(.appLightGray)
                     .frame(width: 208, height: 121)
                     .shimmering()
-                
-                Text("Image loading ...")
-                    .foregroundStyle(.purple)
-                    .airbnbCerealFont(AirbnbCerealFont.book, size: 18)
-                    .shimmering()
             }
         }
     }

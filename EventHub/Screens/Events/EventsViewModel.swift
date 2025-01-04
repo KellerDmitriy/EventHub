@@ -71,7 +71,7 @@ final class EventsViewModel: ObservableObject {
         return eventsFromAPI
     }
     
-    func fetchUpcomingEvents(ignoreCache: Bool = false) async {
+    func fetchUpcomingEvents(ignoreCache: Bool = true) async {
         upcomingEventsPhase = .empty
         do {
             if !ignoreCache, let cachedEvents = await cache.value(forKey: fetchTaskToken.events) {

@@ -36,7 +36,7 @@ enum ToolBarButtonType {
         case .bookmarkFill:
             return "bookmarkFill"
         case .search:
-            return "search"
+            return "searchWhite"
         }
     }
 }

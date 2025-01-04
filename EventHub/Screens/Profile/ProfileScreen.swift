@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ProfileView: View {
+struct ProfileScreen: View {
     // MARK: - Properties
     @StateObject var viewModel: ProfileViewModel
     @State private var showMore = false
@@ -80,7 +80,7 @@ struct ProfileView: View {
 }
 
 // MARK: - Subviews
-private extension ProfileView {
+private extension ProfileScreen {
     // Profile Header Section
     var profileHeaderSection: some View {
         VStack {
@@ -151,7 +151,7 @@ private extension ProfileView {
 }
 
 // MARK: - Helpers
-private extension ProfileView {
+private extension ProfileScreen {
     func onViewAppear() {
         if !isUpdatingProfile {
             Task { await viewModel.loadCurrentUser() }
@@ -172,6 +172,6 @@ private extension ProfileView {
 
 // MARK: - Preview
 #Preview {
-    ProfileView(router: StartRouter())
+    ProfileScreen(router: StartRouter())
 }
 

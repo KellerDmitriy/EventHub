@@ -26,8 +26,6 @@ struct SearchView: View {
                 .ignoresSafeArea(.all)
             
             VStack(spacing: 0) {
-                VStack(spacing: 0) {
-
                     SearchBarViewForMap(isSearchPresented: $isSearchPresented,
                                         searchText: $viewModel.searchText,
                                         textColor: .appForegroundStyle,
@@ -37,7 +35,6 @@ struct SearchView: View {
                     )
                     .padding(.horizontal,24)
                     .padding(.top, 30)
-                }
                 .zIndex(1)
                 Spacer()
                 
