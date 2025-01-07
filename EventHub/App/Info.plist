@@ -36,11 +36,6 @@
 		<string>AirbnbCereal_W_Md.otf</string>
 	</array>
 	<key>UILaunchScreen</key>
-	<dict>
-		<key>UIColorName</key>
-		<string>appBackground</string>
-		<key>UIImageName</key>
-		<string>logo</string>
-	</dict>
+	<dict/>
 </dict>
 </plist>

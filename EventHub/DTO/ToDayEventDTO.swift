@@ -6,19 +6,19 @@
 //
 
 
-struct ToDayEventsDTO: Codable, Sendable, DecodableType {
+struct ToDayEventsDTO: Codable, Sendable {
     let results: [ToDayEventDTO]
 }
 
 // MARK: - ToDayEventDTO
-struct ToDayEventDTO: Codable, Sendable, DecodableType {
+struct ToDayEventDTO: Codable, Sendable {
     let date, location: String
     let object: Object
     let title: String
 }
 
 // MARK: - Object
-struct Object: Codable, Sendable, DecodableType {
+struct Object: Codable, Sendable {
     let id: Int
     let ctype: String
 }

@@ -79,8 +79,6 @@ final class SearchViewModel: ObservableObject {
     func fetchSearchedEvents() async {
         do {
             let searchEventsDTO = try await apiService.getSearchedEvents(with: searchText)
-            let apiSpecLoc = EventAPISpec.getSerchedEventsWith(searchText: searchText)
-                         print("Generated Endpoint Searched: \(apiSpecLoc.endpoint)")
             searchResults = searchEventsDTO?.results.map { ExploreModel(searchDTO: $0) } ?? []
         } catch {
             print(" No searched func result")

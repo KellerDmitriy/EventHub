@@ -10,21 +10,22 @@ import Foundation
 import FirebaseAuth
 
 final class StartRouter: ObservableObject {
-#warning("здесь как раз я не смог проверить при изменении экранов у меня освободжается предыдущий или он удерживается и в целом интересны варианты дебагинга от View Hierarhy, Memory Graph и др ")
     // MARK: - Published Properties
-    @Published var routerState: RouterState = .onboarding
+    @Published var routerState: RouterState = .launch
     
     private let storage = DIContainer.resolve(forKey: .storageService) ?? UDStorageService()
     //    private let authManager = FirebaseManager.shared
     
     // MARK: - State & Event Enums
     enum RouterState {
+        case launch
         case onboarding
         case auth
         case main
     }
     
     enum StartEvent {
+        case launchCompleted
         case onboardingCompleted
         case userAuthorized
         case userLoggedOut
@@ -36,39 +37,34 @@ final class StartRouter: ObservableObject {
     }
     
     // MARK: - State Management
-    private func reduce(_ state: RouterState, event: StartEvent) -> RouterState {
-        var newState = state
+    private func reduce(_ event: StartEvent) -> RouterState {
+     
         switch event {
-        case .onboardingCompleted:
-            newState = rootState(state: newState)
-        case .userAuthorized:
-            newState = .main
-        case .userLoggedOut:
-            newState = .auth
+        case .onboardingCompleted: return rootState()
+        case .userAuthorized: return .main
+        case .userLoggedOut: return .auth
+        case .launchCompleted: return rootState()
         }
-        return newState
     }
     
     // MARK: - Public Methods
     func updateRouterState(with event: StartEvent) {
-        routerState = reduce(routerState, event: event)
+        routerState = reduce(event)
     }
     
     // MARK: - Private Helpers
-    private func rootState(state: RouterState) -> RouterState {
-        var newState = state
+    private func rootState() -> RouterState {
+        
         
         if storage.hasCompletedOnboarding() {
             if storage.getIsRememberMeOn() && Auth.auth().currentUser != nil {
-                newState = .main
+                return .main
             } else {
-                newState = (Auth.auth().currentUser != nil && !storage.getIsRememberMeOn()) ? .main : .auth
+                return (Auth.auth().currentUser != nil && !storage.getIsRememberMeOn()) ? .main : .auth
             }
         } else {
-            newState = .onboarding
+            return .onboarding
             storage.set(value: true as Bool, forKey: .hasCompletedOnboarding)
         }
-        
-        return newState
     }
 }

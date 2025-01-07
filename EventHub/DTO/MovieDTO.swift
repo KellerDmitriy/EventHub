@@ -8,11 +8,11 @@
 
 import Foundation
 
-struct MoviesResponseDTO: Codable, Sendable, DecodableType {
+struct MoviesResponseDTO: Codable, Sendable {
     let results: [MovieDTO]
 }
 
-struct MovieDTO: Codable, Identifiable, Sendable, DecodableType {
+struct MovieDTO: Codable, Identifiable, Sendable {
     let id: Int
     let site_url: String
     let title: String
@@ -20,7 +20,7 @@ struct MovieDTO: Codable, Identifiable, Sendable, DecodableType {
     let poster: Poster
 }
 
-struct Poster: Codable, Sendable, DecodableType {
+struct Poster: Codable, Sendable {
     let image: String
 }
 

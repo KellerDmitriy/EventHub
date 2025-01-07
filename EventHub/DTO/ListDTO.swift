@@ -8,23 +8,14 @@
 
 import Foundation
 
-struct ListDTO: Codable, Identifiable, Sendable, DecodableType {
+struct ListDTO: Codable, Identifiable, Sendable {
     let id: Int
     let publicationDate: Date
     let title: String
     let slug: String
     let siteURL: String
-    
-
-    enum CodingKeys: String, CodingKey {
-        case id
-        case publicationDate = "publication_date"
-        case title
-        case slug
-        case siteURL = "site_url"
-    }
 }
 
-struct ResponseListDTO: Codable, Sendable, DecodableType {
+struct ResponseListDTO: Codable, Sendable {
     let results: [ListDTO]
 }

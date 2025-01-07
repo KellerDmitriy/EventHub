@@ -148,10 +148,7 @@ struct ExploreScreen: View {
             isActive: $isLists
         )
         .task {
-            await viewModel.fetchCategories()
-            await viewModel.fetchLocations()
-            await viewModel.fetchUpcomingEvents()
-            await viewModel.featchNearbyYouEvents()
+            await viewModel.loadAllData()
         }
     }
     
