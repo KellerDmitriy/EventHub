@@ -29,7 +29,6 @@ struct ExploreToolBar: View {
         VStack {
             HStack{
                 VStack(alignment: .leading) {
-                    
                     Menu {
                         ForEach(locations, id: \.name) { location in
                             Button {
@@ -41,8 +40,12 @@ struct ExploreToolBar: View {
                         }
                     } label: {
                         Text("Current Location")
-                            .airbnbCerealFont( AirbnbCerealFont.book, size: 12)
-                            .frame(width: 99, height: 14, alignment: .leading)
+                            .airbnbCerealFont( AirbnbCerealFont.book, size: 14)
+                            .frame(
+                                width: 120,
+                                height: 16,
+                                alignment: .leading
+                            )
                             .foregroundStyle(Color.white)
                             .opacity(0.7)
                         Image(systemName: "arrowtriangle.down.fill")
@@ -54,7 +57,7 @@ struct ExploreToolBar: View {
                     
                     Text(title)
                         .foregroundStyle(Color.white)
-                        .airbnbCerealFont(AirbnbCerealFont.book, size: 13)
+                        .airbnbCerealFont(AirbnbCerealFont.bold, size: 15)
                 }
                 
                 Spacer()
@@ -84,7 +87,7 @@ struct ExploreToolBar: View {
                 
             }
             .padding(.horizontal,24)
-            .padding(.bottom, 10)
+            .padding(.bottom, 2)
             
             SearchBarViewForMap (
                 isSearchPresented: $isSearchPresented,

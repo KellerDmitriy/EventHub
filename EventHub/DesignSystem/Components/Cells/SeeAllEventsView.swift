@@ -44,7 +44,7 @@ struct SeeAllEventsView: View {
     enum Drawing {
         static let cardSpacing: CGFloat = 10
         static let cardPadding: CGFloat = 5
-        static let scrollPadding: CGFloat = 20
+        static let scrollPadding: CGFloat = 10
         static let noImagePlaceholder = "No image"
         static let noImageCrashPlaceholder = "No image/crach"
     }
@@ -72,9 +72,12 @@ struct SeeAllEventsView: View {
         .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                ToolBarView(
-                    title: eventType.title.localized,
-                    showBackButton: true
+                BackBarButtonView()
+            }
+            
+            ToolbarItem(placement: .principal) {
+                ToolBarTitleView(
+                    title: eventType.title.localized
                 )
             }
         }

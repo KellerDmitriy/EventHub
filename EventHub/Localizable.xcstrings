@@ -771,9 +771,6 @@
         }
       }
     },
-    "Hello, World!" : {
-
-    },
     "Holidays" : {
       "extractionState" : "manual",
       "localizations" : {

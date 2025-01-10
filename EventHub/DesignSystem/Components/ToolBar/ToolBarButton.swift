@@ -1,5 +1,5 @@
 //
-//  ToolBarButtonView.swift
+//  ToolBarButton.swift
 //  EventHub
 //
 //  Created by Келлер Дмитрий on 18.11.2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ToolBarButtonView: View {
+struct ToolBarButton: View {
     
     // MARK: - Properties
     let action: ToolBarAction

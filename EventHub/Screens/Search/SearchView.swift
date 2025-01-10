@@ -68,13 +68,16 @@ struct SearchView: View {
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                ToolBarView(
-                    title: "Search".localized,
-                    showBackButton: true
+                BackBarButtonView()
+            }
+            
+            ToolbarItem(placement: .principal) {
+                ToolBarTitleView(
+                    title: "Search".localized
                 )
             }
         }
-        .navigationBarBackButtonHidden(true)
+        .navigationBarBackButtonHidden()
     }
 }
 

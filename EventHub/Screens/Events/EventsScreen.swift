@@ -92,7 +92,7 @@ struct EventsScreen: View {
             }
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    ToolBarView(title: Drawing.toolbarTitle)
+                    ToolBarTitleView(title: Drawing.toolbarTitle)
                 }
             }
             .task {

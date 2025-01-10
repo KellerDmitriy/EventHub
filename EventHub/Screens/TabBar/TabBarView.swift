@@ -71,10 +71,10 @@ struct TabBarView: View {
                 // Background with shadow
                 Rectangle()
                     .ignoresSafeArea()
-                    .foregroundColor(.appBackground).opacity(0.5)
+                    .foregroundColor(.appBackground)
                     .frame(height: Drawing.tabBarHeight)
                     .shadow(
-                        color: Color.black.opacity(0.1),
+                        color: Color.black.opacity(0.3),
                         radius: Drawing.shadowRadius,
                         x: 0,
                         y: -2

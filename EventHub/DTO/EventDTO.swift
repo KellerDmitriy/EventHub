@@ -61,7 +61,6 @@ struct PlaceDTO: Codable, Sendable {
     let location: String
 }
 
-
 // MARK: - Coordinates
 struct Coordinates: Codable, Sendable {
     let lat: Double
@@ -76,7 +75,6 @@ struct EventLocation: Codable, Sendable {
     let slug: String
     let name: String?
 }
-
 
 // MARK: - Participant
 struct Participant: Codable {
@@ -95,13 +93,12 @@ struct Agent: Codable, Sendable {
     let title: String?
     let images: [ImageDTO]?
 }
-
+// MARK: - Language
 enum Language: String, Codable {
     case ru, en
 }
 
 // MARK: - EventCategory
-
 struct ImageDTO: Codable, Sendable {
     let image: String?
 }

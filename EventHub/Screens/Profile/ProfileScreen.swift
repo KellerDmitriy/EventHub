@@ -62,7 +62,7 @@ struct ProfileScreen: View {
         }
         .toolbar {
             ToolbarItem(placement: .principal ) {
-                ToolBarView(
+                ToolBarTitleView(
                     title: Drawing.profileTitle.localized
                 )
             }

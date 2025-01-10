@@ -12,7 +12,11 @@ final class ExploreViewModel: ObservableObject {
     
     private let apiService: IAPIServiceForExplore
     
-    let functionalButtonsNames = ["Today".localized, "Films".localized, "Lists".localized]
+    let functionalButtonsNames = [
+        "Today".localized,
+        "Films".localized,
+        "Lists".localized
+    ]
     @Published var choosedButton: String = "" // кнопка поl категориями, незнаю как назвать это
     @Published var currentPosition: String = "Moscow".localized
     

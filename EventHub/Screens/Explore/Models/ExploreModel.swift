@@ -15,7 +15,6 @@ protocol EventConvertible {
     var image: String? { get }
 }
 
-
 struct ExploreModel: Identifiable {
     let id: Int
     let title: String
@@ -162,8 +161,7 @@ extension ExploreModel {
     }
 }
 
-struct Visitor: Identifiable {
-    let id = UUID()
+struct Visitor {
     let image: String
     let name: String
 }

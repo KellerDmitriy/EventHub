@@ -21,6 +21,12 @@ struct DetailView: View {
             Int(event.id) == viewModel.event?.id
         }
     }
+    // MARK: - Drawing Constants
+    private struct Drawing {
+        static let titleFontSize: CGFloat = 24
+        static let spacingBetweenButtons: CGFloat = 16
+    }
+    
     // MARK: - Init
     init(detailID: Int) {
         self._viewModel = StateObject(wrappedValue: DetailViewModel(eventID: detailID))
@@ -28,6 +34,7 @@ struct DetailView: View {
     
     var body: some View {
         ZStack {
+            Color.appBackground
             VStack {
                 if viewModel.event != nil {
                     ScrollViewWithCollapsibleHeader(
@@ -69,36 +76,39 @@ struct DetailView: View {
                     .zIndex(1)
             }
         }
-        .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading ) {
-                ToolBarView(
-                    title: Resources.Text.eventDetails.localized,
-                    foregroundStyle: .white,
-                    showBackButton: true,
-                    actions: [
-                        ToolBarAction(
-                            icon:
-                                isFavorite
-                            ? ToolBarButtonType.bookmarkFill.icon
-                            : ToolBarButtonType.bookmark.icon,
-                            action: {
-                                if !isFavorite {
-                                    if let event = viewModel.event {
-                                        coreDataManager.createEvent(event: event)
-                                    }
-                                } else {
-                                    coreDataManager.deleteEvent(eventID: viewModel.eventID)
+            ToolbarItem(placement: .topBarLeading) {
+                BackBarButtonView()
+            }
+            
+            ToolbarItem(placement: .principal) {
+                ToolBarTitleView(title: Resources.Text.eventDetails.localized)
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                ToolBarButton(action:
+                    ToolBarAction(
+                        icon:
+                            isFavorite
+                        ? ToolBarButtonType.bookmarkFill.icon
+                        : ToolBarButtonType.bookmark.icon,
+                        action: {
+                            if !isFavorite {
+                                if let event = viewModel.event {
+                                    coreDataManager.createEvent(event: event)
                                 }
-                            },
-                            hasBackground: true,
-                            foregroundStyle: .white
-                        )
-                    ]
+                            } else {
+                                coreDataManager.deleteEvent(eventID: viewModel.eventID)
+                            }
+                        },
+                        hasBackground: true,
+                        foregroundStyle: .white
+                    )
                 )
+               
             }
         }
-       
+        .navigationBarBackButtonHidden()
         .animation(.easeInOut(duration: 0.3), value: isPresented)
         .task {
             await viewModel.fetchEventDetails()

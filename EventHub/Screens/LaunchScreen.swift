@@ -11,11 +11,21 @@ struct LaunchScreen: View {
     let router: StartRouter
     
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack  {
+            Color.appBackground
+            
+            Image(.logo)
+                .onAppear(perform: routeToStart)
+        }
+       
+        .ignoresSafeArea(.all)
     }
     
     func routeToStart() {
-        router.updateRouterState(with: .launchCompleted)
+        Task {
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            router.updateRouterState(with: .launchCompleted)
+        }
     }
 }
 

@@ -18,19 +18,6 @@ struct FavoritesScreen: View {
     
     var body: some View {
         VStack {
-            ToolBarView(
-                title: "Favorites".localized,
-                foregroundStyle: .appForegroundStyle,
-                showBackButton: false,
-                actions: [
-                    ToolBarAction(
-                        icon: ToolBarButtonType.search.icon,
-                        action: { showSearchFlow = true },
-                        hasBackground: false,
-                        foregroundStyle: Color.appBlue
-                    )
-                ]
-            )
             Spacer()
             if coreDataManager.events.isEmpty {
                 NoFavorites()
@@ -39,7 +26,7 @@ struct FavoritesScreen: View {
             }
             Spacer()
         }
-        .overlay(
+        .background {
             NavigationLink(
                 destination: SearchView(
                     searchScreenType: .withData,
@@ -48,19 +35,23 @@ struct FavoritesScreen: View {
                 isActive: $showSearchFlow,
                 label: { EmptyView() }
             )
-        )
-        //        .toolbar {
-        //            Button {
-        //                print("Search")
-        //            } label: {
-        //                Image(.search)
-        //                    .resizable()
-        //                    .scaledToFit()
-        //            }
-        //
-        //        }
-        //        .navigationTitle("Favorites")
-        //        .navigationBarTitleDisplayMode(.inline)
+        }
+        
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                ToolBarTitleView(title: Resources.Text.favorites.localized)
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                ToolBarButton(action: ToolBarAction(
+                    icon: ToolBarButtonType.search.icon,
+                    action: { showSearchFlow = true },
+                    hasBackground: false,
+                    foregroundStyle: Color.appBlue
+                )
+                )
+            }
+        }
     }
 }
 

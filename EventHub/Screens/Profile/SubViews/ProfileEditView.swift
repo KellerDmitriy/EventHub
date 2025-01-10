@@ -78,20 +78,21 @@ struct ProfileEditView: View {
                 changePhotoOverlay
             }
         }
+        // MARK: - ToolBar
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                // MARK: - ToolBar
-                ToolBarView(
-                    title: "Profile".localized,
-                    foregroundStyle: .titleFont,
-                    showBackButton: true
+                BackBarButtonView()
+            }
+            ToolbarItem(placement: .principal) {
+                ToolBarTitleView(
+                    title: "Profile".localized
                 )
-                
             }
         }
-        .navigationBarBackButtonHidden(true)
+        .navigationBarBackButtonHidden()
     }
 }
+
 
 // MARK: - Subviews
 extension ProfileEditView {

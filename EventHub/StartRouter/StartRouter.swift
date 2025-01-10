@@ -33,7 +33,7 @@ final class StartRouter: ObservableObject {
     
     // MARK: - Initializer
     init() {
-        updateRouterState(with: .onboardingCompleted)
+        updateRouterState(with: .launchCompleted)
     }
     
     // MARK: - State Management
@@ -54,8 +54,6 @@ final class StartRouter: ObservableObject {
     
     // MARK: - Private Helpers
     private func rootState() -> RouterState {
-        
-        
         if storage.hasCompletedOnboarding() {
             if storage.getIsRememberMeOn() && Auth.auth().currentUser != nil {
                 return .main
@@ -63,8 +61,9 @@ final class StartRouter: ObservableObject {
                 return (Auth.auth().currentUser != nil && !storage.getIsRememberMeOn()) ? .main : .auth
             }
         } else {
-            return .onboarding
             storage.set(value: true as Bool, forKey: .hasCompletedOnboarding)
+            return .onboarding
+           
         }
     }
 }
