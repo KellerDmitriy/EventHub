@@ -81,6 +81,7 @@ struct SeeAllEventsView: View {
                 )
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     // MARK: - Helper Properties

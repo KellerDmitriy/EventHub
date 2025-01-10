@@ -13,13 +13,18 @@ struct ToolBarTitleView: View {
     let foregroundStyle: Color = .appForegroundStyle
     
     // MARK: - Drawing Constants
-    private struct Drawing { static let titleFontSize: CGFloat = 24 }
+    private struct Drawing {
+        static let titleFontSize: CGFloat = 24
+        static let maxToolbarWidth: CGFloat = UIScreen.main.bounds.width * 0.6
+        static let maxToolbarHeight: CGFloat = 44 
+    }
     
     var body: some View {
         Text(title)
             .airbnbCerealFont(AirbnbCerealFont.medium, size: Drawing.titleFontSize)
             .foregroundStyle(foregroundStyle)
             .lineLimit(1)
-            .frame(height: 44)
+            .truncationMode(.tail)
+            .frame(maxWidth: Drawing.maxToolbarWidth, maxHeight: Drawing.maxToolbarHeight)
     }
 }

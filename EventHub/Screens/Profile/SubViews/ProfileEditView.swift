@@ -87,8 +87,10 @@ struct ProfileEditView: View {
                 ToolBarTitleView(
                     title: "Profile".localized
                 )
+            
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
     }
 }

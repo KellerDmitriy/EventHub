@@ -52,6 +52,7 @@ struct FavoritesScreen: View {
                 )
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

@@ -21,20 +21,17 @@ struct SearchView: View {
     
     // MARK: - Body
     var body: some View {
-        ZStack {
-            Color.appBackground
-                .ignoresSafeArea(.all)
-            
             VStack(spacing: 0) {
-                    SearchBarViewForMap(isSearchPresented: $isSearchPresented,
-                                        searchText: $viewModel.searchText,
-                                        textColor: .appForegroundStyle,
-                                        magnifierColor: .appBlue,
-                                        shouldHandleTextInput: true,
-                                        fiterAction: {_ in }
+                    SearchBarViewForMap(
+                      isSearchPresented: $isSearchPresented,
+                      searchText: $viewModel.searchText,
+                      textColor: .appForegroundStyle,
+                      magnifierColor: .appBlue,
+                      shouldHandleTextInput: true,
+                      fiterAction: {_ in }
                     )
                     .padding(.horizontal,24)
-                    .padding(.top, 30)
+                    .padding(.top, 10)
                 .zIndex(1)
                 Spacer()
                 
@@ -55,29 +52,27 @@ struct SearchView: View {
                                         showPlace: false
                                     )
                                     .padding(.horizontal, 20)
-                                    .padding(.bottom,5)
-                                    
+                                    .padding(.bottom, 5)
                                 }
-                                
                             }
                         }
                     }
-                    .padding(.top, 30)
-                }
             }
         }
+        .background(Color.appBackground)
+        .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 BackBarButtonView()
             }
-            
             ToolbarItem(placement: .principal) {
                 ToolBarTitleView(
-                    title: "Search".localized
+                    title: Resources.Text.search.localized
                 )
+                
             }
         }
-        .navigationBarBackButtonHidden()
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

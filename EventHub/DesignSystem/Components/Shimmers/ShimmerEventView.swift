@@ -7,25 +7,33 @@
 
 import SwiftUI
 
+
 struct ShimmerEventView: View {
     var body: some View {
-        VStack {
-            Spacer()
-            ForEach (1..<5) { _ in
-                VStack(alignment: .leading, spacing: 20) {
-                    RoundedRectangle(cornerRadius: 30)
-                        .foregroundStyle(.appLightGray)
-                        .frame(height: 100)
-                        .shimmering()
-                    
+        GeometryReader { geometry in
+            VStack {
+                Spacer()
+                ForEach(1..<4) { _ in
+                    VStack(alignment: .leading, spacing: geometry.size.height * 0.02) {
+                        RoundedRectangle(cornerRadius: geometry.size.width * 0.05)
+                            .foregroundStyle(.appLightGray)
+                            .frame(
+                                width: geometry.size.width * 0.9,
+                                height: geometry.size.height * 0.1
+                            )
+                            .shimmering()
+                    }
                 }
+                Spacer()
             }
-            Spacer()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding()
         }
         .ignoresSafeArea()
     }
 }
 
+// MARK: - Preview
 #Preview {
     ShimmerEventView()
 }

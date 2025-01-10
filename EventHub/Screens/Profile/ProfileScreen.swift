@@ -67,6 +67,7 @@ struct ProfileScreen: View {
                 )
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { onViewAppear() }
         .alert(isPresented: isPresentedAlert(), error: viewModel.error) {
             Button(Drawing.okButtonTitle, role: .destructive) {

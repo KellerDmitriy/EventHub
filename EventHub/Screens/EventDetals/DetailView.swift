@@ -108,6 +108,7 @@ struct DetailView: View {
                
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
         .animation(.easeInOut(duration: 0.3), value: isPresented)
         .task {

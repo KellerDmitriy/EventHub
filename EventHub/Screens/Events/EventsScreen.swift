@@ -32,11 +32,9 @@ struct EventsScreen: View {
 
     // MARK: - BODY
     var body: some View {
-        ZStack {
-            Color.appBackground.ignoresSafeArea(.all)
             VStack {
                 ModeEventsSegmentedControl(state: $viewModel.selectedMode)
-                    .padding(.horizontal, Drawing.horizontalPadding)
+                    .padding(Drawing.horizontalPadding)
                     .onChange(of: viewModel.selectedMode) { newValue in
                         Task {
                             await loadEvents(for: newValue)
@@ -53,14 +51,16 @@ struct EventsScreen: View {
                             EmptyEventsView(selectedMode: viewModel.selectedMode)
                         } else {
                             ScrollView(.vertical) {
-                                ForEach(events) { event in
-                                    NavigationLink(destination: DetailView(detailID: event.id)) {
-                                        SmallEventCard(
-                                            image: event.image,
-                                            date: event.date,
-                                            title: event.title,
-                                            place: event.location
-                                        )
+                                VStack {
+                                    ForEach(events) { event in
+                                        NavigationLink(destination: DetailView(detailID: event.id)) {
+                                            SmallEventCard(
+                                                image: event.image,
+                                                date: event.date,
+                                                title: event.title,
+                                                place: event.location
+                                            )
+                                        }
                                     }
                                 }
                                 .padding(.horizontal, Drawing.horizontalPadding)
@@ -90,11 +90,15 @@ struct EventsScreen: View {
                     )
                 )
             }
+            .background(Color.appBackground)
+        
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     ToolBarTitleView(title: Drawing.toolbarTitle)
+                     
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
             .task {
                 await viewModel.fetchUpcomingEvents()
             }
@@ -110,7 +114,7 @@ struct EventsScreen: View {
                 )
             }
         }
-    }
+    
 
     // MARK: - Helper Methods
     private func currentPhase(for mode: EventsMode) -> DataFetchPhase<[EventModel]> {
