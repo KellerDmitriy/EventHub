@@ -17,7 +17,7 @@ struct EventsView: View {
     
     // MARK: - BODY
     var body: some View {
-            ZStack {
+        ZStack(alignment: .bottom) {
                 Color.appBackground.ignoresSafeArea(.all)
                 VStack {
                     ToolBarView(title: "Event".localized)
@@ -62,23 +62,22 @@ struct EventsView: View {
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    
-                    BlueButtonWithArrow(text: "Explore Events".localized) {
-                        Task {
-                            await viewModel.updateAllEvents()
-                        }
-                        showAllEvents = true
-                    }
-                    .padding(.horizontal, 53)
-                    .padding(.bottom, 40)
-                    .background(
-                        NavigationLink(
-                            destination: SeeAllEvents(allEvents: viewModel.allEvents),
-                            isActive: $showAllEvents,
-                            label: { EmptyView() }
-                        )
-                    )
                 }
+                BlueButtonWithArrow(text: "Explore Events".localized) {
+                    Task {
+                        await viewModel.updateAllEvents()
+                    }
+                    showAllEvents = true
+                }
+                .padding(.horizontal, 53)
+                .padding(.bottom, 30)
+                .background(
+                    NavigationLink(
+                        destination: SeeAllEvents(allEvents: viewModel.allEvents),
+                        isActive: $showAllEvents,
+                        label: { EmptyView() }
+                    )
+                )
                 .navigationBarHidden(true)
                 .task {
                     await viewModel.fetchUpcomingEvents()
