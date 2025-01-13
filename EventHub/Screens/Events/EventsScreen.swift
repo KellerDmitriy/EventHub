@@ -15,7 +15,7 @@ struct EventsScreen: View {
         // Padding and Sizes
         static let horizontalPadding: CGFloat = 24
         static let buttonHorizontalPadding: CGFloat = 53
-        static let buttonBottomPadding: CGFloat = 30
+        static let buttonBottomPadding: CGFloat = 60
         
         // Texts
         static let errorText: String = "Error occurred. Pull to refresh."
@@ -35,7 +35,7 @@ struct EventsScreen: View {
         ZStack(alignment: .bottom) {
             VStack {
                 ModeEventsSegmentedControl(state: $viewModel.selectedMode)
-                    .padding(Drawing.horizontalPadding)
+                    .padding(.horizontal, Drawing.horizontalPadding)
                     .onChange(of: viewModel.selectedMode) { newValue in
                         Task {
                             await loadEvents(for: newValue)
