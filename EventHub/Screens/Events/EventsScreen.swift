@@ -15,7 +15,7 @@ struct EventsScreen: View {
         // Padding and Sizes
         static let horizontalPadding: CGFloat = 24
         static let buttonHorizontalPadding: CGFloat = 53
-        static let buttonBottomPadding: CGFloat = 40
+        static let buttonBottomPadding: CGFloat = 68
         
         // Texts
         static let errorText: String = "Error occurred. Pull to refresh."
@@ -78,7 +78,9 @@ struct EventsScreen: View {
                     Task {
                         await viewModel.updateAllEvents()
                     }
-                    showAllEvents = true
+                    if !viewModel.allEvents.isEmpty {
+                        showAllEvents = true
+                    }
                 }
                 .padding(.horizontal, Drawing.buttonHorizontalPadding)
                 .padding(.bottom, Drawing.buttonBottomPadding)
