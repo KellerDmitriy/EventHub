@@ -25,7 +25,7 @@ struct EventHubContentView: View {
                 TabContent(selectedTab: selectedTab, router: router)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .padding(.bottom, 88)
+
             VStack {
                 Spacer()
                 TabBarView(
