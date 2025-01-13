@@ -9,7 +9,6 @@
 import Foundation
 
 enum ProfileError: LocalizedError {
-    
     case logout
     case unknown(Error)
     

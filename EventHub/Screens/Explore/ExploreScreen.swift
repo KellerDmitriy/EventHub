@@ -171,6 +171,7 @@ struct ExploreScreen: View {
     
 }
 
-//#Preview {
-//    ExploreView()
-//}
+#Preview {
+    ExploreScreen()
+        .environmentObject(CoreDataManager())
+}

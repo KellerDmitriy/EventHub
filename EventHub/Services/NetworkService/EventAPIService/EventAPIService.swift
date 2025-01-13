@@ -17,7 +17,6 @@ final class EventAPIService: IEventAPIService {
     /// Initializes the EventAPIService with an API client.
     init() {
         self.apiClient = APIClient()
-
     }
     
     // MARK: - Locations

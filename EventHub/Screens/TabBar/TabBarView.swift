@@ -67,30 +67,18 @@ struct TabBarView: View {
     }
     
     var body: some View {
-            ZStack {
-                // Background with shadow
-                Rectangle()
-                    .ignoresSafeArea()
-                    .foregroundColor(.appBackground)
-                    .frame(height: Drawing.tabBarHeight)
-                    .shadow(
-                        color: Color.black.opacity(0.3),
-                        radius: Drawing.shadowRadius,
-                        x: 0,
-                        y: -2
-                    )
+        VStack(spacing: 0) {
+            HStack(spacing: calculateSpacing()) {
+                TabBarButton(tab: .explore, iconName: Tab.explore.icon, title: Tab.explore.title)
+                TabBarButton(tab: .events, iconName: Tab.events.icon, title: Tab.events.title)
+                FavoriteButton(tab: .favorites, iconName: Tab.favorites.icon)
+                TabBarButton(tab: .map, iconName: Tab.map.icon, title: Tab.map.title)
+                TabBarButton(tab: .profile, iconName: Tab.profile.icon, title: Tab.profile.title)
                 
-                HStack(spacing: calculateSpacing()) {
-                    TabBarButton(tab: .explore, iconName: Tab.explore.icon, title: Tab.explore.title)
-                    TabBarButton(tab: .events, iconName: Tab.events.icon, title: Tab.events.title)
-                    FavoriteButton(tab: .favorites, iconName: Tab.favorites.icon)
-                    TabBarButton(tab: .map, iconName: Tab.map.icon, title: Tab.map.title)
-                    TabBarButton(tab: .profile, iconName: Tab.profile.icon, title: Tab.profile.title)
-                    
-                }
-                .frame(height: Drawing.tabBarHeight)
-                .padding(.horizontal, calculateEdgeSpacing())
             }
+            .padding(.horizontal, calculateEdgeSpacing())
+        }
+        .frame( height: Drawing.tabBarHeight)
     }
     
     
@@ -108,7 +96,6 @@ struct TabBarView: View {
                     .shadow(color: selectedTab == tab ? .appRed.opacity(0.3) : .appBlue.opacity(0.3), radius: 10, x: 0, y: 5)
                 
                 Image(iconName)
-                
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: Drawing.iconSize, height: Drawing.iconSize)
@@ -121,7 +108,7 @@ struct TabBarView: View {
     // MARK: - Tab Bar Button
     private func TabBarButton(tab: Tab, iconName: String, title: String) -> some View {
         Button(action: {
-           switchTab(tab)
+            switchTab(tab)
         }) {
             VStack {
                 Image(iconName)
@@ -156,4 +143,8 @@ struct TabBarView: View {
         // Equal spacing for edges
         return calculateSpacing() / 2
     }
+}
+
+#Preview {
+    TabBarView(selectedTab: .constant(.events), switchTab: {_ in })
 }
