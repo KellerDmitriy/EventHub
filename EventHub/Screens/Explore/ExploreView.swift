@@ -35,8 +35,8 @@ struct ExploreView: View {
     var body: some View {
         ZStack {
             Color.appMainBackground
-            
-            VStack(spacing: 0) {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 0) {
                     CustomToolBar(
                         currentLocation: $viewModel.currentLocation,
                         title: $viewModel.currentPosition,
@@ -63,8 +63,8 @@ struct ExploreView: View {
                         ],
                         chooseButton: $viewModel.choosedButton
                     )
-                .zIndex(1)
-                ScrollView(showsIndicators: false) {
+                    .zIndex(1)
+                    
                     VStack {
                         MainCategorySectionView(
                             isPresented: $isSeeAllUpcomingEvents,
@@ -73,7 +73,7 @@ struct ExploreView: View {
                         )
                         .padding(.top, 10)
                         
-                       
+                        
                         if viewModel.emptyUpcoming {
                             NoEventsView()
                         } else {
@@ -108,14 +108,14 @@ struct ExploreView: View {
                             .padding(.bottom, 180)
                         }
                     }
-//                    .offset(y: 100)
+                    //                    .offset(y: 100)
                 }
                 .zIndex(0)
                 .navigationBarHidden(true)
             }
             .ignoresSafeArea()
         }
-
+        
         .navigationLink(
             destination: SeeAllEventsView(events: viewModel.upcomingEvents),
             isActive: $isSeeAllUpcomingEvents
