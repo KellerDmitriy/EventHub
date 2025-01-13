@@ -15,77 +15,76 @@ struct SignInView: View {
     @StateObject var viewModel: AuthViewModel
     @State private var isRememberMeOn: Bool
     @State private var isResetPasswordPresented = false
-
+    
     init(router: StartRouter) {
         self._viewModel = StateObject(wrappedValue: AuthViewModel(router: router))
         self._isRememberMeOn = State(initialValue: storage.getIsRememberMeOn())
     }
-
+    
     var body: some View {
-        NavigationView {
+//        NavigationView {
             
             ZStack {
                 BackgroundWithEllipses()
-                    .background(Color.appBackground)
-            GeometryReader { geometry in
-                let screenWidth = geometry.size.width
-                let horizontalPadding = screenWidth * 0.1
-                let iconPadding = screenWidth * 0.3
-                let smallPadding = screenWidth * 0.05
-                
-                
-                VStack(alignment: .leading) {
-                    // Логотип и заголовок
-                    logoAndTitle(iconPadding: iconPadding, horizontalPadding: horizontalPadding)
+                GeometryReader { geometry in
+                    let screenWidth = geometry.size.width
+                    let horizontalPadding = screenWidth * 0.1
+                    let iconPadding = screenWidth * 0.3
+                    let smallPadding = screenWidth * 0.05
                     
-                    // Поля ввода
-                    emailTextField(horizontalPadding: horizontalPadding)
-                    passwordTextField(horizontalPadding: horizontalPadding)
                     
-                    // Напоминание и Сброс пароля
-                    rememberAndForgotPassword(horizontalPadding: horizontalPadding, smallPadding: smallPadding)
-                    
-                    // Кнопка "Войти"
-                    BlueButtonWithArrow(text: signInText) {
-                        Task {
-                            await viewModel.signIn()
+                    VStack(alignment: .leading) {
+                        // Логотип и заголовок
+                        logoAndTitle(iconPadding: iconPadding, horizontalPadding: horizontalPadding)
+                        
+                        // Поля ввода
+                        emailTextField(horizontalPadding: horizontalPadding)
+                        passwordTextField(horizontalPadding: horizontalPadding)
+                        
+                        // Напоминание и Сброс пароля
+                        rememberAndForgotPassword(horizontalPadding: horizontalPadding, smallPadding: smallPadding)
+                        
+                        // Кнопка "Войти"
+                        BlueButtonWithArrow(text: signInText) {
+                            Task {
+                                await viewModel.signIn()
+                            }
                         }
+                        .padding(.top, smallPadding)
+                        .padding(.horizontal, horizontalPadding)
+                        
+                        // Альтернатива через Google
+                        orGoogleSignIn(horizontalPadding: horizontalPadding, smallPadding: smallPadding)
+                        
+                        Spacer()
+                        
+                        // Переход на регистрацию
+                        footerSignUp(smallPadding: smallPadding)
                     }
-                    .padding(.top, smallPadding)
-                    .padding(.horizontal, horizontalPadding)
-                    
-                    // Альтернатива через Google
-                    orGoogleSignIn(horizontalPadding: horizontalPadding, smallPadding: smallPadding)
-                    
-                    Spacer()
-                    
-                    // Переход на регистрацию
-                    footerSignUp(smallPadding: smallPadding)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .navigationBarHidden(true)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .navigationBarHidden(true)
-            }
-            .alert(isPresented: isPresentedAlert()) {
-                Alert(
-                    title: Text("Внимание"),
-                    message: Text(viewModel.authError?.localizedDescription ?? "" ),
-                    dismissButton: .default(Text("Ok"),
-                                            action: viewModel.cancelErrorAlert)
+                .alert(isPresented: isPresentedAlert()) {
+                    Alert(
+                        title: Text("Внимание"),
+                        message: Text(viewModel.authError?.localizedDescription ?? "" ),
+                        dismissButton: .default(Text("Ok"),
+                                                action: viewModel.cancelErrorAlert)
+                    )
+                }
+                .background(
+                    NavigationLink(
+                        destination: ResetPassView(viewModel: viewModel),
+                        isActive: $isResetPasswordPresented,
+                        label: { EmptyView() }
+                    )
                 )
-            }
-            .background(
-                NavigationLink(
-                    destination: ResetPassView(viewModel: viewModel),
-                    isActive: $isResetPasswordPresented,
-                    label: { EmptyView() }
-                )
-            )
-            
-            
-        } //end zs
-        }
+                
+                
+            } //end zs
+//        }
     }
-
+    
     private func logoAndTitle(iconPadding: CGFloat, horizontalPadding: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Image(iconImageName)
@@ -171,7 +170,7 @@ struct SignInView: View {
             HStack {
                 Text(dontHaveAnAccText)
                     .airbnbCerealFont(.book, size: 15)
-                    .foregroundColor(.titleFont)
+                    .foregroundColor(.black)
                 
                 Text(signUpText)
                     .airbnbCerealFont(.book, size: 15)
@@ -181,4 +180,8 @@ struct SignInView: View {
             .padding(.bottom, smallPadding)
         }
     }
+}
+
+#Preview {
+    SignInView(router: StartRouter())
 }
