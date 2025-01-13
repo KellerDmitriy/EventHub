@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 @MainActor
 final class ProfileViewModel: ObservableObject {
     private let router: StartRouter

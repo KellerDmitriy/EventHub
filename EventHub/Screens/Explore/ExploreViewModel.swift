@@ -12,7 +12,11 @@ final class ExploreViewModel: ObservableObject {
     
     private let apiService: IAPIServiceForExplore
     
-    let functionalButtonsNames = ["Today".localized, "Films".localized, "Lists".localized]
+    let functionalButtonsNames = [
+        "Today".localized,
+        "Films".localized,
+        "Lists".localized
+    ]
     @Published var choosedButton: String = "" // кнопка поl категориями, незнаю как назвать это
     @Published var currentPosition: String = "Moscow".localized
     
@@ -67,7 +71,33 @@ final class ExploreViewModel: ObservableObject {
         }
     }
     
+    
     // MARK: - Network API Methods
+    func loadAllData() async {
+        do {
+            try await withThrowingTaskGroup(of: Void.self) { group in
+                group.addTask {
+                    await self.fetchCategories()
+                }
+                group.addTask {
+                    await self.fetchLocations()
+                }
+                try await group.waitForAll()
+            }
+            
+            await withThrowingTaskGroup(of: Void.self) { group in
+                group.addTask {
+                    await self.fetchUpcomingEvents()
+                }
+                group.addTask {
+                    await self.featchNearbyYouEvents()
+                }
+            }
+        } catch {
+            self.error = error
+        }
+    }
+    
     func fetchLocations() async {
         do {
             let fetchedLocations = try await apiService.getLocations(with: language)
@@ -95,21 +125,17 @@ final class ExploreViewModel: ObservableObject {
                 language,
                 page
             )
-            let _ = EventAPISpec.getUpcomingEventsWith(
-                category: currentCategory,
-                language: language,
-                page: page
-            )
+            
             let mappedEvents = fetchedEvents.map { ExploreModel(dto: $0) }
             
             let filteredEvents = ExploreModel.filterExploreEvents(mappedEvents)
             
             self.upcomingEvents = filteredEvents
             
-            if upcomingEvents.isEmpty {
+            if fetchedEvents.isEmpty {
                 emptyUpcoming = true
             }
-
+            
         } catch {
             self.error = error
         }
@@ -128,7 +154,7 @@ final class ExploreViewModel: ObservableObject {
             let filteredEvents = ExploreModel.filterExploreEvents(mappedEvents)
             nearbyYouEvents = filteredEvents
             
-            if nearbyYouEvents.isEmpty {
+            if eventsDTO.isEmpty {
                 emptyNearbyYou = true
             }
             
@@ -149,10 +175,7 @@ final class ExploreViewModel: ObservableObject {
     }
 }
 
-
 extension ExploreViewModel {
-    
-    
     func getToDayEvents() async {
         do {
             let fetchedTodayEvents = try await apiService.getToDayEvents(location: currentLocation, language: language, page: page)
@@ -162,7 +185,7 @@ extension ExploreViewModel {
             
             let detailsEvents = try await apiService.getEventDetails(eventIDs: idString, language: language)
             self.todayEvents = detailsEvents.map { ExploreModel(dto: $0) }
-
+            
         } catch {
             self.error = error
         }
@@ -182,9 +205,6 @@ extension ExploreViewModel {
     func getLists() async {
         do {
             let fetchedList = try await apiService.getLists(location: currentLocation, language: language, page: page)
-            
-            let apiSpecLoc = EventAPISpec.getLists(location: currentLocation, language: language, page: page)
-            print("getFilms: \(apiSpecLoc.endpoint)")
             
             self.lists = fetchedList.map { ExploreModel(listDto: $0 )}
         } catch {

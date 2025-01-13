@@ -5,12 +5,25 @@
 //  Created by Келлер Дмитрий on 20.11.2024.
 //
 
-// MARK: - NetworkError
-// Enum to represent different network errors that can occur
-enum NetworkError: Error {
+import Foundation
+
+// MARK: - Network Errors
+enum NetworkError: Error, LocalizedError {
+    case invalidURL
+    case invalidResponse
     case serverError(statusCode: Int, description: String)
-    case invalidURL                    // Error when URL is invalid
-    case invalidResponse               // Error for non-HTTP response
-    case requestFailed(statusCode: Int) // Error when HTTP status code is not in 200-299 range
-    case dataConversionFailure         // Error when data decoding fails
+    case dataConversionFailure
+    
+    var errorDescription: String? {
+        switch self {
+        case .invalidURL:
+            return "The URL is invalid."
+        case .invalidResponse:
+            return "The server response is invalid."
+        case .serverError(let statusCode, let description):
+            return "Server error (\(statusCode)): \(description)"
+        case .dataConversionFailure:
+            return "Failed to decode the server response."
+        }
+    }
 }

@@ -11,7 +11,6 @@ import FirebaseAuth
 import Firebase
 import GoogleSignIn
 
-
 protocol IAuthService {
     func isAuthenticated() -> Bool
     func getAuthenticatedUser() throws -> AuthDataResultModel
@@ -27,6 +26,7 @@ protocol IAuthService {
 
 // MARK: - AuthService
 final class AuthService: IAuthService {
+    
     // MARK: - Methods
     func isAuthenticated() -> Bool {
         return Auth.auth().currentUser?.uid != nil

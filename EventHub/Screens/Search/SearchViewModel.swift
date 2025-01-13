@@ -51,6 +51,7 @@ final class SearchViewModel: ObservableObject {
                 await performSearch()
             }
         }
+    
     // MARK: - Filter Events
     func filterEvents(orderType: DisplayOrderType) {
         switch orderType {
@@ -75,15 +76,14 @@ final class SearchViewModel: ObservableObject {
     private func filterLocalData() {
         searchResults = localData.filter { $0.title.lowercased().contains(searchText.lowercased()) }
     }
+    
     // MARK: - Network API Methods
     func fetchSearchedEvents() async {
         do {
             let searchEventsDTO = try await apiService.getSearchedEvents(with: searchText)
-            let apiSpecLoc = EventAPISpec.getSerchedEventsWith(searchText: searchText)
-                         print("Generated Endpoint Searched: \(apiSpecLoc.endpoint)")
             searchResults = searchEventsDTO?.results.map { ExploreModel(searchDTO: $0) } ?? []
         } catch {
-            print(" No searched func result")
+            print("No searched func result")
             self.error = error
         }
     }

@@ -9,12 +9,12 @@ import Foundation
 import CoreLocation
 
 // MARK: - Response
-struct APIResponseDTO: Codable, Sendable, DecodableType {
+struct APIResponseDTO: Codable, Sendable {
     let results: [EventDTO]
 }
 
 // MARK: - Event
-struct EventDTO: Codable, Identifiable, Sendable, DecodableType {
+struct EventDTO: Codable, Identifiable, Sendable {
     let id: Int
     let title: String?
     let images: [ImageDTO]
@@ -25,70 +25,44 @@ struct EventDTO: Codable, Identifiable, Sendable, DecodableType {
     let place: PlaceDTO?
     let location: EventLocation?
     let participants: [Participant]?
-
-    enum CodingKeys: String, CodingKey {
-        case id
-        case title
-        case images
-        case description
-        case bodyText = "body_text"
-        case favoritesCount = "favorites_count"
-        case dates
-        case place
-        case location
-        case participants
-    }
 }
 
 
 // MARK: - EventCategory
-struct CategoryDTO: Codable, Identifiable, Sendable, DecodableType {
+struct CategoryDTO: Codable, Identifiable, Sendable {
     let id: Int
     let slug: String
     let name: String
 }
 
 // MARK: - EventCategory
-struct EventCategory: Codable, Identifiable, Sendable, DecodableType {
+struct EventCategory: Codable, Identifiable, Sendable {
     let id: Int
     let slug: String
     let name: String
 }
 
 // MARK: - EventDate
-struct EventDate: Codable, Sendable, DecodableType {
+struct EventDate: Codable, Sendable {
     let start: Int?
     let end: Int?
     let startDate: String?
     let startTime: String?
     let endTime: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case start, end
-        case startDate = "start_date"
-        case startTime = "start_time"
-        case endTime = "end_time"
-    }
 }
+
 // MARK: - Place
-struct PlaceDTO: Codable, Sendable, DecodableType {
+struct PlaceDTO: Codable, Sendable {
     let id: Int
     let title: String?
     let slug: String
     let address: String
     let coords: Coordinates
     let location: String
-
-    enum CodingKeys: String, CodingKey {
-        case id, title, slug, address
-        case coords
-        case location
-    }
 }
 
-
 // MARK: - Coordinates
-struct Coordinates: Codable, Sendable, DecodableType {
+struct Coordinates: Codable, Sendable {
     let lat: Double
     let lon: Double
     var toCLLocationCoordinate2D: CLLocationCoordinate2D {
@@ -97,11 +71,10 @@ struct Coordinates: Codable, Sendable, DecodableType {
 }
 
 // MARK: - Location
-struct EventLocation: Codable, Sendable, DecodableType {
+struct EventLocation: Codable, Sendable {
     let slug: String
     let name: String?
 }
-
 
 // MARK: - Participant
 struct Participant: Codable {
@@ -110,28 +83,22 @@ struct Participant: Codable {
 }
 
 // MARK: - Role
-struct Role: Codable, Sendable, DecodableType {
+struct Role: Codable, Sendable {
     let slug: String?
 }
 
 // MARK: - Agent
-struct Agent: Codable, Sendable, DecodableType {
+struct Agent: Codable, Sendable {
     let id: Int
     let title: String?
     let images: [ImageDTO]?
- 
-    enum CodingKeys: String, CodingKey {
-        case id, title
-        case images
-    }
 }
-
-enum Language: String, Codable, DecodableType {
+// MARK: - Language
+enum Language: String, Codable {
     case ru, en
 }
 
 // MARK: - EventCategory
-
-struct ImageDTO: Codable, Sendable, DecodableType {
+struct ImageDTO: Codable, Sendable {
     let image: String?
 }

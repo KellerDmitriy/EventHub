@@ -15,7 +15,6 @@ protocol EventConvertible {
     var image: String? { get }
 }
 
-
 struct ExploreModel: Identifiable {
     let id: Int
     let title: String
@@ -30,9 +29,6 @@ struct ExploreModel: Identifiable {
         visitors: [Visitor(image: "visitor", name: "Sonya"),
                    Visitor(image: "visitor", name: "Sonya"),
                    Visitor(image: "visitor", name: "Sonya"),
-                   // Visitor(image: "visitor", name: "Sonya"),
-                   // Visitor(image: "visitor", name: "Sonya"),
-                   // Visitor(image: "visitor", name: "Sonya"),
                    Visitor(image: "visitor", name: "Sonya")],
         date: .now,
         adress: "36 Guild Street London, UK",
@@ -68,6 +64,7 @@ extension ExploreModel {
         self.image = dto.images.first?.image
     }
 }
+
 
 extension ExploreModel {
     init(movieDto: MovieDTO) {
@@ -164,8 +161,7 @@ extension ExploreModel {
     }
 }
 
-struct Visitor: Identifiable {
-    let id = UUID()
+struct Visitor {
     let image: String
     let name: String
 }

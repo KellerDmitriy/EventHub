@@ -21,24 +21,17 @@ struct SearchView: View {
     
     // MARK: - Body
     var body: some View {
-        ZStack {
-            Color.appBackground
-            
             VStack(spacing: 0) {
-                VStack(spacing: 0) {
-                    Text("Search")
-                        .airbnbCerealFont(AirbnbCerealFont.medium, size: 24)
-                    
-                    SearchBarViewForMap(isSearchPresented: $isSearchPresented,
-                                  searchText: $viewModel.searchText,
-                                  textColor: .black,
-                                  magnifierColor: .appBlue,
-                                  shouldHandleTextInput: true,
-                                  fiterAction: {_ in }
+                    SearchBarViewForMap(
+                      isSearchPresented: $isSearchPresented,
+                      searchText: $viewModel.searchText,
+                      textColor: .appForegroundStyle,
+                      magnifierColor: .appBlue,
+                      shouldHandleTextInput: true,
+                      fiterAction: {_ in }
                     )
                     .padding(.horizontal,24)
-                    .padding(.top, 30)
-                }
+                    .padding(.top, 10)
                 .zIndex(1)
                 Spacer()
                 
@@ -59,26 +52,27 @@ struct SearchView: View {
                                         showPlace: false
                                     )
                                     .padding(.horizontal, 20)
-                                    .padding(.bottom,5)
-                                    
+                                    .padding(.bottom, 5)
                                 }
-                                
                             }
                         }
                     }
-                    .padding(.top,30)
-                }
             }
-            
         }
-        .offset(y: -40)
+        .background(Color.appBackground)
+        .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                BackBarButtonView(foregroundStyle: .black)
+                BackBarButtonView()
+            }
+            ToolbarItem(placement: .principal) {
+                ToolBarTitleView(
+                    title: Resources.Text.search.localized
+                )
+                
             }
         }
-        .navigationBarBackButtonHidden(true)
-        
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

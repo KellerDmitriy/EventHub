@@ -20,14 +20,12 @@ struct EmptyEventsView: View {
                 .frame(width: 202, height: 202)
                 .clipShape(Circle())
                       
-            
             Text(selectedMode == .upcoming 
                  ? "No Upcoming Event".localized
                  : "No Past Event".localized)
                 .airbnbCerealFont(.bold, size: 24)
-                .foregroundStyle(.black)
-            
-            
+                .foregroundStyle(.appForegroundStyle)
+    
             Text("Lorem ipsum dolor sit amet, consectetur")
                 .airbnbCerealFont(.bold, size: 16)
                 .lineLimit(2)

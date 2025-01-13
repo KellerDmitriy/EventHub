@@ -53,15 +53,7 @@ struct ProfileEditView: View {
                     isChangeUserPhoto = false
                 }
             VStack {
-                // MARK: - ToolBar
-                ToolBarView(
-                    title: "Profile".localized,
-                    foregroundStyle: .titleFont,
-                    isTitleLeading: true,
-                    showBackButton: true
-                )
-                .frame(height: Drawing.toolBarHeight)
-                .zIndex(1)
+                
                 
                 // MARK: - Profile Image and Name
                 VStack(spacing: Drawing.sectionSpacing) {
@@ -86,9 +78,23 @@ struct ProfileEditView: View {
                 changePhotoOverlay
             }
         }
-        .navigationBarHidden(true)
+        // MARK: - ToolBar
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                BackBarButtonView()
+            }
+            ToolbarItem(placement: .principal) {
+                ToolBarTitleView(
+                    title: "Profile".localized
+                )
+            
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden()
     }
 }
+
 
 // MARK: - Subviews
 extension ProfileEditView {
@@ -109,7 +115,7 @@ extension ProfileEditView {
                 TextField("\(userName)", text: $userName)
                     .airbnbCerealFont(AirbnbCerealFont.medium, size: 24)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.black)
+                    .foregroundColor(.appForegroundStyle)
                     .padding(Drawing.textFieldPadding)
                     .overlay {
                         RoundedRectangle(cornerRadius: Drawing.cornerRadius)
@@ -130,7 +136,7 @@ extension ProfileEditView {
                 Text(userName)
                     .airbnbCerealFont(AirbnbCerealFont.medium, size: 24)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.black)
+                    .foregroundColor(.appForegroundStyle)
                 
                 Button {
                     withAnimation(.easeInOut) {

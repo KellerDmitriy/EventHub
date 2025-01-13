@@ -11,7 +11,6 @@ struct EventHubContentView: View {
     @State private var selectedTab: Tab = .explore
     private let router: StartRouter
     
-    
     init(router: StartRouter) {
         self.router = router
     }
@@ -21,35 +20,51 @@ struct EventHubContentView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
+        ZStack {
+            VStack {
+                TabContent(selectedTab: selectedTab, router: router)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .padding(.bottom, 88)
+            VStack {
+                Spacer()
+                TabBarView(
+                    selectedTab: $selectedTab,
+                    switchTab: switchTab
+                )
+                .padding(.init(top: 10, leading: 0, bottom: 0, trailing: 0))
+                .background(.ultraThinMaterial)
+            }
+        }
+        .ignoresSafeArea(.all)
+    }
+}
+
+struct TabContent: View {
+    let selectedTab: Tab
+    let router: StartRouter
+    
+    var body: some View {
+        NavigationView {
             Group {
                 switch selectedTab {
                 case .explore:
-                    NavigationView {
-                        ExploreView()
-                    }
+                    ExploreScreen()
                 case .events:
-                    NavigationView {
-                        EventsView()
-                    }
+                    EventsScreen()
                 case .map:
-                    NavigationView {
-                        MapView()
-                    }
+                    MapScreen()
                 case .favorites:
-                    NavigationView {
-                        FavoritesView()
-                    }
+                    FavoritesScreen()
                 case .profile:
-                    NavigationView {
-                        ProfileView(router: router)
-                    }
+                    ProfileScreen(router: router)
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .edgesIgnoringSafeArea(.top)
-            TabBarView(selectedTab: $selectedTab, switchTab: switchTab)
         }
-        .edgesIgnoringSafeArea(.bottom)
+        .navigationViewStyle(StackNavigationViewStyle())
     }
+}
+
+#Preview {
+    EventHubContentView(router: StartRouter())
 }

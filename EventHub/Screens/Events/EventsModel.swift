@@ -7,7 +7,9 @@
 
 import Foundation
 
-enum EventsMode: CaseIterable {
+enum EventsMode: CaseIterable, Identifiable {
+    var id: Self { self }
+    
     case upcoming
     case pastEvents
     
