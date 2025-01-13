@@ -54,7 +54,7 @@ final class ProfileViewModel: ObservableObject {
             if let currentUser = currentUser {
                 userName = currentUser.name
                 userEmail = currentUser.email
-                userInfo = currentUser.userInfo
+                userInfo = currentUser.info
                 profileImageName = currentUser.profileImageName
             }
         } catch {
