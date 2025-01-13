@@ -35,8 +35,9 @@ struct ExploreScreen: View {
     var body: some View {
         ZStack {
             Color.appBackground.ignoresSafeArea(.all)
-        
-            VStack(spacing: 0) {
+            
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 0) {
                     ExploreToolBar(
                         currentLocation: $viewModel.currentLocation,
                         title: $viewModel.currentPosition,
@@ -63,8 +64,8 @@ struct ExploreScreen: View {
                         ],
                         chooseButton: $viewModel.choosedButton
                     )
-                .zIndex(1)
-                ScrollView(showsIndicators: false) {
+                    .zIndex(1)
+                    
                     VStack {
                         MainCategorySectionView(
                             isPresented: $isSeeAllUpcomingEvents,
@@ -73,7 +74,7 @@ struct ExploreScreen: View {
                         )
                         .padding(.top, 10)
                         
-                       
+                        
                         if viewModel.emptyUpcoming {
                             NoEventsView()
                         } else {
@@ -114,7 +115,7 @@ struct ExploreScreen: View {
             }
             .ignoresSafeArea()
         }
-
+        
         .navigationLink(
             destination: SeeAllEventsView(events: viewModel.upcomingEvents, eventType: .upcomingEvents),
             isActive: $isSeeAllUpcomingEvents

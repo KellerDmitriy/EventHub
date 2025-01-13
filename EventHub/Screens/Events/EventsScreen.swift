@@ -9,13 +9,13 @@ import SwiftUI
 struct EventsScreen: View {
     @StateObject var viewModel: EventsViewModel
     @State private var showAllEvents = false
-
+    
     // MARK: - Drawing Constants
     private enum Drawing {
         // Padding and Sizes
         static let horizontalPadding: CGFloat = 24
         static let buttonHorizontalPadding: CGFloat = 53
-        static let buttonBottomPadding: CGFloat = 40
+        static let buttonBottomPadding: CGFloat = 30
         
         // Texts
         static let errorText: String = "Error occurred. Pull to refresh."
@@ -24,14 +24,15 @@ struct EventsScreen: View {
         static let alertTitle: String = "Error"
         static let alertOkButton: String = "OK"
     }
-
+    
     // MARK: - INIT
     init() {
         self._viewModel = StateObject(wrappedValue: EventsViewModel())
     }
-
+    
     // MARK: - BODY
     var body: some View {
+        ZStack(alignment: .bottom) {
             VStack {
                 ModeEventsSegmentedControl(state: $viewModel.selectedMode)
                     .padding(Drawing.horizontalPadding)
@@ -40,7 +41,7 @@ struct EventsScreen: View {
                             await loadEvents(for: newValue)
                         }
                     }
-
+                
                 Group {
                     switch currentPhase(for: viewModel.selectedMode) {
                     case .empty:
@@ -73,49 +74,49 @@ struct EventsScreen: View {
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-                BlueButtonWithArrow(text: Drawing.exploreEventsText) {
-                    Task {
-                        await viewModel.updateAllEvents()
-                    }
-                    showAllEvents = true
-                }
-                .padding(.horizontal, Drawing.buttonHorizontalPadding)
-                .padding(.bottom, Drawing.buttonBottomPadding)
-                .background(
-                    NavigationLink(
-                        destination: SeeAllEvents(allEvents: viewModel.allEvents),
-                        isActive: $showAllEvents,
-                        label: { EmptyView() }
-                    )
-                )
             }
             .background(Color.appBackground)
-        
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    ToolBarTitleView(title: Drawing.toolbarTitle)
-                     
+            
+            BlueButtonWithArrow(text: Drawing.exploreEventsText) {
+                Task {
+                    await viewModel.updateAllEvents()
                 }
+                showAllEvents = true
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .task {
-                await viewModel.fetchUpcomingEvents()
-            }
-            .alert(isPresented: isPresentedAlert(for: $viewModel.upcomingEventsPhase)) {
-                Alert(
-                    title: Text(Drawing.alertTitle),
-                    message: Text(viewModel.errorMessage(for: viewModel.upcomingEventsPhase)),
-                    dismissButton: .default(Text(Drawing.alertOkButton)) {
-                        Task {
-                            await loadEvents(for: viewModel.selectedMode)
-                        }
-                    }
+            .padding(.horizontal, Drawing.buttonHorizontalPadding)
+            .padding(.bottom, Drawing.buttonBottomPadding)
+            .background(
+                NavigationLink(
+                    destination: SeeAllEvents(allEvents: viewModel.allEvents),
+                    isActive: $showAllEvents,
+                    label: { EmptyView() }
                 )
+            )
+        }
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                ToolBarTitleView(title: Drawing.toolbarTitle)
+                
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .task {
+            await viewModel.fetchUpcomingEvents()
+        }
+        .alert(isPresented: isPresentedAlert(for: $viewModel.upcomingEventsPhase)) {
+            Alert(
+                title: Text(Drawing.alertTitle),
+                message: Text(viewModel.errorMessage(for: viewModel.upcomingEventsPhase)),
+                dismissButton: .default(Text(Drawing.alertOkButton)) {
+                    Task {
+                        await loadEvents(for: viewModel.selectedMode)
+                    }
+                }
+            )
+        }
+    }
     
-
+    
     // MARK: - Helper Methods
     private func currentPhase(for mode: EventsMode) -> DataFetchPhase<[EventModel]> {
         switch mode {
@@ -125,7 +126,7 @@ struct EventsScreen: View {
             return viewModel.pastEventsPhase
         }
     }
-
+    
     private func isPresentedAlert(for phase: Binding<DataFetchPhase<[EventModel]>>) -> Binding<Bool> {
         Binding(
             get: {
@@ -141,7 +142,7 @@ struct EventsScreen: View {
             }
         )
     }
-
+    
     private func loadEvents(for mode: EventsMode) async {
         switch mode {
         case .upcoming:

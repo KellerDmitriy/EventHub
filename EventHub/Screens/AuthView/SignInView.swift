@@ -26,6 +26,8 @@ struct SignInView: View {
             
             ZStack {
                 BackgroundWithEllipses()
+                    .background(Color.appBackground)
+
                 GeometryReader { geometry in
                     let screenWidth = geometry.size.width
                     let horizontalPadding = screenWidth * 0.1
