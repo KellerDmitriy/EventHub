@@ -22,7 +22,7 @@ struct AuthDataResultModel: Codable {
     let uid: String            // The unique identifier for the user
     var userName: String       // The user's display name
     let email: String          // The user's email address
-    let userInfo: String            // The user's Informations
+    let info: String            // The user's Informations
     let profileImageName: String  // The URL of the user's profile image name
 
     // MARK: - CodingKeys
@@ -31,7 +31,7 @@ struct AuthDataResultModel: Codable {
         case uid
         case userName
         case email
-        case userInfo
+        case info
         case profileImageName
     }
     
@@ -41,7 +41,7 @@ struct AuthDataResultModel: Codable {
         self.uid = user.uid
         self.userName = user.displayName ?? ""
         self.email = user.email ?? ""
-        self.userInfo = ""
+        self.info = ""
         self.profileImageName = user.photoURL?.absoluteString ?? ""
     }
 }
@@ -52,7 +52,7 @@ struct DBUser: Codable {
     let userID: String              // The unique identifier for the user in the database
     let name: String                // The user's display name
     let email: String               // The user's email address
-    let userInfo: String            // The user's Informations
+    let info: String            // The user's Informations
     let profileImageName: String // The URL to the user's profile image name
 
 
@@ -63,7 +63,7 @@ struct DBUser: Codable {
         self.userID = auth.uid
         self.name = auth.userName
         self.email = auth.email
-        self.userInfo = auth.userInfo
+        self.info = auth.info
         self.profileImageName = auth.profileImageName
     }
     
@@ -89,7 +89,7 @@ struct DBUser: Codable {
         self.userID = userID
         self.name = name
         self.email = email
-        self.userInfo = userInfo
+        self.info = userInfo
         self.profileImageName = profileImageName
     }
     
@@ -99,7 +99,7 @@ struct DBUser: Codable {
         case userID = "user_id"                   // Maps "user_id" JSON key to "userID" property
         case name = "name"
         case email = "email"
-        case userInfo = "user_info"
+        case info = "info"
         case profileImageName = "profile_image_name" // Maps "profile_image_name" JSON key to "profileImageName" property
     }
     
@@ -109,7 +109,7 @@ struct DBUser: Codable {
         self.userID = try container.decode(String.self, forKey: .userID)
         self.name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
         self.email = try container.decodeIfPresent(String.self, forKey: .email) ?? ""
-        self.userInfo = try container.decodeIfPresent(String.self, forKey: .userInfo) ?? ""
+        self.info = try container.decodeIfPresent(String.self, forKey: .info) ?? ""
         self.profileImageName = try container.decodeIfPresent(String.self, forKey: .profileImageName) ?? "avatar"
     }
     

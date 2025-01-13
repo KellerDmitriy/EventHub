@@ -34,6 +34,7 @@ final class AuthService: IAuthService {
     
     func getAuthenticatedUser() throws -> AuthDataResultModel {
         guard let user = Auth.auth().currentUser else {
+            print("User is not authenticated")
             throw URLError(.badServerResponse)
         }
         
