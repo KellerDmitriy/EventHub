@@ -170,7 +170,7 @@ struct SignInView: View {
             HStack {
                 Text(dontHaveAnAccText)
                     .airbnbCerealFont(.book, size: 15)
-                    .foregroundColor(.black)
+                    .foregroundColor(.appForegroundStyle)
                 
                 Text(signUpText)
                     .airbnbCerealFont(.book, size: 15)
