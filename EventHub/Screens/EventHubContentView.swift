@@ -10,31 +10,40 @@ import SwiftUI
 struct EventHubContentView: View {
     @State private var selectedTab: Tab = .explore
     private let router: StartRouter
-
+    
     init(router: StartRouter) {
         self.router = router
     }
-
+    
     func switchTab(_ tab: Tab) {
         selectedTab = tab
     }
-
+    
     var body: some View {
-        VStack(spacing: 0) {
-            TabContent(selectedTab: selectedTab, router: router)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .edgesIgnoringSafeArea(.top)
-            
-            TabBarView(selectedTab: $selectedTab, switchTab: switchTab)
+        ZStack {
+            VStack {
+                TabContent(selectedTab: selectedTab, router: router)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .padding(.bottom, 88)
+            VStack {
+                Spacer()
+                TabBarView(
+                    selectedTab: $selectedTab,
+                    switchTab: switchTab
+                )
+                .padding(.init(top: 10, leading: 0, bottom: 0, trailing: 0))
+                .background(.ultraThinMaterial)
+            }
         }
-        .edgesIgnoringSafeArea(.bottom)
+        .ignoresSafeArea(.all)
     }
 }
 
 struct TabContent: View {
     let selectedTab: Tab
     let router: StartRouter
-
+    
     var body: some View {
         NavigationView {
             Group {
@@ -54,4 +63,8 @@ struct TabContent: View {
         }
         .navigationViewStyle(StackNavigationViewStyle())
     }
+}
+
+#Preview {
+    EventHubContentView(router: StartRouter())
 }

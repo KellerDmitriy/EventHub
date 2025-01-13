@@ -171,6 +171,6 @@ struct ExploreScreen: View {
     
 }
 
-//#Preview {
-//    ExploreView()
-//}
+#Preview {
+    ExploreScreen()
+}
