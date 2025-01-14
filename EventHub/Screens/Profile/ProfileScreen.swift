@@ -19,7 +19,7 @@ struct ProfileScreen: View {
         static let profileImageSize: CGFloat = 96
         static let spacingBetweenSections: CGFloat = 50
         static let toolbarBottomPadding: CGFloat = 16
-        static let signOutButtonBottomPadding: CGFloat = 40
+        static let signOutButtonBottomPadding: CGFloat = 60
         static let horizontalPadding: CGFloat = 20
         static let cornerRadius: CGFloat = profileImageSize / 2
         
