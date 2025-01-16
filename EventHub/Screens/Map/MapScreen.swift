@@ -13,6 +13,8 @@ struct MapScreen: View {
     @State private var selectedEvent: MapEventModel?
     @EnvironmentObject private var coreDataManager: CoreDataManager
     
+    let locationFetcher = LocationFetcher()
+    
     private var isFavorite: Bool {
         coreDataManager.events.contains { event in
             Int(event.id) == self.selectedEvent?.id
@@ -26,8 +28,47 @@ struct MapScreen: View {
     
     // MARK: - Body
     var body: some View {
+        //        VStack {
+        //            Button("Start Tracking Location") {
+        //                locationFetcher.start()
+        //            }
+        //
+        //            Button("Read Location") {
+        //                if let location = locationFetcher.lastKnownLocation {
+        //                    print("Your location is \(location)")
+        //                } else {
+        //                    print("Your location is unknown")
+        //                }
+        //            }
+        //        }
         ZStack(alignment: .top) {
             // Карта с аннотациями
+//                Map(initialPosition: startPosition) {
+//                    ForEach(viewModel.locations) { location in
+//                        Annotation(location.name, coordinate: location.coordinate) {
+//                            Image(systemName: "star.circle")
+//                                .resizable()
+//                                .foregroundStyle(.red)
+//                                .frame(width: 44, height: 44)
+//                                .background(.white)
+//                                .clipShape(.circle)
+//                                .onTapGesture {
+//                                    print("Long press")
+//                                    viewModel.selectedPlace = location
+//                                }
+//                        }
+//                    }
+//                }
+//                .onTapGesture { position in
+//                    if let coordinate = proxy.convert(position, from: .local) {
+//                        viewModel.addLocation(at: coordinate)
+//                    }
+//                }
+//                .sheet(item: $viewModel.selectedPlace) { place in
+//                    EditView(location: place) { newLocation in
+//                        viewModel.update(location: newLocation)
+//                    }
+//                }
             Map(
                 coordinateRegion: $viewModel.region,
                 showsUserLocation: true,
