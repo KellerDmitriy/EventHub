@@ -19,7 +19,7 @@ struct ProfileScreen: View {
         static let profileImageSize: CGFloat = 96
         static let spacingBetweenSections: CGFloat = 50
         static let toolbarBottomPadding: CGFloat = 16
-        static let signOutButtonBottomPadding: CGFloat = 40
+        static let signOutButtonBottomPadding: CGFloat = 60
         static let horizontalPadding: CGFloat = 20
         static let cornerRadius: CGFloat = profileImageSize / 2
         
@@ -51,14 +51,14 @@ struct ProfileScreen: View {
         ZStack {
             Color.appBackground
                 .ignoresSafeArea()
-                VStack(spacing: Drawing.spacingBetweenSections) {
-                    profileHeaderSection
- 
-                    aboutMeSection
-                    Spacer()
-                    signOutButtonSection
+            VStack(spacing: Drawing.spacingBetweenSections) {
+                profileHeaderSection
+                
+                aboutMeSection
+                Spacer()
+                signOutButtonSection
             }
-                .padding(.horizontal, Drawing.horizontalPadding)
+            .padding(.horizontal, Drawing.horizontalPadding)
         }
         .toolbar {
             ToolbarItem(placement: .principal ) {
@@ -68,7 +68,7 @@ struct ProfileScreen: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear { onViewAppear() }
+        .onAppear(perform: onViewAppear)
         .alert(isPresented: isPresentedAlert(), error: viewModel.error) {
             Button(Drawing.okButtonTitle, role: .destructive) {
                 viewModel.tapErrorOk()
@@ -85,7 +85,6 @@ private extension ProfileScreen {
     // Profile Header Section
     var profileHeaderSection: some View {
         VStack {
-            
             Image(viewModel.profileImageName)
                 .resizable()
                 .scaledToFill()

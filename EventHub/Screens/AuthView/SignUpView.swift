@@ -36,7 +36,7 @@ struct SignUpView: View {
             GeometryReader { geometry in
                 let screenWidth = geometry.size.width
                 let horizontalPadding = screenWidth * Drawing.horizontalPaddingRatio
-                let smallPadding = screenWidth * Drawing.smallPaddingRatio
+//                let smallPadding = screenWidth * Drawing.smallPaddingRatio
 
                 ZStack {
                     VStack {

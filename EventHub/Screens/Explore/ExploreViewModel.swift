@@ -10,27 +10,19 @@ import SwiftUI
 @MainActor
 final class ExploreViewModel: ObservableObject {
     
-    private let apiService: IAPIServiceForExplore
+    let apiService: IAPIServiceForExplore
     
-    let functionalButtonsNames = [
-        "Today".localized,
-        "Films".localized,
-        "Lists".localized
-    ]
-    @Published var choosedButton: String = "" // кнопка поl категориями, незнаю как назвать это
+    let eventTypes = SeeAllExploreType.buttonCases
+    @Published var emptyUpcoming = false
+    @Published var emptyNearbyYou = false
+    
     @Published var currentPosition: String = "Moscow".localized
-    
-    @Published var todayEvents: [ExploreModel] = []
-    @Published var films: [ExploreModel] = []
-    @Published var lists: [ExploreModel] = []
     
     @Published var upcomingEvents: [ExploreModel] = []
     @Published var nearbyYouEvents: [ExploreModel] = []
+    
     @Published var categories: [CategoryUIModel] = []
     @Published var locations: [EventLocation] = []
-    
-    @Published var emptyUpcoming = false
-    @Published var emptyNearbyYou = false
     
     @Published var error: Error? = nil
     
@@ -51,7 +43,12 @@ final class ExploreViewModel: ObservableObject {
         }
     }
     
-    private let language = Language.ru
+    @Published var isLoadingNextPage = false
+    @Published var hasMoreUpcomingEvents = true
+    @Published var hasMoreNearbyYouEvents = true
+    
+    let language = Language.ru
+    
     private var page: Int = 1
     
     // MARK: - INIT
@@ -118,7 +115,6 @@ final class ExploreViewModel: ObservableObject {
     }
     
     func fetchUpcomingEvents() async {
-        emptyUpcoming = false
         do {
             let fetchedEvents = try await apiService.getUpcomingEvents(
                 with: currentCategory,
@@ -132,17 +128,12 @@ final class ExploreViewModel: ObservableObject {
             
             self.upcomingEvents = filteredEvents
             
-            if fetchedEvents.isEmpty {
-                emptyUpcoming = true
-            }
-            
         } catch {
             self.error = error
         }
     }
     
     func featchNearbyYouEvents() async {
-        emptyNearbyYou = false
         do {
             let eventsDTO = try await apiService.getNearbyYouEvents(
                 with: language,
@@ -153,10 +144,6 @@ final class ExploreViewModel: ObservableObject {
             let mappedEvents = eventsDTO.map { ExploreModel(dto: $0) }
             let filteredEvents = ExploreModel.filterExploreEvents(mappedEvents)
             nearbyYouEvents = filteredEvents
-            
-            if eventsDTO.isEmpty {
-                emptyNearbyYou = true
-            }
             
         } catch {
             self.error = error
@@ -173,43 +160,54 @@ final class ExploreViewModel: ObservableObject {
         }
         self.categories = mappedCategories
     }
-}
-
-extension ExploreViewModel {
-    func getToDayEvents() async {
+    
+    
+    // MARK: - Pagination for Upcoming Events
+    func loadNextPageForUpcomingEvents() async {
+        guard !isLoadingNextPage && hasMoreUpcomingEvents else { return }
+        isLoadingNextPage = true
+        defer { isLoadingNextPage = false }
+        
         do {
-            let fetchedTodayEvents = try await apiService.getToDayEvents(location: currentLocation, language: language, page: page)
-            
-            let objectIDs = fetchedTodayEvents.compactMap { $0.object.id }
-            let idString = objectIDs.map(String.init).joined(separator: ",")
-            
-            let detailsEvents = try await apiService.getEventDetails(eventIDs: idString, language: language)
-            self.todayEvents = detailsEvents.map { ExploreModel(dto: $0) }
-            
+            page += 1
+            let fetchedEvents = try await apiService.getUpcomingEvents(
+                with: currentCategory,
+                language,
+                page
+            )
+            if fetchedEvents.isEmpty {
+                hasMoreUpcomingEvents = false
+            } else {
+                let mappedEvents = fetchedEvents.map { ExploreModel(dto: $0) }
+                upcomingEvents.append(contentsOf: ExploreModel.filterExploreEvents(mappedEvents))
+            }
         } catch {
             self.error = error
         }
     }
     
-    func getFilms() async {
+    // MARK: - Pagination for Nearby You Events
+    func loadNextPageForNearbyYouEvents() async {
+        guard !isLoadingNextPage && hasMoreNearbyYouEvents else { return }
+        isLoadingNextPage = true
+        defer { isLoadingNextPage = false }
+        
         do {
-            let fetchedFilms = try await apiService.getMovies(location: currentLocation, language: language, page: page)
-            
-            self.films = fetchedFilms.map { ExploreModel(movieDto: $0 )}
+            page += 1
+            let fetchedEvents = try await apiService.getNearbyYouEvents(
+                with: language,
+                currentLocation,
+                currentCategory,
+                page
+            )
+            if fetchedEvents.isEmpty {
+                hasMoreNearbyYouEvents = false
+            } else {
+                let mappedEvents = fetchedEvents.map { ExploreModel(dto: $0) }
+                nearbyYouEvents.append(contentsOf: ExploreModel.filterExploreEvents(mappedEvents))
+            }
         } catch {
             self.error = error
         }
     }
-    
-    
-    func getLists() async {
-        do {
-            let fetchedList = try await apiService.getLists(location: currentLocation, language: language, page: page)
-            
-            self.lists = fetchedList.map { ExploreModel(listDto: $0 )}
-        } catch {
-            self.error = error
-        }
-    }
-    
 }

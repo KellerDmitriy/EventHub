@@ -56,7 +56,7 @@ struct TabBarView: View {
     
     // MARK: - Drawing Constants
     private enum Drawing {
-        static let tabBarHeight: CGFloat = 75
+        static let tabBarHeight: CGFloat = 88
         static let tabBarCornerRadius: CGFloat = 20
         static let iconSize: CGFloat = 23
         static let floatingButtonSize: CGFloat = 46
@@ -136,7 +136,7 @@ struct TabBarView: View {
         let numberOfItems = 5
         let totalItemWidth = CGFloat(numberOfItems) * Drawing.iconSize + Drawing.floatingButtonSize
         let availableSpace = totalWidth - totalItemWidth
-        return availableSpace / CGFloat(numberOfItems + 3)
+        return availableSpace / CGFloat(numberOfItems + 4)
     }
     
     private func calculateEdgeSpacing() -> CGFloat {

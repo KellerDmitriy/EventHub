@@ -8,22 +8,15 @@
 import SwiftUI
 
 struct ExploreScreen: View {
-    enum CategoryType {
-        case today, films, lists
-    }
     
     @StateObject var viewModel: ExploreViewModel
     
     @State private var isSearchPresented: Bool = false
     @State private var selectedEventID: Int? = nil
-    @State private var isDetailPresented: Bool = false
-    @State private var isSeeAllUpcomingEvents: Bool = false
     
-    @State private var isTodayEvents: Bool = false
-    @State private var isFilms: Bool = false
-    @State private var isLists: Bool = false
+    @State private var selectedSeeAllType: SeeAllExploreType? = nil
     
-    @State private var isSeeAllNearbyEvents: Bool = false
+    
     
     //    MARK: - INIT
     init() {
@@ -35,45 +28,44 @@ struct ExploreScreen: View {
     var body: some View {
         ZStack {
             Color.appBackground.ignoresSafeArea(.all)
-        
+            
             VStack(spacing: 0) {
-                    ExploreToolBar(
-                        currentLocation: $viewModel.currentLocation,
-                        title: $viewModel.currentPosition,
-                        isSearchPresented: $isSearchPresented,
-                        isNotifications: true,
-                        filterAction:  { orderType in
-                            viewModel.filterEvents(orderType: orderType)
-                        } ,
-                        locations: viewModel.locations)
-                    
-                    CategoryScroll(
-                        categories:viewModel.categories,
-                        onCategorySelected: { selectedCategory in
-                            viewModel.currentCategory = selectedCategory.category.slug
-                        })
-                    .offset(y: -23)
-                    
-                    FunctionalButtonsView(
-                        names: viewModel.functionalButtonsNames,
-                        actions: [
-                            { Task { await loadData(for: .today)}},
-                            { Task { await loadData(for: .films)}},
-                            { Task { await loadData(for: .lists)}}
-                        ],
-                        chooseButton: $viewModel.choosedButton
-                    )
-                .zIndex(1)
+                ExploreToolBar(
+                    currentLocation: $viewModel.currentLocation,
+                    title: $viewModel.currentPosition,
+                    isSearchPresented: $isSearchPresented,
+                    isNotifications: true,
+                    filterAction:  { orderType in
+                        viewModel.filterEvents(orderType: orderType)
+                    } ,
+                    locations: viewModel.locations)
+                
+                CategoryScroll(
+                    categories:viewModel.categories,
+                    onCategorySelected: { selectedCategory in
+                        viewModel.currentCategory = selectedCategory.category.slug
+                    })
+                .offset(y: -23)
+                
                 ScrollView(showsIndicators: false) {
+                    FunctionalButtonsView(
+                        events: viewModel.eventTypes,
+                        actions: [
+                            .todayEvents: { navigateToSeeAll(.todayEvents) },
+                            .movieEvents: { navigateToSeeAll(.movieEvents) },
+                            .listEvents:  { navigateToSeeAll(.listEvents) }
+                        ],
+                        selectedEvent: $selectedSeeAllType
+                    )
+                    .zIndex(1)
+                    
                     VStack {
                         MainCategorySectionView(
-                            isPresented: $isSeeAllUpcomingEvents,
                             title: "Upcoming Events",
-                            linkActive: !viewModel.emptyUpcoming
+                            action: { navigateToSeeAll(.upcomingEvents) }
                         )
                         .padding(.top, 10)
                         
-                       
                         if viewModel.emptyUpcoming {
                             NoEventsView()
                         } else {
@@ -82,15 +74,13 @@ struct ExploreScreen: View {
                                 events: viewModel.upcomingEvents,
                                 showDetail: { event in
                                     selectedEventID = event
-                                    isDetailPresented = true
                                 })
                             .padding(.bottom, 10)
                         }
                         
                         MainCategorySectionView(
-                            isPresented: $isSeeAllNearbyEvents,
                             title: "Nearby You",
-                            linkActive: !viewModel.emptyNearbyYou
+                            action: { navigateToSeeAll(.nearbyYouEvents) }
                         )
                         .padding(.bottom, 10)
                         
@@ -103,7 +93,6 @@ struct ExploreScreen: View {
                                 events: viewModel.nearbyYouEvents,
                                 showDetail: { event in
                                     selectedEventID = event
-                                    isDetailPresented = true
                                 })
                             .padding(.bottom, 180)
                         }
@@ -113,62 +102,37 @@ struct ExploreScreen: View {
                 .navigationBarHidden(true)
             }
             .ignoresSafeArea()
+            
+            // MARK: - Navigation Links
+            push(trigger: $selectedEventID) { eventID in
+                DetailView(detailID: eventID)
+            }
+            
+            push(trigger: $selectedSeeAllType) { seeAllType in
+                SeeAllEventsView(seeAllType, viewModel)
+            }
         }
-
-        .navigationLink(
-            destination: SeeAllEventsView(events: viewModel.upcomingEvents, eventType: .upcomingEvents),
-            isActive: $isSeeAllUpcomingEvents
-        )
-        .navigationLink(
-            destination: SeeAllEventsView(events: viewModel.nearbyYouEvents, eventType: .nearbyYouEvents),
-            isActive: $isSeeAllNearbyEvents
-        )
-        .navigationLink(
-            destination: SearchView(searchScreenType: .withoutData),
-            isActive: $isSearchPresented
-        )
-        
-        .navigationLink(
-            destination: DetailView(detailID: selectedEventID ?? 0),
-            isActive: $isDetailPresented
-        )
-        
-        .navigationLink(
-            destination: SeeAllEventsView(events: viewModel.todayEvents, eventType: .today),
-            isActive: $isTodayEvents
-        )
-        
-        .navigationLink(
-            destination: SeeAllEventsView(events: viewModel.films, eventType: .movie),
-            isActive: $isFilms
-        )
-        
-        .navigationLink(
-            destination: SeeAllEventsView(events: viewModel.lists, eventType: .lists),
-            isActive: $isLists
-        )
         .task {
             await viewModel.loadAllData()
         }
     }
     
-    
-    
-    // MARK: - Task to load data
-    private func loadData(for type: CategoryType) async {
-        switch type {
-        case .today:
-            await viewModel.getToDayEvents()
-            isTodayEvents = true
-        case .films:
-            await viewModel.getFilms()
-            isFilms = true
-        case .lists:
-            await viewModel.getLists()
-            isLists = true
+    // MARK: - Helper Methods
+    private func push<T>(trigger: Binding<T?>, @ViewBuilder destination: @escaping (T) -> some View) -> some View {
+        NavigationLink(
+            destination: trigger.wrappedValue.map { destination($0) },
+            isActive: Binding(
+                get: { trigger.wrappedValue != nil },
+                set: { if !$0 { trigger.wrappedValue = nil } }
+            )
+        ) {
+            EmptyView()
         }
     }
     
+    private func navigateToSeeAll(_ type: SeeAllExploreType) {
+        selectedSeeAllType = type
+    }
 }
 
 #Preview {

@@ -42,10 +42,44 @@ final class UserService: IUserService {
     
     // Retrieves a user from the Firestore database
     func getUser(userId: String) async throws -> DBUser {
-        guard !userId.isEmpty else {
-            throw NSError(domain: "InvalidUserID", code: 400, userInfo: [NSLocalizedDescriptionKey: "User ID cannot be empty."])
+        do {
+            // Получение документа пользователя из коллекции "users"
+            let document = try await userDocument(userId).getDocument()
+            
+            // Проверка наличия данных в документе
+            guard let data = document.data() else {
+                print("No data found for user with ID: \(userId)")
+                throw URLError(.dataNotAllowed)
+            }
+            
+            guard let name = data["name"] as? String else {
+                print("Поле 'name' не найдено в документе.")
+                throw URLError(.dataNotAllowed)
+            }
+            
+            guard let email = data["email"] as? String else {
+                print("Поле 'email' не найдено в документе.")
+                throw URLError(.dataNotAllowed)
+            }
+            
+            guard let info = data["info"] as? String else {
+                print("Поле 'info' не найдено в документе.")
+                throw URLError(.dataNotAllowed)
+            }
+            
+            guard let profileImageName = data["profile_image_name"] as? String else {
+                print("Поле 'info' не найдено в документе.")
+                throw URLError(.dataNotAllowed)
+            }
+            
+            let dbUser = DBUser(userID: document.documentID, name: name, email: email, userInfo: info, profileImageName: profileImageName)
+            
+            print("Successfully fetched user: \(dbUser)")
+            return dbUser
+        } catch {
+            print("Error fetching user data: \(error)")
+            throw error
         }
-        return try await userDocument(userId).getDocument(as: DBUser.self)
     }
     
     // Updates the user's name in the Firestore database
@@ -62,7 +96,7 @@ final class UserService: IUserService {
     
     // Updates the user's Informations in the Firestore database
     func updateUserInformations(_ info: String, userID: String) async throws {
-        let data: [String : Any] = [DBUser.CodingKeys.userInfo.rawValue : info]
+        let data: [String : Any] = [DBUser.CodingKeys.info.rawValue : info]
         try await userDocument(userID).updateData(data)
     }
     

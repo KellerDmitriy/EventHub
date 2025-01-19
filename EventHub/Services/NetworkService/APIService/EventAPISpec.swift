@@ -129,7 +129,7 @@ enum EventAPISpec {
                 URLQueryItem(name: "location", value: location),
                 URLQueryItem(name: "actual_since", value: Date.now.ISO8601Format())
             ] + commonQueryItems(language: language, page: page) + [
-                URLQueryItem(name: "fields", value: "year,poster")
+                URLQueryItem(name: "fields", value: "id,title,year,poster,site_url")
             ]
             
         case .getUpcomingEventsWith(let category, let language, let page):

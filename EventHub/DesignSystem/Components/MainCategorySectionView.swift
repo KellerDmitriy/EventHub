@@ -9,9 +9,9 @@ import SwiftUI
 
 struct MainCategorySectionView: View {
     
-    @Binding var isPresented: Bool
     let title : String
-    let linkActive: Bool
+    
+    let action: () -> Void
     
     var body: some View {
         HStack {
@@ -23,28 +23,21 @@ struct MainCategorySectionView: View {
             
             Spacer()
             
-            if linkActive {
-            NavigationLink {
-                Text("See All View")
+            Button {
+                action()
             } label: {
-                Button{
-                    isPresented = true
-                } label: {
-                    Text("See All")
-                        .frame(height: 23)
-                        .airbnbCerealFont(AirbnbCerealFont.medium, size: 14)
-                        .foregroundStyle(.gray)
-                        .padding(.trailing, 16)
-                }
-            }
-            
+                Text("See All")
+                    .frame(height: 23)
+                    .airbnbCerealFont(AirbnbCerealFont.medium, size: 14)
+                    .foregroundStyle(.gray)
+                    .padding(.trailing, 14)
             }
         }
-        .padding(.leading,24)
+        .padding(.leading, 24)
     }
 }
 
 #Preview {
-    MainCategorySectionView(isPresented: .constant(false), title: "Upcoming Events", linkActive: true)
+    MainCategorySectionView(title: "Upcoming Events", action: {})
 }
 

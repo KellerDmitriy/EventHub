@@ -6,39 +6,10 @@
 //
 
 import SwiftUI
-
-// MARK: - EventType
-enum EventType {
-    case upcomingEvents
-    case nearbyYouEvents
-    case movie
-    case lists
-    case today
-    
-    var title: String {
-        switch self {
-        case .upcomingEvents:
-            return "Upcoming Events"
-        case .nearbyYouEvents:
-            return "Nearby You"
-        case .movie:
-            return "Movies"
-        case .lists:
-            return "Lists"
-        case .today:
-            return "Today"
-        }
-    }
-}
-
-
-
 // MARK: - SeeAllEventsView
 struct SeeAllEventsView: View {
-    
     // MARK: - Properties
-    let events: [ExploreModel]
-    let eventType: EventType
+    @StateObject var viewModel: SeeAllViewModel
     
     // MARK: - Drawing Constants
     enum Drawing {
@@ -49,11 +20,19 @@ struct SeeAllEventsView: View {
         static let noImageCrashPlaceholder = "No image/crach"
     }
     
+    // MARK: - INIT
+    init(_ seeAllType: SeeAllExploreType,_ exploreViewModel: ExploreViewModel)
+    {
+        self._viewModel = StateObject(wrappedValue: SeeAllViewModel(seeAllType, exploreViewModel)
+        )
+    }
+    
     // MARK: - Body
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: Drawing.cardSpacing) {
-                ForEach(events) { event in
+                ForEach(viewModel.getEvents()) { event in
+                   
                     if allowsDetailNavigation {
                         NavigationLink(destination: DetailView(detailID: event.id)) {
                             eventView(for: event)
@@ -68,6 +47,21 @@ struct SeeAllEventsView: View {
             }
             .padding(Drawing.scrollPadding)
         }
+        .task {
+            await viewModel.loadData()
+        }
+        .alert(isPresented: isPresentedAlert()) {
+            Alert(
+                title: Text("Alarm"),
+                message: Text(viewModel.error?.localizedDescription ?? ""),
+                dismissButton: .default(Text("Ok")) {
+                    Task {
+                        await viewModel.loadData()
+                    }
+                }
+            )
+        }
+        
         .background(Color.appBackground)
         .navigationBarBackButtonHidden()
         .toolbar {
@@ -77,7 +71,7 @@ struct SeeAllEventsView: View {
             
             ToolbarItem(placement: .principal) {
                 ToolBarTitleView(
-                    title: eventType.title.localized
+                    title: viewModel.seeAllType.title.localized
                 )
             }
         }
@@ -85,36 +79,46 @@ struct SeeAllEventsView: View {
     }
     
     // MARK: - Helper Properties
+
+    private func isPresentedAlert() -> Binding<Bool> {
+        Binding(
+            get: { viewModel.error != nil },
+            set: { isPresenting in
+                if !isPresenting {
+                    viewModel.error = nil
+                }
+            }
+        )
+    }
+    
     private var allowsDetailNavigation: Bool {
-        switch eventType {
-        case .movie, .lists, .today:
-            return false
-        default:
-            return true
+        switch viewModel.seeAllType {
+        case .movieEvents, .listEvents: return false
+        case .todayEvents, .upcomingEvents, .nearbyYouEvents: return true
         }
     }
     
     // MARK: - Helper Methods
     @ViewBuilder
     func eventView(for event: ExploreModel) -> some View {
-        switch eventType {
-        case .lists:
-            ThirdSmallEventCard(
-                title: event.title,
-                link: event.adress
-            )
-        case .movie:
-            SmallEventCardForMovie(
-                image: event.image ?? Drawing.noImagePlaceholder,
-                title: event.title,
-                url: event.adress
-            )
-        case .today, .upcomingEvents, .nearbyYouEvents:
+        switch viewModel.seeAllType {
+        case .upcomingEvents, .nearbyYouEvents, .todayEvents:
             SmallEventCard(
                 image: event.image ?? Drawing.noImageCrashPlaceholder,
                 date: event.date,
                 title: event.title,
                 place: event.adress
+            )
+        case .listEvents:
+            ThirdSmallEventCard(
+                title: event.title,
+                link: event.adress
+            )
+        case .movieEvents:
+            SmallEventCardForMovie(
+                image: event.image ?? Drawing.noImagePlaceholder,
+                title: event.title,
+                url: event.adress
             )
         }
     }
@@ -122,5 +126,5 @@ struct SeeAllEventsView: View {
 
 // MARK: - Preview
 #Preview {
-    SeeAllEventsView(events: [], eventType: .nearbyYouEvents)
+    SeeAllEventsView(SeeAllExploreType.upcomingEvents, ExploreViewModel())
 }

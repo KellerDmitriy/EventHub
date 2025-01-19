@@ -22,10 +22,13 @@ struct EventHubContentView: View {
     var body: some View {
         ZStack {
             VStack {
-                TabContent(selectedTab: selectedTab, router: router)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                TabContent(
+                    selectedTab: selectedTab,
+                    router: router
+                )
             }
-
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
             VStack {
                 Spacer()
                 TabBarView(
