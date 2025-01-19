@@ -42,7 +42,7 @@ struct AuthDataResultModel: Codable {
         self.userName = user.displayName ?? ""
         self.email = user.email ?? ""
         self.info = ""
-        self.profileImageName = user.photoURL?.absoluteString ?? ""
+        self.profileImageName = "avatar1"
     }
 }
 
@@ -110,7 +110,7 @@ struct DBUser: Codable {
         self.name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
         self.email = try container.decodeIfPresent(String.self, forKey: .email) ?? ""
         self.info = try container.decodeIfPresent(String.self, forKey: .info) ?? ""
-        self.profileImageName = try container.decodeIfPresent(String.self, forKey: .profileImageName) ?? "avatar"
+        self.profileImageName = try container.decodeIfPresent(String.self, forKey: .profileImageName) ?? "avatar1"
     }
     
     // Method to encode a DBUser instance into JSON
@@ -119,6 +119,7 @@ struct DBUser: Codable {
         try container.encode(self.userID, forKey: .userID)
         try container.encodeIfPresent(self.name, forKey: .name)
         try container.encodeIfPresent(self.email, forKey: .email)
+        try container.encodeIfPresent(self.info, forKey: .info)
         try container.encodeIfPresent(self.profileImageName, forKey: .profileImageName)
     }
 }
