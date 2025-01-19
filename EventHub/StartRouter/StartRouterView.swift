@@ -12,20 +12,21 @@ struct StartRouterView: View {
     @StateObject var startRouter = StartRouter()
     
     var body: some View {
-        Group {
-            switch startRouter.routerState {
-            case .launch:
-                LaunchScreen(router: startRouter)
-            case .onboarding:
-                OnboardingView(router: startRouter)
-            case .auth:
-                NavigationView {
+        NavigationView {
+            Group {
+                switch startRouter.routerState {
+                case .launch:
+                    LaunchScreen(router: startRouter)
+                case .onboarding:
+                    OnboardingView(router: startRouter)
+                case .auth:
                     SignInView(router: startRouter)
+                case .main:
+                    EventHubContentView(router: startRouter)
                 }
-            case .main:
-                EventHubContentView(router: startRouter)
             }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .transition(.opacity)
         .animation(.bouncy, value: startRouter.routerState)
     }

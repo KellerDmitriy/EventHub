@@ -20,7 +20,7 @@ struct EventHubContentView: View {
     }
     
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottom) {
             VStack {
                 TabContent(
                     selectedTab: selectedTab,
@@ -47,23 +47,20 @@ struct TabContent: View {
     let router: StartRouter
     
     var body: some View {
-        NavigationView {
-            Group {
-                switch selectedTab {
-                case .explore:
-                    ExploreScreen()
-                case .events:
-                    EventsScreen()
-                case .map:
-                    MapScreen()
-                case .favorites:
-                    FavoritesScreen()
-                case .profile:
-                    ProfileScreen(router: router)
-                }
+        Group {
+            switch selectedTab {
+            case .explore:
+                ExploreScreen()
+            case .events:
+                EventsScreen()
+            case .map:
+                MapScreen()
+            case .favorites:
+                FavoritesScreen()
+            case .profile:
+                ProfileScreen(router: router)
             }
         }
-        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
