@@ -44,6 +44,7 @@ final class EventAPIService: IEventAPIService {
     func getMovies(location: String, language: Language?, page: Int?) async throws -> [MovieDTO] {
         let apiSpec: EventAPISpec = .getMovies(location: location, language: language, page: page)
         let response = try await apiClient.sendRequest(apiSpec, responseType: MoviesResponseDTO.self)
+        print(response.results)
         return response.results
     }
     

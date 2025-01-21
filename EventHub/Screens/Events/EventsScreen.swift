@@ -14,12 +14,11 @@ struct EventsScreen: View {
     private enum Drawing {
         // Padding and Sizes
         static let horizontalPadding: CGFloat = 24
-        static let buttonHorizontalPadding: CGFloat = 53
-        static let buttonBottomPadding: CGFloat = 60
+        static let topPadding: CGFloat = 12
         
         // Texts
         static let errorText: String = "Error occurred. Pull to refresh."
-        static let exploreEventsText: String = "Explore Events".localized
+        static let exploreEventsText: String = "Explore all Events".localized
         static let toolbarTitle: String = "Event".localized
         static let alertTitle: String = "Error"
         static let alertOkButton: String = "OK"
@@ -35,12 +34,24 @@ struct EventsScreen: View {
         ZStack(alignment: .bottom) {
             VStack {
                 ModeEventsSegmentedControl(state: $viewModel.selectedMode)
+                    .padding(.top, Drawing.topPadding)
                     .padding(.horizontal, Drawing.horizontalPadding)
                     .onChange(of: viewModel.selectedMode) { newValue in
                         Task {
                             await loadEvents(for: newValue)
                         }
                     }
+                HStack {
+                    Spacer()
+                    TextOnlyButton(title: Drawing.exploreEventsText) {
+                        Task {
+                            await viewModel.updateAllEvents()
+                        }
+                        showAllEvents = true
+                    }
+                    .padding(.trailing, Drawing.horizontalPadding)
+                    .padding(.top, Drawing.topPadding)
+                }
                 
                 Group {
                     switch currentPhase(for: viewModel.selectedMode) {
@@ -73,21 +84,12 @@ struct EventsScreen: View {
                             .padding()
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                
             }
             .background(Color.appBackground)
-            
-            BlueButtonWithArrow(text: Drawing.exploreEventsText) {
-                Task {
-                    await viewModel.updateAllEvents()
-                }
-                showAllEvents = true
-            }
-            .padding(.horizontal, Drawing.buttonHorizontalPadding)
-            .padding(.bottom, Drawing.buttonBottomPadding)
             .background(
                 NavigationLink(
-                    destination: SeeAllEvents(allEvents: viewModel.allEvents),
+                    destination: SeeAllEvents(viewModel: viewModel),
                     isActive: $showAllEvents,
                     label: { EmptyView() }
                 )

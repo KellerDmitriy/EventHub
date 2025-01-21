@@ -8,25 +8,22 @@
 import SwiftUI
 
 struct FunctionalButtonsView: View {
-    
-    let names: [String]
-    let actions: [() -> Void]
-    @Binding var chooseButton: String
-    
+    let events: [SeeAllExploreType]
+    let actions: [SeeAllExploreType: () -> Void]
+    @Binding var selectedEvent: SeeAllExploreType?
+
     var body: some View {
         HStack {
-            ForEach(Array(names.enumerated()), id: \.offset) { index, name in
+            ForEach(events, id: \.self) { event in
                 Button {
-                    chooseButton = name
-                    if index < actions.count {
-                        actions[index]()
-                    }
+                    selectedEvent = event
+                    actions[event]?()
                 } label: {
                     ZStack {
                         Capsule()
                             .foregroundStyle(.appBlue)
                             .frame(width: 106, height: 39)
-                        Text(name.uppercased())
+                        Text(event.title.uppercased())
                             .airbnbCerealFont(AirbnbCerealFont.medium, size: 15)
                             .foregroundStyle(.white)
                     }
@@ -36,6 +33,17 @@ struct FunctionalButtonsView: View {
     }
 }
 
+// Пример использования
 #Preview {
-    FunctionalButtonsView(names: ["Today","Films", "Lists"], actions: [{}], chooseButton: .constant("today"))
+    var selectedEvent: SeeAllExploreType = .movieEvents
+
+    FunctionalButtonsView(
+        events: SeeAllExploreType.buttonCases,
+        actions: [
+            .todayEvents: { print("Today tapped") },
+            .movieEvents: { print("Movies tapped") },
+            .listEvents: { print("Lists tapped") }
+        ],
+        selectedEvent:  .constant(selectedEvent)
+    )
 }

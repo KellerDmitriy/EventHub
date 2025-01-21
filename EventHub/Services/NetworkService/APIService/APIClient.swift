@@ -90,9 +90,8 @@ struct APIClient {
         
         // Execute the request
         let (data, response) = try await session.data(for: request)
-        
         // Validate the response
-        try validateResponse(response)
+//        try validateResponse(response)
         
         // Decode and return the data
         return try jsonDecoder.decode(T.self, from: data)

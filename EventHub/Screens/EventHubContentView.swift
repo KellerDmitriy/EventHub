@@ -20,23 +20,26 @@ struct EventHubContentView: View {
     }
     
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottom) {
             VStack {
-                TabContent(selectedTab: selectedTab, router: router)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                TabContent(
+                    selectedTab: selectedTab,
+                    router: router
+                )
             }
-
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
             VStack {
                 Spacer()
                 TabBarView(
                     selectedTab: $selectedTab,
                     switchTab: switchTab
                 )
-                .padding(.init(top: 10, leading: 0, bottom: 0, trailing: 0))
                 .background(.ultraThinMaterial)
             }
+            .ignoresSafeArea()
         }
-        .ignoresSafeArea(.all)
+
     }
 }
 
@@ -45,25 +48,23 @@ struct TabContent: View {
     let router: StartRouter
     
     var body: some View {
-        NavigationView {
-            Group {
-                switch selectedTab {
-                case .explore:
-                    ExploreScreen()
-                case .events:
-                    EventsScreen()
-                case .map:
-                    MapScreen()
-                case .favorites:
-                    FavoritesScreen()
-                case .profile:
-                    ProfileScreen(router: router)
-                }
+        Group {
+            switch selectedTab {
+            case .explore:
+                ExploreScreen()
+            case .events:
+                EventsScreen()
+            case .map:
+                MapScreen()
+            case .favorites:
+                FavoritesScreen()
+            case .profile:
+                ProfileScreen(router: router)
             }
         }
-        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
+
 
 #Preview {
     EventHubContentView(router: StartRouter())
