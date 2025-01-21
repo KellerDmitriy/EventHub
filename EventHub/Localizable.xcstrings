@@ -597,19 +597,19 @@
         }
       }
     },
-    "Explore Events" : {
+    "Explore all Events" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Explore Events"
+            "value" : "Explore all Events"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Изучить события"
+            "value" : "Изучить все события"
           }
         }
       }

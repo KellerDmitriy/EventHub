@@ -26,10 +26,10 @@ struct ShimmerEventView: View {
                 }
                 Spacer()
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+//            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding()
         }
-        .ignoresSafeArea()
+       
     }
 }
 

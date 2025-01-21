@@ -11,14 +11,14 @@ struct SeeAllEvents: View {
     
     // MARK: - Properties
     @State private var showSearchFlow = false
-    let allEvents: [EventModel]
+    @ObservedObject var viewModel: EventsViewModel
     
     // MARK: - Body
     var body: some View {
         // MARK: - Event List
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 8) {
-                ForEach(allEvents) { event in
+                ForEach(viewModel.allEvents) { event in
                     NavigationLink(destination: DetailView(detailID: event.id)) {
                         SmallEventCard(
                             image: event.image,
@@ -36,7 +36,7 @@ struct SeeAllEvents: View {
             NavigationLink(
                 destination: SearchView(
                     searchScreenType: .withData,
-                    localData: allEvents.map { ExploreModel(event: $0) }
+                    localData: viewModel.allEvents.map { ExploreModel(event: $0) }
                 ),
                 isActive: $showSearchFlow,
                 label: { EmptyView() }
@@ -67,5 +67,5 @@ struct SeeAllEvents: View {
 }
 
 #Preview {
-    SeeAllEvents(allEvents: [])
+    SeeAllEvents(viewModel: EventsViewModel())
 }
