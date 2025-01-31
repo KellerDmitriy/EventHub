@@ -16,11 +16,7 @@ struct EventHubApp: App {
     //MARK: - INIT
     init() {
         FirebaseApp.configure()
-        
-        DIContainer.register({ UserService() }, forKey: .userService, lifecycle: .transient)
-        DIContainer.register({ AuthService() }, forKey: .authService, lifecycle: .singleton)
-        DIContainer.register({ UDStorageService() as IStorageService}, forKey: .storageService, lifecycle: .singleton)
-        DIContainer.register({ EventAPIService() as IEventAPIService }, forKey: .networkService, lifecycle: .singleton)
+        registerDI()
     }
     
     //MARK: - BODY
@@ -30,5 +26,28 @@ struct EventHubApp: App {
                 .preferredColorScheme(.dark)
                 .environmentObject(coreDataManager)
         }
+    }
+    
+    private func registerDI() {
+        DIContainer
+            .register( { UserService() },
+                       forKey: .userService,
+                       lifecycle: .transient
+            )
+        DIContainer
+            .register({ AuthService() },
+                      forKey: .authService,
+                      lifecycle: .singleton
+            )
+        DIContainer
+            .register({ UDStorageService()},
+                      forKey: .storageService,
+                      lifecycle: .singleton
+            )
+        DIContainer
+            .register({ EventAPIService() },
+                      forKey: .networkService,
+                      lifecycle: .singleton
+            )
     }
 }
