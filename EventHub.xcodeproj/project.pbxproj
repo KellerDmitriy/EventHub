@@ -431,7 +431,6 @@
 				4831BA532CEB2FEE00141C9A /* Screens */,
 				E1B52ADB2CEE5853001AA8E0 /* Services */,
 				E1F652952D2321F2006589F1 /* DesignSystem */,
-				4831BA3D2CEB28C400141C9A /* Font */,
 				4831BA4F2CEB2F6700141C9A /* Modifiers */,
 				4831BA4C2CEB2F4000141C9A /* Extensions */,
 				2228386C2CE937A700DCF847 /* Assets.xcassets */,
@@ -491,6 +490,7 @@
 		4831BA4F2CEB2F6700141C9A /* Modifiers */ = {
 			isa = PBXGroup;
 			children = (
+				4831BA3D2CEB28C400141C9A /* Font */,
 				E10ED00B2CF0E25500AFDBC2 /* RoundedCorner.swift */,
 				4831BA502CEB2F9500141C9A /* FontModifier.swift */,
 			);
