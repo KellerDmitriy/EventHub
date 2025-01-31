@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DetailInformationView: View {
-    let title: String
+
     let startDate: String
     let endDate: String
     let adress: String
@@ -19,22 +19,26 @@ struct DetailInformationView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
-            Text(title)
-                .airbnbCerealFont(.book, size: 35)
-            
+
             VStack(alignment: .leading, spacing: 24) {
-                DetailComponentView(image: Image(systemName: "calendar"),
-                                    title: startDate,
-                                    description: endDate)
+                DetailComponentView(
+                    image: Image(systemName: "calendar"),
+                    title: startDate,
+                    description: endDate
+                )
                 
-                DetailComponentView(image: Image(.location),
-                                    title: adress,
-                                    description: location)
+                DetailComponentView(
+                    image: Image(.location),
+                    title: adress,
+                    description: location
+                )
                 
-                DetailComponentView(image: Image(.avatar),
-                                    title: agentTitle,
-                                    description: role,
-                                    showImgBg: false)
+                DetailComponentView(
+                    image: Image(.avatar),
+                    title: agentTitle,
+                    description: role,
+                    showImgBg: false
+                )
             }
             
             Text("About Event")

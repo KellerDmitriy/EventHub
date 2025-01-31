@@ -16,6 +16,13 @@ struct DetailView: View {
     @State private var headerHeight: CGFloat = 250
     @State private var headerMinHeight: CGFloat = 100
     
+    
+    @State
+    private var headerVisibleRatio: CGFloat = 1
+
+    @State
+    private var scrollOffset: CGPoint = .zero
+    
     private var isFavorite: Bool {
         coreDataManager.events.contains { event in
             Int(event.id) == viewModel.event?.id
@@ -37,29 +44,15 @@ struct DetailView: View {
             Color.appBackground
             VStack {
                 if viewModel.event != nil {
-                    ScrollViewWithCollapsibleHeader(
-                        content: {
-                            VStack {
-                                ImageDetailView(
-                                    imageUrl: viewModel.image,
-                                    isPresented: $isPresented
-                                )
-                                .scaledToFill()
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                .clipped()
-                                DetailInformationView(
-                                    title: viewModel.title,
-                                    startDate: viewModel.startDate,
-                                    endDate: viewModel.endDate,
-                                    adress: viewModel.adress,
-                                    location: viewModel.location,
-                                    agentTitle: viewModel.agentTitle,
-                                    role: viewModel.role,
-                                    bodyText: viewModel.bodyText
-                                )
-                            }
-                        }
-                    )
+                    ScrollViewWithStickyHeader(
+                        header: header,
+                        headerHeight: headerHeight,
+                        headerMinHeight: headerMinHeight,
+                        onScroll: handleScrollOffset
+                    ) {
+                        listItems
+                    }
+                    
                 } else {
                     ShimmerDetailView()
                         .ignoresSafeArea(.all)
@@ -114,6 +107,53 @@ struct DetailView: View {
         .task {
             await viewModel.fetchEventDetails()
         }
+    }
+    var listItems: some View {
+        DetailInformationView(
+            startDate: viewModel.startDate,
+            endDate: viewModel.endDate,
+            adress: viewModel.adress,
+            location: viewModel.location,
+            agentTitle: viewModel.agentTitle,
+            role: viewModel.role,
+            bodyText: viewModel.bodyText
+        )
+    }
+    
+    var headerTitle: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(viewModel.title)
+                .airbnbCerealFont(.medium, size: 22)
+        }
+        .padding(20)
+        .opacity(headerVisibleRatio)
+    }
+    
+    func header() -> some View {
+        ZStack(alignment: .bottomLeading) {
+          
+            ImageDetailView(
+                imageUrl: viewModel.image,
+                isPresented: $isPresented
+            )
+            .scaledToFill()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .clipped()
+            ScrollViewHeaderGradient()
+            headerTitle.previewHeaderContent()
+        }
+    }
+    
+    func handleScrollOffset(_ offset: CGPoint, headerVisibleRatio: CGFloat) {
+        self.scrollOffset = offset
+        self.headerVisibleRatio = headerVisibleRatio
+    }
+}
+
+private extension View {
+    func previewHeaderContent() -> some View {
+        self.foregroundColor(.white)
+            .shadow(color: .black.opacity(0.4), radius: 1, x: 1, y: 1)
     }
 }
 
