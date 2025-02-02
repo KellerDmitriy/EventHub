@@ -35,7 +35,7 @@ struct EventHubContentView: View {
                     selectedTab: $selectedTab,
                     switchTab: switchTab
                 )
-                .background(.white)
+                .background(.ultraThinMaterial)
             }
             .ignoresSafeArea()
         }
