@@ -13,9 +13,8 @@ struct DetailView: View {
     
     @State private var isPresented: Bool = false
     @State private var isShareViewPresented: Bool = false
-    @State private var headerHeight: CGFloat = 250
-    @State private var headerMinHeight: CGFloat = 100
-    
+    @State private var headerHeight: CGFloat = 400
+    @State private var headerMinHeight: CGFloat = 150
     
     @State
     private var headerVisibleRatio: CGFloat = 1
@@ -51,8 +50,8 @@ struct DetailView: View {
                         onScroll: handleScrollOffset
                     ) {
                         listItems
+                            .padding(.bottom, 40)
                     }
-                    
                 } else {
                     ShimmerDetailView()
                         .ignoresSafeArea(.all)
@@ -101,6 +100,8 @@ struct DetailView: View {
                
             }
         }
+        
+        .ignoresSafeArea()
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
         .animation(.easeInOut(duration: 0.3), value: isPresented)
@@ -108,16 +109,21 @@ struct DetailView: View {
             await viewModel.fetchEventDetails()
         }
     }
+    
     var listItems: some View {
-        DetailInformationView(
-            startDate: viewModel.startDate,
-            endDate: viewModel.endDate,
-            adress: viewModel.adress,
-            location: viewModel.location,
-            agentTitle: viewModel.agentTitle,
-            role: viewModel.role,
-            bodyText: viewModel.bodyText
-        )
+        VStack(alignment: .leading) {
+            headerTitle
+            
+            DetailInformationView(
+                startDate: viewModel.startDate,
+                endDate: viewModel.endDate,
+                adress: viewModel.adress,
+                location: viewModel.location,
+                agentTitle: viewModel.agentTitle,
+                role: viewModel.role,
+                bodyText: viewModel.bodyText
+            )
+        }
     }
     
     var headerTitle: some View {
@@ -131,16 +137,11 @@ struct DetailView: View {
     
     func header() -> some View {
         ZStack(alignment: .bottomLeading) {
-          
+//            ScrollViewHeaderGradient()
             ImageDetailView(
                 imageUrl: viewModel.image,
                 isPresented: $isPresented
             )
-            .scaledToFill()
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .clipped()
-            ScrollViewHeaderGradient()
-            headerTitle.previewHeaderContent()
         }
     }
     
@@ -158,6 +159,8 @@ private extension View {
 }
 
 #Preview {
-    DetailView(detailID: 32532)
-        .environmentObject(CoreDataManager())
+    NavigationView {
+        DetailView(detailID: 32532)
+            .environmentObject(CoreDataManager())
+    }
 }

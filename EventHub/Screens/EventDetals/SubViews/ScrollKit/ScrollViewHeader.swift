@@ -52,10 +52,10 @@ import SwiftUI
 ///
 /// Your header view will now automatically stretch out when
 /// the scroll view is pulled down.
-public struct ScrollViewHeader<Content: View>: View {
+struct ScrollViewHeader<Content: View>: View {
 
     /// Create a stretchable scroll view header.
-    public init(
+    init(
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.content = content
@@ -63,7 +63,7 @@ public struct ScrollViewHeader<Content: View>: View {
 
     private let content: () -> Content
 
-    public var body: some View {
+    var body: some View {
         GeometryReader { geo in
             content()
                 .stretchable(in: geo)

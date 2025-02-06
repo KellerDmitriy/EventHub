@@ -490,7 +490,6 @@
 		4831BA4F2CEB2F6700141C9A /* Modifiers */ = {
 			isa = PBXGroup;
 			children = (
-				4831BA3D2CEB28C400141C9A /* Font */,
 				E10ED00B2CF0E25500AFDBC2 /* RoundedCorner.swift */,
 				4831BA502CEB2F9500141C9A /* FontModifier.swift */,
 			);
@@ -823,6 +822,7 @@
 		E1F652952D2321F2006589F1 /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
+				4831BA3D2CEB28C400141C9A /* Font */,
 				4831BA582CEB421C00141C9A /* Components */,
 				E1F652932D2321EB006589F1 /* Resources.swift */,
 			);

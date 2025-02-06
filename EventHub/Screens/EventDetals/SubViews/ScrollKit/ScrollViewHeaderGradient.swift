@@ -13,14 +13,14 @@ import SwiftUI
 ///
 /// This is basically just a convenience, to avoid having to
 /// use a `LinearGradient` from scratch.
-public struct ScrollViewHeaderGradient: View {
+struct ScrollViewHeaderGradient: View {
 
     /// Create a scroll view header gradient.
     ///
     /// - Parameters:
     ///   - startColor: The top start color, by default `.clear`.
     ///   - endColor: The bottom end color, by default semi-black.
-    public init(
+    init(
         _ startColor: Color = .clear,
         _ endColor: Color? = nil
     ) {
@@ -34,7 +34,7 @@ public struct ScrollViewHeaderGradient: View {
     ///   - startPoint: The top start point.
     ///   - endColor: The bottom end color, by default semi-black.
     ///   - endPoint: The top start point.
-    public init(
+    init(
         _ startColor: Color = .clear,
         _ startPoint: UnitPoint,
         _ endColor: Color? = nil,
@@ -51,12 +51,13 @@ public struct ScrollViewHeaderGradient: View {
     private let endColor: Color
     private let endPoint: UnitPoint
 
-    public var body: some View {
+    var body: some View {
         LinearGradient(
             colors: [startColor, endColor],
             startPoint: startPoint,
             endPoint: endPoint
         )
+        .ignoresSafeArea()
     }
 }
 
@@ -64,6 +65,6 @@ public struct ScrollViewHeaderGradient: View {
 
     VStack {
         ScrollViewHeaderGradient()
-        ScrollViewHeaderGradient(.blue, .topLeading, .yellow, .bottom)
+    
     }
 }
