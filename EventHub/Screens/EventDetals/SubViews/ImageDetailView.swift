@@ -44,10 +44,10 @@ struct ImageDetailView: View {
                         .background(.white.opacity(0.3))
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
-                .padding(.trailing, 12)
-                .padding(.bottom, 25)
+                .padding(.trailing, 16)
+                .padding(.bottom, 250)
             }
         }
-        .frame(height: 400)
+       
     }
 }

@@ -25,14 +25,8 @@ import SwiftUI
 ///
 /// This view will automatically use an inline title display
 /// mode, since it doesn't work for a large nativation title.
-///
-/// > Important: `toolbarBackground(.hidden)` is applied for
-/// iOS 16 and later, to make the navigation bar transparent.
-/// It's not applied on iOS 15 and earlier, which means that
-/// you must use another way to make the bar transparent for
-/// older iOS versions. One way is to use appearance proxies
-/// if you can fall down to UIKit.
-public struct ScrollViewWithStickyHeader<Header: View, Content: View>: View {
+
+struct ScrollViewWithStickyHeader<Header: View, Content: View>: View {
 
     /// Create a scroll view with a sticky header.
     ///
@@ -44,7 +38,7 @@ public struct ScrollViewWithStickyHeader<Header: View, Content: View>: View {
     ///   - showsIndicators: Whether or not to show scroll indicators, by default `true`.
     ///   - onScroll: An action that will be called whenever the scroll offset changes, by default `nil`.
     ///   - content: The scroll view content builder.
-    public init(
+    init(
         _ axes: Axis.Set = .vertical,
         @ViewBuilder header: @escaping () -> Header,
         headerHeight: CGFloat,
@@ -70,7 +64,7 @@ public struct ScrollViewWithStickyHeader<Header: View, Content: View>: View {
     private let onScroll: ScrollAction?
     private let content: () -> Content
 
-    public typealias ScrollAction = (_ offset: CGPoint, _ headerVisibleRatio: CGFloat) -> Void
+    typealias ScrollAction = (_ offset: CGPoint, _ headerVisibleRatio: CGFloat) -> Void
 
     @State
     private var navigationBarHeight: CGFloat = 0
@@ -82,15 +76,13 @@ public struct ScrollViewWithStickyHeader<Header: View, Content: View>: View {
         (headerHeight + scrollOffset.y) / headerHeight
     }
 
-    public var body: some View {
+    var body: some View {
         ZStack(alignment: .top) {
             scrollView
-            navbarOverlay
+//            navbarOverlay
         }
-        .prefersNavigationBarHidden()
-        #if os(iOS)
+
         .navigationBarTitleDisplayMode(.inline)
-        #endif
     }
 }
 
@@ -146,32 +138,21 @@ private extension ScrollViewWithStickyHeader {
 }
 
 #Preview {
-    
     struct Preview: View {
         
         @State
         var selection = 0
         
         func header() -> some View {
-            #if canImport(UIKit)
-            TabView {
                 Color.red.tag(0)
-                Color.green.tag(1)
-                Color.blue.tag(2)
-            }
-            .tabViewStyle(.page)
-            #else
-            Color.red
-            #endif
         }
         
         var body: some View {
             ScrollViewWithStickyHeader(
-                .vertical,
                 header: header,
                 headerHeight: 250,
-                headerMinHeight: 150,
-                showsIndicators: false
+                headerMinHeight: 50,
+                showsIndicators: true
             ) {
                 LazyVStack {
                     ForEach(1...100, id: \.self) {
@@ -195,18 +176,4 @@ private extension ScrollViewWithStickyHeader {
     #endif
 }
 
-private extension View {
 
-    @ViewBuilder
-    func prefersNavigationBarHidden() -> some View {
-        #if os(watchOS)
-        self
-        #else
-        if #available(iOS 16.0, macOS 13.0, tvOS 16.0, *) {
-            self.toolbarBackground(.hidden)
-        } else {
-            self
-        }
-        #endif
-    }
-}

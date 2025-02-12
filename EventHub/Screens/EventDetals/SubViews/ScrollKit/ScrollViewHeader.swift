@@ -14,48 +14,12 @@ import SwiftUI
 /// For instance, this creates a header view with a gradient
 /// background, a gradient overlay and a bottom-leading text:
 ///
-/// ```swift
-/// struct MyHeader: View {
-///
-///     var body: some View {
-///         ScrollViewHeader {
-///         ZStack(alignment: .bottomLeading) {
-///             LinearGradient(
-///                 colors: [.blue, .yellow],
-///                 startPoint: .topLeading,
-///                 endPoint: .bottomTrailing
-///             )
-///             LinearGradient(
-///                 colors: [.clear, .black.opacity(0.6)],
-///                 startPoint: .top,
-///                 endPoint: .bottom
-///             )
-///             Text("Header title")
-///                 .padding()
-///         }
-///         .frame(height: 250)
-///     }
-/// }
-/// ```
-///
-/// To add the view to a scroll view with more content below
-/// the header, just add the header topmost in a `VStack`:
-///
-/// ```swift
-/// ScrollView(.vertical) {
-///     VStack(spacing: 0) {
-///         MyHeader()
-///         // More content here
-///     }
-/// }
-/// ```
-///
 /// Your header view will now automatically stretch out when
 /// the scroll view is pulled down.
-public struct ScrollViewHeader<Content: View>: View {
+struct ScrollViewHeader<Content: View>: View {
 
     /// Create a stretchable scroll view header.
-    public init(
+    init(
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.content = content
@@ -63,7 +27,7 @@ public struct ScrollViewHeader<Content: View>: View {
 
     private let content: () -> Content
 
-    public var body: some View {
+    var body: some View {
         GeometryReader { geo in
             content()
                 .stretchable(in: geo)

@@ -111,9 +111,7 @@
 		E1150B092D12EDAA005561AD /* ProfileError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1150B082D12EDAA005561AD /* ProfileError.swift */; };
 		E12715662CF88A520047FD78 /* DILifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12715652CF88A520047FD78 /* DILifecycle.swift */; };
 		E13ECF9D2D4CE57F00A7988E /* ScrollViewWithStickyHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13ECF9C2D4CE57F00A7988E /* ScrollViewWithStickyHeader.swift */; };
-		E13ECF9E2D4CE57F00A7988E /* ScrollViewHeaderGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13ECF992D4CE57F00A7988E /* ScrollViewHeaderGradient.swift */; };
 		E13ECF9F2D4CE57F00A7988E /* ScrollViewWithOffsetTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13ECF9B2D4CE57F00A7988E /* ScrollViewWithOffsetTracking.swift */; };
-		E13ECFA02D4CE57F00A7988E /* ScrollViewHeaderImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13ECF9A2D4CE57F00A7988E /* ScrollViewHeaderImage.swift */; };
 		E13ECFA12D4CE57F00A7988E /* ScrollViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13ECF982D4CE57F00A7988E /* ScrollViewHeader.swift */; };
 		E13ECFA42D4CE58B00A7988E /* ScrollViewOffsetTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13ECFA22D4CE58B00A7988E /* ScrollViewOffsetTracker.swift */; };
 		E14D572B2CF12272009949BC /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14D57292CF12272009949BC /* DetailViewModel.swift */; };
@@ -142,6 +140,7 @@
 		E1725DA52CF63594001B4920 /* DataFetchPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1725DA42CF63594001B4920 /* DataFetchPhase.swift */; };
 		E1725DB02CF73AC7001B4920 /* StartRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1725DAF2CF73AC7001B4920 /* StartRouter.swift */; };
 		E1725DB22CF74766001B4920 /* StartRouterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1725DB12CF74766001B4920 /* StartRouterView.swift */; };
+		E1937BB02D5CD93E000A4A13 /* DetailViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1937BAF2D5CD93E000A4A13 /* DetailViewTest.swift */; };
 		E19BFF0F2D2DD5CE003F36F4 /* LaunchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19BFF0E2D2DD5CE003F36F4 /* LaunchScreen.swift */; };
 		E1EB0CEC2D08610F002778AD /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EB0CEB2D08610F002778AD /* UserService.swift */; };
 		E1EB0CEE2D086199002778AD /* DBUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EB0CED2D086199002778AD /* DBUser.swift */; };
@@ -250,8 +249,6 @@
 		E1150B082D12EDAA005561AD /* ProfileError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileError.swift; sourceTree = "<group>"; };
 		E12715652CF88A520047FD78 /* DILifecycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DILifecycle.swift; sourceTree = "<group>"; };
 		E13ECF982D4CE57F00A7988E /* ScrollViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewHeader.swift; sourceTree = "<group>"; };
-		E13ECF992D4CE57F00A7988E /* ScrollViewHeaderGradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewHeaderGradient.swift; sourceTree = "<group>"; };
-		E13ECF9A2D4CE57F00A7988E /* ScrollViewHeaderImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewHeaderImage.swift; sourceTree = "<group>"; };
 		E13ECF9B2D4CE57F00A7988E /* ScrollViewWithOffsetTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewWithOffsetTracking.swift; sourceTree = "<group>"; };
 		E13ECF9C2D4CE57F00A7988E /* ScrollViewWithStickyHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewWithStickyHeader.swift; sourceTree = "<group>"; };
 		E13ECFA22D4CE58B00A7988E /* ScrollViewOffsetTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewOffsetTracker.swift; sourceTree = "<group>"; };
@@ -281,6 +278,7 @@
 		E1725DA42CF63594001B4920 /* DataFetchPhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFetchPhase.swift; sourceTree = "<group>"; };
 		E1725DAF2CF73AC7001B4920 /* StartRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartRouter.swift; sourceTree = "<group>"; };
 		E1725DB12CF74766001B4920 /* StartRouterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartRouterView.swift; sourceTree = "<group>"; };
+		E1937BAF2D5CD93E000A4A13 /* DetailViewTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewTest.swift; sourceTree = "<group>"; };
 		E19BFF0E2D2DD5CE003F36F4 /* LaunchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreen.swift; sourceTree = "<group>"; };
 		E1B52AD22CEE582F001AA8E0 /* EventDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDTO.swift; sourceTree = "<group>"; };
 		E1EB0CEB2D08610F002778AD /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
@@ -458,6 +456,7 @@
 		480681972CF5B272001A2D9A /* SocialNetworks */ = {
 			isa = PBXGroup;
 			children = (
+				E1937BAF2D5CD93E000A4A13 /* DetailViewTest.swift */,
 				480681982CF5B708001A2D9A /* SocialNetwork.swift */,
 				480681932CF4E5E5001A2D9A /* SocialNetworksView.swift */,
 				4806819A2CF5B723001A2D9A /* SocialNetworksViewModel.swift */,
@@ -490,7 +489,6 @@
 		4831BA4F2CEB2F6700141C9A /* Modifiers */ = {
 			isa = PBXGroup;
 			children = (
-				4831BA3D2CEB28C400141C9A /* Font */,
 				E10ED00B2CF0E25500AFDBC2 /* RoundedCorner.swift */,
 				4831BA502CEB2F9500141C9A /* FontModifier.swift */,
 			);
@@ -704,8 +702,6 @@
 			children = (
 				E13ECFA32D4CE58B00A7988E /* Helpers */,
 				E13ECF982D4CE57F00A7988E /* ScrollViewHeader.swift */,
-				E13ECF992D4CE57F00A7988E /* ScrollViewHeaderGradient.swift */,
-				E13ECF9A2D4CE57F00A7988E /* ScrollViewHeaderImage.swift */,
 				E13ECF9B2D4CE57F00A7988E /* ScrollViewWithOffsetTracking.swift */,
 				E13ECF9C2D4CE57F00A7988E /* ScrollViewWithStickyHeader.swift */,
 			);
@@ -823,6 +819,7 @@
 		E1F652952D2321F2006589F1 /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
+				4831BA3D2CEB28C400141C9A /* Font */,
 				4831BA582CEB421C00141C9A /* Components */,
 				E1F652932D2321EB006589F1 /* Resources.swift */,
 			);
@@ -942,9 +939,7 @@
 				6CFF22662CFA79D40076D394 /* SeeAllEventsView.swift in Sources */,
 				1B7EAD3B2CEBD14D00D2AB3D /* OnboardingViewModel.swift in Sources */,
 				E13ECF9D2D4CE57F00A7988E /* ScrollViewWithStickyHeader.swift in Sources */,
-				E13ECF9E2D4CE57F00A7988E /* ScrollViewHeaderGradient.swift in Sources */,
 				E13ECF9F2D4CE57F00A7988E /* ScrollViewWithOffsetTracking.swift in Sources */,
-				E13ECFA02D4CE57F00A7988E /* ScrollViewHeaderImage.swift in Sources */,
 				E13ECFA12D4CE57F00A7988E /* ScrollViewHeader.swift in Sources */,
 				E1F652942D2321EB006589F1 /* Resources.swift in Sources */,
 				E15B59FB2CFB8C3300196BF3 /* EventMarker.swift in Sources */,
@@ -994,6 +989,7 @@
 				E10ED03F2CF0E47F00AFDBC2 /* ShimmerView.swift in Sources */,
 				E101825A2D364E7B0090DFAA /* SeeAllExploreType.swift in Sources */,
 				E165D1C32CF5B3940030BA88 /* EmptyEventsView.swift in Sources */,
+				E1937BB02D5CD93E000A4A13 /* DetailViewTest.swift in Sources */,
 				E10ED0402CF0E47F00AFDBC2 /* BackBarButtonView.swift in Sources */,
 				E10ED0412CF0E47F00AFDBC2 /* BlueCapsuleButtonWithArrow.swift in Sources */,
 				E1EB0CEC2D08610F002778AD /* UserService.swift in Sources */,

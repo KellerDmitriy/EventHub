@@ -13,10 +13,9 @@ struct DetailView: View {
     
     @State private var isPresented: Bool = false
     @State private var isShareViewPresented: Bool = false
-    @State private var headerHeight: CGFloat = 250
-    @State private var headerMinHeight: CGFloat = 100
-    
-    
+    @State private var headerHeight: CGFloat = 320
+    @State private var headerMinHeight: CGFloat = 50
+   
     @State
     private var headerVisibleRatio: CGFloat = 1
 
@@ -42,6 +41,7 @@ struct DetailView: View {
     var body: some View {
         ZStack {
             Color.appBackground
+                .ignoresSafeArea()
             VStack {
                 if viewModel.event != nil {
                     ScrollViewWithStickyHeader(
@@ -51,11 +51,10 @@ struct DetailView: View {
                         onScroll: handleScrollOffset
                     ) {
                         listItems
+                            .padding(.bottom, 40)
                     }
-                    
                 } else {
                     ShimmerDetailView()
-                        .ignoresSafeArea(.all)
                 }
             }
             
@@ -67,7 +66,62 @@ struct DetailView: View {
                 ShareView(isPresented: $isPresented)
                     .transition(.move(edge: .bottom))
                     .zIndex(1)
+                    .ignoresSafeArea()
             }
+        }
+      
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden()
+        .animation(.easeInOut(duration: 0.3), value: isPresented)
+        .task {
+            await viewModel.fetchEventDetails()
+        }
+    }
+    
+    var listItems: some View {
+        VStack(alignment: .leading) {
+            headerTitle
+            addressAndTime
+            
+            DetailInformationView(
+                bodyText: viewModel.bodyText
+            )
+        }
+        .padding(20)
+        
+    }
+    
+    var headerTitle: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(viewModel.title)
+                .airbnbCerealFont(.medium, size: 22)
+        }
+        .opacity(headerVisibleRatio)
+    }
+    
+    var addressAndTime: some View {
+        VStack(alignment: .leading) {
+            DetailComponentView(
+                image: Image(systemName: "calendar"),
+                title:  viewModel.startDate,
+                description: viewModel.endDate
+            )
+            
+            DetailComponentView(
+                image: Image(.location),
+                title: viewModel.adress,
+                description: viewModel.location
+            )
+        }
+        .opacity(headerVisibleRatio)
+    }
+    
+    func header() -> some View {
+        ZStack(alignment: .bottomLeading) {
+            ImageDetailView(
+                imageUrl: viewModel.image,
+                isPresented: $isPresented
+            )
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -75,7 +129,7 @@ struct DetailView: View {
             }
             
             ToolbarItem(placement: .principal) {
-                ToolBarTitleView(title: Resources.Text.eventDetails.localized)
+                ToolBarTitleView(title: getTitle())
             }
             
             ToolbarItem(placement: .topBarTrailing) {
@@ -98,49 +152,7 @@ struct DetailView: View {
                         foregroundStyle: .white
                     )
                 )
-               
             }
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden()
-        .animation(.easeInOut(duration: 0.3), value: isPresented)
-        .task {
-            await viewModel.fetchEventDetails()
-        }
-    }
-    var listItems: some View {
-        DetailInformationView(
-            startDate: viewModel.startDate,
-            endDate: viewModel.endDate,
-            adress: viewModel.adress,
-            location: viewModel.location,
-            agentTitle: viewModel.agentTitle,
-            role: viewModel.role,
-            bodyText: viewModel.bodyText
-        )
-    }
-    
-    var headerTitle: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(viewModel.title)
-                .airbnbCerealFont(.medium, size: 22)
-        }
-        .padding(20)
-        .opacity(headerVisibleRatio)
-    }
-    
-    func header() -> some View {
-        ZStack(alignment: .bottomLeading) {
-          
-            ImageDetailView(
-                imageUrl: viewModel.image,
-                isPresented: $isPresented
-            )
-            .scaledToFill()
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .clipped()
-            ScrollViewHeaderGradient()
-            headerTitle.previewHeaderContent()
         }
     }
     
@@ -148,16 +160,20 @@ struct DetailView: View {
         self.scrollOffset = offset
         self.headerVisibleRatio = headerVisibleRatio
     }
-}
-
-private extension View {
-    func previewHeaderContent() -> some View {
-        self.foregroundColor(.white)
-            .shadow(color: .black.opacity(0.4), radius: 1, x: 1, y: 1)
+    
+    private func getTitle() -> String {
+        if headerVisibleRatio == 1 {
+            return Resources.Text.eventDetails.localized
+        } else {
+            return viewModel.title
+        }
     }
+    
 }
 
 #Preview {
-    DetailView(detailID: 32532)
-        .environmentObject(CoreDataManager())
+    NavigationView {
+        DetailView(detailID: 32532)
+            .environmentObject(CoreDataManager())
+    }
 }
