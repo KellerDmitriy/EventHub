@@ -10,47 +10,40 @@ import SwiftUI
 struct ShimmerDetailView: View {
     var body: some View {
         ZStack {
-            
-            RoundedRectangle(cornerRadius: 50)
-                .foregroundStyle(.fieldGray)
+            Color.fieldGray
+                .ignoresSafeArea()
             VStack {
-                RoundedRectangle(cornerRadius: 30)
-                    .frame(height: 244)
-                    .padding(20)
+                Rectangle()
+                    .frame(height: 400)
                     .foregroundStyle(.appLightGray)
                     .shimmering()
+                    .ignoresSafeArea()
                 
                 VStack(alignment: .leading, spacing: 20) {
                     RoundedRectangle(cornerRadius: 30)
                         .foregroundStyle(.appLightGray)
-                        .frame(height: 100)
-                        .shimmering()
-                        
-                    RoundedRectangle(cornerRadius: 30)
-                        .foregroundStyle(.appLightGray)
-                        .frame(width: 250,height: 90)
+                        .frame(height: 80)
                         .shimmering()
                     
                     RoundedRectangle(cornerRadius: 30)
                         .foregroundStyle(.appLightGray)
-                        .frame(width: 250,height: 90)
+                        .frame(width: 250,height: 50)
                         .shimmering()
                     
                     RoundedRectangle(cornerRadius: 30)
                         .foregroundStyle(.appLightGray)
-                        .frame(width: 250,height: 90)
+                        .frame(width: 250,height: 50)
                         .shimmering()
+                    
                     RoundedRectangle(cornerRadius: 30)
                         .foregroundStyle(.appLightGray)
-                        .frame(width: 290,height: 130)
+                        .frame(width: 250,height: 80)
                         .shimmering()
-                   
+                    Spacer()
                 }
-                .padding(.horizontal,20)
-                Spacer()
+                .padding(20)
             }
-            }
-        .ignoresSafeArea()
+        }
     }
 }
 

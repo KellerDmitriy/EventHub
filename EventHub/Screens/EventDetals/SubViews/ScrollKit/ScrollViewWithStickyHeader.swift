@@ -25,13 +25,7 @@ import SwiftUI
 ///
 /// This view will automatically use an inline title display
 /// mode, since it doesn't work for a large nativation title.
-///
-/// > Important: `toolbarBackground(.hidden)` is applied for
-/// iOS 16 and later, to make the navigation bar transparent.
-/// It's not applied on iOS 15 and earlier, which means that
-/// you must use another way to make the bar transparent for
-/// older iOS versions. One way is to use appearance proxies
-/// if you can fall down to UIKit.
+
 struct ScrollViewWithStickyHeader<Header: View, Content: View>: View {
 
     /// Create a scroll view with a sticky header.
@@ -70,7 +64,7 @@ struct ScrollViewWithStickyHeader<Header: View, Content: View>: View {
     private let onScroll: ScrollAction?
     private let content: () -> Content
 
-    public typealias ScrollAction = (_ offset: CGPoint, _ headerVisibleRatio: CGFloat) -> Void
+    typealias ScrollAction = (_ offset: CGPoint, _ headerVisibleRatio: CGFloat) -> Void
 
     @State
     private var navigationBarHeight: CGFloat = 0
@@ -82,10 +76,10 @@ struct ScrollViewWithStickyHeader<Header: View, Content: View>: View {
         (headerHeight + scrollOffset.y) / headerHeight
     }
 
-    public var body: some View {
+    var body: some View {
         ZStack(alignment: .top) {
             scrollView
-            navbarOverlay
+//            navbarOverlay
         }
 
         .navigationBarTitleDisplayMode(.inline)

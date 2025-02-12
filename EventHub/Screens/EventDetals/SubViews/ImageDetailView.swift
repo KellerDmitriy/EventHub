@@ -21,14 +21,14 @@ struct ImageDetailView: View {
                     KFImage(url)
                         .resizable()
                         .scaledToFill()
-                        .frame(height: 500 + (minY > 0 ? minY : 0))
+                        .frame(height: 400 + (minY > 0 ? minY : 0))
                         .frame(width: proxy.size.width)
                         .overlay(Color.black.opacity(0.3))
                 } else {
                     Image(.cardImg1)
                         .resizable()
                         .scaledToFill()
-                        .frame(height: 500 + (minY > 0 ? minY : 0))
+                        .frame(height: 400 + (minY > 0 ? minY : 0))
                         .frame(width: proxy.size.width)
                         .overlay(Color.black.opacity(0.3))
                 }
@@ -45,7 +45,7 @@ struct ImageDetailView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
                 .padding(.trailing, 16)
-                .padding(.bottom, 350)
+                .padding(.bottom, 250)
             }
         }
        

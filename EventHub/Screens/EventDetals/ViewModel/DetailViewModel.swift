@@ -23,7 +23,6 @@ final class DetailViewModel: ObservableObject {
     @Published var bodyText: String = "Нет описания"
     @Published var descriptionText: String = "Нет описания"
     
-    // Вычисляемые свойства для удобства использования во View
     var image: String? {
         return event?.image
     }
@@ -41,14 +40,6 @@ final class DetailViewModel: ObservableObject {
     var endDate: String {
         let date = event?.endDate ?? Date()
         return date.formattedDate(format: "E, MMM d • h:mm a")
-    }
-    
-    var agentTitle: String {
-        event?.participants.first?.agent?.title ?? "No Name"
-    }
-    
-    var role: String {
-        event?.participants.first?.role?.slug ?? "No Role"
     }
     
     var adress: String {
