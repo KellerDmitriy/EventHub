@@ -49,5 +49,6 @@ struct DetailComponentView: View {
                     .foregroundStyle(.appDarkGray)
             }
         }
+        .frame(width: .infinity)
     }
 }
