@@ -141,6 +141,7 @@
 		E1725DB02CF73AC7001B4920 /* StartRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1725DAF2CF73AC7001B4920 /* StartRouter.swift */; };
 		E1725DB22CF74766001B4920 /* StartRouterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1725DB12CF74766001B4920 /* StartRouterView.swift */; };
 		E1937BB02D5CD93E000A4A13 /* DetailViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1937BAF2D5CD93E000A4A13 /* DetailViewTest.swift */; };
+		E1937BBB2D5D3BD2000A4A13 /* ScrollViewHeaderGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1937BBA2D5D3BD2000A4A13 /* ScrollViewHeaderGradient.swift */; };
 		E19BFF0F2D2DD5CE003F36F4 /* LaunchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19BFF0E2D2DD5CE003F36F4 /* LaunchScreen.swift */; };
 		E1EB0CEC2D08610F002778AD /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EB0CEB2D08610F002778AD /* UserService.swift */; };
 		E1EB0CEE2D086199002778AD /* DBUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EB0CED2D086199002778AD /* DBUser.swift */; };
@@ -279,6 +280,7 @@
 		E1725DAF2CF73AC7001B4920 /* StartRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartRouter.swift; sourceTree = "<group>"; };
 		E1725DB12CF74766001B4920 /* StartRouterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartRouterView.swift; sourceTree = "<group>"; };
 		E1937BAF2D5CD93E000A4A13 /* DetailViewTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewTest.swift; sourceTree = "<group>"; };
+		E1937BBA2D5D3BD2000A4A13 /* ScrollViewHeaderGradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewHeaderGradient.swift; sourceTree = "<group>"; };
 		E19BFF0E2D2DD5CE003F36F4 /* LaunchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreen.swift; sourceTree = "<group>"; };
 		E1B52AD22CEE582F001AA8E0 /* EventDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDTO.swift; sourceTree = "<group>"; };
 		E1EB0CEB2D08610F002778AD /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
@@ -700,6 +702,7 @@
 		E13ECF972D4CE56700A7988E /* ScrollKit */ = {
 			isa = PBXGroup;
 			children = (
+				E1937BBA2D5D3BD2000A4A13 /* ScrollViewHeaderGradient.swift */,
 				E13ECFA32D4CE58B00A7988E /* Helpers */,
 				E13ECF982D4CE57F00A7988E /* ScrollViewHeader.swift */,
 				E13ECF9B2D4CE57F00A7988E /* ScrollViewWithOffsetTracking.swift */,
@@ -927,6 +930,7 @@
 				E10ED0062CF0DE6B00AFDBC2 /* OnboardingTabView.swift in Sources */,
 				8763C1652CF269AF002E4535 /* GoogleButton.swift in Sources */,
 				487957712CF75CB40079EA41 /* FavoriteEvent+CoreDataClass.swift in Sources */,
+				E1937BBB2D5D3BD2000A4A13 /* ScrollViewHeaderGradient.swift in Sources */,
 				48AD2DC82CF705DC00944547 /* PersistenceController.swift in Sources */,
 				22FE3C2A2CF28E4B00FAEACF /* TextOnlyButton.swift in Sources */,
 				E10ED0072CF0DE6B00AFDBC2 /* OnboardingControlsView.swift in Sources */,

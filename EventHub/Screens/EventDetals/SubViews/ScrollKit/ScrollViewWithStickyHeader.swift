@@ -8,36 +8,8 @@
 
 import SwiftUI
 
-/// This scroll view lets you inject a header view that will
-/// stick to the top when the view scrolls.
-///
-/// The view wraps a ``ScrollViewWithOffsetTracking`` to get
-/// scroll offset that it then uses to determine how much of
-/// the header that's below the navigation bar. It also uses
-/// a ``ScrollViewHeader`` to make your header view properly
-/// stretch out when the scroll view is pulled down.
-///
-/// You can use the `onScroll` init parameter to pass in any
-/// function that should be called whenever the view scrolls.
-/// The function is called with the scroll view offset and a
-/// "header visible ratio", which indicates how much of your
-/// header that is visible below the navigation bar.
-///
-/// This view will automatically use an inline title display
-/// mode, since it doesn't work for a large nativation title.
-
 struct ScrollViewWithStickyHeader<Header: View, Content: View>: View {
 
-    /// Create a scroll view with a sticky header.
-    ///
-    /// - Parameters:
-    ///   - axes: The scroll axes to use, by default `.vertical`.
-    ///   - header: The scroll view header builder.
-    ///   - headerHeight: The height to apply to the scroll view header.
-    ///   - headerMinHeight: The minimum height to apply to the scroll view header, by default `nil`.
-    ///   - showsIndicators: Whether or not to show scroll indicators, by default `true`.
-    ///   - onScroll: An action that will be called whenever the scroll offset changes, by default `nil`.
-    ///   - content: The scroll view content builder.
     init(
         _ axes: Axis.Set = .vertical,
         @ViewBuilder header: @escaping () -> Header,
@@ -79,9 +51,11 @@ struct ScrollViewWithStickyHeader<Header: View, Content: View>: View {
     var body: some View {
         ZStack(alignment: .top) {
             scrollView
-//            navbarOverlay
+            navbarOverlay
         }
-
+        .onAppear {
+            setupNavigationBarAppearance()
+        }
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -135,45 +109,17 @@ private extension ScrollViewWithStickyHeader {
         self.scrollOffset = offset
         self.onScroll?(offset, headerVisibleRatio)
     }
-}
 
-#Preview {
-    struct Preview: View {
+    /// Убираем фон у `UINavigationBar` на iOS 15
+    func setupNavigationBarAppearance() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = .clear
+        appearance.shadowColor = .clear
         
-        @State
-        var selection = 0
-        
-        func header() -> some View {
-                Color.red.tag(0)
-        }
-        
-        var body: some View {
-            ScrollViewWithStickyHeader(
-                header: header,
-                headerHeight: 250,
-                headerMinHeight: 50,
-                showsIndicators: true
-            ) {
-                LazyVStack {
-                    ForEach(1...100, id: \.self) {
-                        Text("\($0)")
-                    }
-                }
-            }
-        }
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
-    
-    return NavigationView {
-        #if os(macOS)
-        Color.clear
-        #endif
-        Preview()
-    }
-    .colorScheme(.dark)
-    .accentColor(.white)
-    #if os(iOS)
-    .navigationViewStyle(.stack)
-    #endif
 }
 
 
