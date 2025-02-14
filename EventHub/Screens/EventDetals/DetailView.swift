@@ -41,19 +41,19 @@ struct DetailView: View {
         ZStack {
             Color.appBackground
                 .ignoresSafeArea()
-
-                if viewModel.event != nil {
-                    ScrollViewWithStickyHeader(
-                        header: header,
-                        headerHeight: headerHeight,
-                        onScroll: handleScrollOffset
-                    ) {
-                        listItems
-                            .padding(.bottom, 40)
-                    }
-                } else {
-                    ShimmerDetailView()
+            
+            if viewModel.event != nil {
+                ScrollViewWithStickyHeader(
+                    header: header,
+                    headerHeight: headerHeight,
+                    onScroll: handleScrollOffset
+                ) {
+                    listItems
+                        .padding(.bottom, 40)
                 }
+            } else {
+                ShimmerDetailView()
+            }
             
             if isPresented {
                 Color.black.opacity(0.5)
@@ -75,11 +75,11 @@ struct DetailView: View {
             ToolbarItem(placement: .navigationBarLeading) {
                 BackBarButtonView()
             }
-
+            
             ToolbarItem(placement: .principal) {
                 ToolBarTitleView(title: getTitle())
             }
-
+            
             ToolbarItem(placement: .navigationBarTrailing) {
                 ToolBarButton(
                     action:
@@ -119,11 +119,15 @@ struct DetailView: View {
     func header() -> some View {
         ImageDetailView(
             headerVisibleRatio: headerVisibleRatio,
-            imageUrl: viewModel.image,
-            isPresented: $isPresented
+            imageUrl: viewModel.image
         )
+        .overlay(alignment: .topTrailing) {
+            WithClipShapeButton(image: .share) {
+                isPresented.toggle()
+            }
+            .padding(.top, 90)
+        }
     }
-
     
     func handleScrollOffset(_ offset: CGPoint, headerVisibleRatio: CGFloat) {
         self.scrollOffset = offset

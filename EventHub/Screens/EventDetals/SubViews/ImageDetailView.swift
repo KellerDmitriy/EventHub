@@ -12,7 +12,6 @@ struct ImageDetailView: View {
     var headerVisibleRatio: CGFloat
     
     let imageUrl: String?
-    @Binding var isPresented: Bool
     
     var body: some View {
         ZStack {
@@ -24,7 +23,7 @@ struct ImageDetailView: View {
                 .opacity(1 - headerVisibleRatio)
             cover
         }
-        .overlay(shareButton, alignment: .topTrailing)
+
     }
     
     var cover: some View {
@@ -45,21 +44,7 @@ struct ImageDetailView: View {
         
     }
     
-    var shareButton: some View {
-        Button {
-            isPresented = true
-        } label: {
-            Image(.share)
-                .resizable()
-                .scaledToFit()
-                .frame(maxWidth: 24, maxHeight: 24)
-                .padding(6)
-                .background(.white.opacity(0.3))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-        }
-        .padding(.top, 20)
-        .padding(.trailing, 16)
-    }
+    
     
     var url: URL? {
         guard let imageUrl, let url = URL(string: imageUrl) else { return nil }
@@ -87,6 +72,7 @@ private extension CGFloat {
 }
 
 #Preview {
-    ImageDetailView(headerVisibleRatio: .zero, imageUrl: "https://media.kudago.com/images/movie/poster/02/9f/029fde701e0100acb6268194f7a25749.jpg", isPresented: .constant(false))
+    ImageDetailView(headerVisibleRatio: .zero, imageUrl: "https://media.kudago.com/images/movie/poster/02/9f/029fde701e0100acb6268194f7a25749.jpg"
+                    )
         .frame(height: 320)
 }
