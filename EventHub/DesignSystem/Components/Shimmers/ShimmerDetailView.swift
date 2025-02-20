@@ -17,32 +17,33 @@ struct ShimmerDetailView: View {
                     .frame(height: 400)
                     .foregroundStyle(.appLightGray)
                     .shimmering()
-                    .ignoresSafeArea()
                 
-                VStack(alignment: .leading, spacing: 20) {
-                    RoundedRectangle(cornerRadius: 30)
+                VStack(alignment: .leading, spacing: 12) {
+                    RoundedRectangle(cornerRadius: 20)
                         .foregroundStyle(.appLightGray)
                         .frame(height: 80)
                         .shimmering()
                     
-                    RoundedRectangle(cornerRadius: 30)
+                    RoundedRectangle(cornerRadius: 20)
                         .foregroundStyle(.appLightGray)
                         .frame(width: 250,height: 50)
                         .shimmering()
                     
-                    RoundedRectangle(cornerRadius: 30)
+                    RoundedRectangle(cornerRadius: 20)
                         .foregroundStyle(.appLightGray)
                         .frame(width: 250,height: 50)
                         .shimmering()
                     
-                    RoundedRectangle(cornerRadius: 30)
+                    RoundedRectangle(cornerRadius: 20)
                         .foregroundStyle(.appLightGray)
                         .frame(width: 250,height: 80)
                         .shimmering()
-                    Spacer()
                 }
-                .padding(20)
+                .padding(.top, 12)
+                .padding(.horizontal)
+                Spacer()
             }
+            .ignoresSafeArea()
         }
     }
 }

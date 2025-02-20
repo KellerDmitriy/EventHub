@@ -23,7 +23,7 @@ struct EventHubApp: App {
     var body: some Scene {
         WindowGroup {
             StartRouterView()
-                .preferredColorScheme(.dark)
+                .preferredColorScheme(.none)
                 .environmentObject(coreDataManager)
         }
     }

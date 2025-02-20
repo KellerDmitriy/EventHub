@@ -2,7 +2,6 @@ import SwiftUI
 import FirebaseAuth
 
 struct SignInView: View {
-    private let storage = DIContainer.resolve(forKey: .storageService) ?? UDStorageService()
     
     var iconImageName: String = "shortLogo"
     var title = "EventHub".localized
@@ -13,78 +12,75 @@ struct SignInView: View {
     var signUpText = "Sign up".localized
     
     @StateObject var viewModel: AuthViewModel
-    @State private var isRememberMeOn: Bool
     @State private var isResetPasswordPresented = false
     
     init(router: StartRouter) {
         self._viewModel = StateObject(wrappedValue: AuthViewModel(router: router))
-        self._isRememberMeOn = State(initialValue: storage.getIsRememberMeOn())
     }
     
     var body: some View {
-//        NavigationView {
+        ZStack {
+            BackgroundWithEllipses()
+                .background(Color.appBackground)
             
-            ZStack {
-                BackgroundWithEllipses()
-                    .background(Color.appBackground)
-
-                GeometryReader { geometry in
-                    let screenWidth = geometry.size.width
-                    let horizontalPadding = screenWidth * 0.1
-                    let iconPadding = screenWidth * 0.3
-                    let smallPadding = screenWidth * 0.05
+            GeometryReader { geometry in
+                let screenWidth = geometry.size.width
+                let horizontalPadding = screenWidth * 0.1
+                let iconPadding = screenWidth * 0.3
+                let smallPadding = screenWidth * 0.05
+                
+                
+                VStack(alignment: .leading) {
+                    // Логотип и заголовок
+                    logoAndTitle(iconPadding: iconPadding, horizontalPadding: horizontalPadding)
                     
+                    // Поля ввода
+                    emailTextField(horizontalPadding: horizontalPadding)
+                    passwordTextField(horizontalPadding: horizontalPadding)
                     
-                    VStack(alignment: .leading) {
-                        // Логотип и заголовок
-                        logoAndTitle(iconPadding: iconPadding, horizontalPadding: horizontalPadding)
-                        
-                        // Поля ввода
-                        emailTextField(horizontalPadding: horizontalPadding)
-                        passwordTextField(horizontalPadding: horizontalPadding)
-                        
-                        // Напоминание и Сброс пароля
-                        rememberAndForgotPassword(horizontalPadding: horizontalPadding, smallPadding: smallPadding)
-                        
-                        // Кнопка "Войти"
-                        BlueButtonWithArrow(text: signInText) {
-                            Task {
-                                await viewModel.signIn()
-                            }
+                    // Напоминание и Сброс пароля
+                    rememberAndForgotPassword(horizontalPadding: horizontalPadding, smallPadding: smallPadding)
+                    
+                    // Кнопка "Войти"
+                    BlueButtonWithArrow(text: signInText) {
+                        Task {
+                            await viewModel.signIn()
                         }
-                        .padding(.top, smallPadding)
-                        .padding(.horizontal, horizontalPadding)
-                        
-                        // Альтернатива через Google
-                        orGoogleSignIn(horizontalPadding: horizontalPadding, smallPadding: smallPadding)
-                        
-                        Spacer()
-                        
-                        // Переход на регистрацию
-                        footerSignUp(smallPadding: smallPadding)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .navigationBarHidden(true)
+                    .padding(.top, smallPadding)
+                    .padding(.horizontal, horizontalPadding)
+                    
+                    // Альтернатива через Google
+                    orGoogleSignIn(horizontalPadding: horizontalPadding, smallPadding: smallPadding)
+                    
+                    Spacer()
+                    
+                    // Переход на регистрацию
+                    footerSignUp(smallPadding: smallPadding)
                 }
-                .alert(isPresented: isPresentedAlert()) {
-                    Alert(
-                        title: Text("Внимание"),
-                        message: Text(viewModel.authError?.localizedDescription ?? "" ),
-                        dismissButton: .default(Text("Ok"),
-                                                action: viewModel.cancelErrorAlert)
-                    )
-                }
-                .background(
-                    NavigationLink(
-                        destination: ResetPassView(viewModel: viewModel),
-                        isActive: $isResetPasswordPresented,
-                        label: { EmptyView() }
-                    )
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .navigationBarHidden(true)
+            }
+            .alert(isPresented: isPresentedAlert()) {
+                Alert(
+                    title: Text("Внимание"),
+                    message: Text(viewModel.authError?.localizedDescription ?? "" ),
+                    dismissButton: .default(Text("Ok"),
+                                            action: viewModel.cancelErrorAlert)
                 )
-                
-                
-            } //end zs
-//        }
+            }
+            .background(
+                NavigationLink(
+                    destination: ResetPassView(viewModel: viewModel),
+                    isActive: $isResetPasswordPresented,
+                    label: { EmptyView() }
+                )
+            )
+            .onAppear {
+                viewModel.isRememberOnMe
+            }
+            
+        }
     }
     
     private func logoAndTitle(iconPadding: CGFloat, horizontalPadding: CGFloat) -> some View {
@@ -123,7 +119,7 @@ struct SignInView: View {
     
     private func rememberAndForgotPassword(horizontalPadding: CGFloat, smallPadding: CGFloat) -> some View {
         HStack(spacing: 20) {
-            Toggle("", isOn: $isRememberMeOn)
+            Toggle("", isOn: isRememberOnMe())
                 .toggleStyle(SwitchToggleStyle(tint: Color.appBlue))
                 .labelsHidden()
             
@@ -167,12 +163,20 @@ struct SignInView: View {
         )
     }
     
+    private func isRememberOnMe() -> Binding<Bool> {
+        Binding(get: { viewModel.isRememberOnMe },
+                set: { newValue in
+            viewModel.isRememberOnMe = newValue
+        }
+        )
+    }
+    
     private func footerSignUp(smallPadding: CGFloat) -> some View {
         NavigationLink(destination: SignUpView(viewModel: viewModel)) {
             HStack {
                 Text(dontHaveAnAccText)
                     .airbnbCerealFont(.book, size: 15)
-                    .foregroundColor(.black)
+                    .foregroundColor(.titleFont)
                 
                 Text(signUpText)
                     .airbnbCerealFont(.book, size: 15)

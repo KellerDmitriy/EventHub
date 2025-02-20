@@ -13,8 +13,8 @@ final class StartRouter: ObservableObject {
     // MARK: - Published Properties
     @Published var routerState: RouterState = .launch
     
-    private let storage = DIContainer.resolve(forKey: .storageService) ?? UDStorageService()
-    //    private let authManager = FirebaseManager.shared
+    private var storage: IStorageService
+    private let authManager: IAuthService
     
     // MARK: - State & Event Enums
     enum RouterState {
@@ -32,13 +32,18 @@ final class StartRouter: ObservableObject {
     }
     
     // MARK: - Initializer
-    init() {
+    init(
+        storage: IStorageService = DIContainer.resolve(forKey: .storageService) ?? UDStorageService(),
+        authManager: IAuthService = DIContainer.resolve(forKey: .authService) ?? AuthService()
+    ) {
+        self.storage = storage
+        self.authManager = authManager
+        
         updateRouterState(with: .launchCompleted)
     }
     
     // MARK: - State Management
     private func reduce(_ event: StartEvent) -> RouterState {
-     
         switch event {
         case .onboardingCompleted: return rootState()
         case .userAuthorized: return .main
@@ -54,16 +59,13 @@ final class StartRouter: ObservableObject {
     
     // MARK: - Private Helpers
     private func rootState() -> RouterState {
-        if storage.hasCompletedOnboarding() {
-            if storage.getIsRememberMeOn() && Auth.auth().currentUser != nil {
-                return .main
-            } else {
-                return (Auth.auth().currentUser != nil && !storage.getIsRememberMeOn()) ? .main : .auth
-            }
-        } else {
-            storage.set(value: true as Bool, forKey: .hasCompletedOnboarding)
+        guard storage.hasCompleteOnboarding else {
+            storage.hasCompleteOnboarding = true
             return .onboarding
-           
         }
+        let isAuthenticated = authManager.isAuthenticated()
+        let isRememberMeOn = storage.isRememberMeOn
+        
+        return isAuthenticated && isRememberMeOn ? .main : .auth
     }
 }

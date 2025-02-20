@@ -34,7 +34,7 @@ struct SeeAllEventsView: View {
                 ForEach(viewModel.getEvents()) { event in
                    
                     if allowsDetailNavigation {
-                        NavigationLink(destination: DetailView(detailID: event.id)) {
+                        NavigationLink(destination: DetailsScreen(detailID: event.id)) {
                             eventView(for: event)
                                 .padding(.bottom, Drawing.cardPadding)
                         }
@@ -107,18 +107,18 @@ struct SeeAllEventsView: View {
                 image: event.image ?? Drawing.noImageCrashPlaceholder,
                 date: event.date,
                 title: event.title,
-                place: event.adress
+                place: event.address ?? "No address"
             )
         case .listEvents:
             ThirdSmallEventCard(
                 title: event.title,
-                link: event.adress
+                link: event.address ?? "No address"
             )
         case .movieEvents:
             SmallEventCardForMovie(
                 image: event.image ?? Drawing.noImagePlaceholder,
                 title: event.title,
-                url: event.adress
+                url: event.address ?? "No address"
             )
         }
     }

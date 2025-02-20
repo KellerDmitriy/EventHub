@@ -19,7 +19,7 @@ struct SeeAllEvents: View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 8) {
                 ForEach(viewModel.allEvents) { event in
-                    NavigationLink(destination: DetailView(detailID: event.id)) {
+                    NavigationLink(destination: DetailsScreen(detailID: event.id)) {
                         SmallEventCard(
                             image: event.image,
                             date: event.date,
