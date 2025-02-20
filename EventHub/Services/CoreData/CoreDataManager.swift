@@ -34,7 +34,7 @@ final class CoreDataManager: ObservableObject {
         favoriteEvent.id = event.id
         favoriteEvent.title = event.title
         favoriteEvent.date = event.eventDate
-        favoriteEvent.adress = event.adress
+        favoriteEvent.adress = event.address
         favoriteEvent.image = event.image
         saveContext()
         fetchEvents()

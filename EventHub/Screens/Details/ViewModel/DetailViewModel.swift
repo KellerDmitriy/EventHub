@@ -14,7 +14,7 @@ final class DetailViewModel: ObservableObject {
     private let eventService: IAPIServiceForDetail
     private let language = Language.ru
     
-    @Published var event: DetailEventModel? {
+    @Published var event: DetailsModel? {
         didSet {
             self.updateTexts()
         }
@@ -43,7 +43,7 @@ final class DetailViewModel: ObservableObject {
     }
     
     var adress: String {
-        event?.adress ?? "Unknown Address"
+        event?.address ?? "Unknown Address"
     }
     
     var location: String {
@@ -57,8 +57,8 @@ final class DetailViewModel: ObservableObject {
     }
     
     private func updateTexts() {
-        self.descriptionText = event?.description.htmlToString ?? "Нет описания"
-        self.bodyText = event?.bodyText.htmlToString ?? "Нет описания"
+        self.descriptionText = event?.description?.htmlToString ?? "Нет описания"
+        self.bodyText = event?.bodyText?.htmlToString ?? "Нет описания"
     }
     
     // Функция для получения деталей события
@@ -66,7 +66,7 @@ final class DetailViewModel: ObservableObject {
         let eventIDString: String = String(self.eventID)
         do {
             let fetchedEvent = try await eventService.getEventDetails(eventIDs: eventIDString, language: language)
-            self.event = fetchedEvent.first.map { DetailEventModel( dto: $0 )}
+            self.event = fetchedEvent.first.map { DetailsModel( dto: $0 )}
         } catch {
             print("Ошибка при получении события: \(error.localizedDescription)")
         }

@@ -105,7 +105,7 @@ struct ExploreScreen: View {
             
             // MARK: - Navigation Links
             push(trigger: $selectedEventID) { eventID in
-                DetailView(detailID: eventID)
+                DetailsScreen(detailID: eventID)
             }
             
             push(trigger: $selectedSeeAllType) { seeAllType in

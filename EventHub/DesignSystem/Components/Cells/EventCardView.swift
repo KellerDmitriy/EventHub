@@ -104,7 +104,7 @@ struct EventCardView: View {
                                 let visitors = getVisitorsAvatars(visitors: visitors)
                                 
                                 let imageURL = visitors[index].image
-                                let url = URL(string: imageURL)
+                                let url = URL(string: imageURL ?? "")
                                 
                                 KFImage(url)
                                     .placeholder {
@@ -152,7 +152,7 @@ struct EventCardView: View {
                             .resizable()
                             .foregroundStyle(.geolocationText)
                             .frame(width: 16, height: 16)
-                        Text(event.adress.localized)
+                        Text(event.address?.localized ?? "")
                             .airbnbCerealFont(AirbnbCerealFont.book, size: 13)
                             .foregroundStyle(.geolocationText)
                     }

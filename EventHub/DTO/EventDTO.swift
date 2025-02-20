@@ -16,7 +16,7 @@ struct APIResponseDTO: Codable, Sendable {
 // MARK: - Event
 struct EventDTO: Codable, Identifiable, Sendable {
     let id: Int
-    let title: String?
+    let title: String
     let images: [ImageDTO]
     let description: String?
     let bodyText: String?

@@ -85,7 +85,7 @@ enum AuthenticationError: LocalizedError, Equatable {
 
 @MainActor
 final class AuthViewModel: ObservableObject{
-    
+    private let storage: UDStorageService
     private let authService: IAuthService
     private let userService: IUserService
     private let router: StartRouter
@@ -98,8 +98,13 @@ final class AuthViewModel: ObservableObject{
     
     @Published var authenticationState: AuthStatus = .unauthenticated
     @Published var authError: AuthenticationError?
-    
     @Published var isLoading: Bool = false
+    
+    @Published var isRememberOnMe: Bool {
+        didSet {
+            storage.isRememberMeOn = isRememberOnMe
+        }
+    }
     
     var formIsValid: Bool {
         return !email.isEmpty && !password.isEmpty && password.count >= 5 && !password.contains(" ")
@@ -117,12 +122,15 @@ final class AuthViewModel: ObservableObject{
     //    MARK: - INIT
     init(
         router: StartRouter,
+        storage: UDStorageService = DIContainer.resolve(forKey: .storageService) ?? UDStorageService(),
         authService: IAuthService = DIContainer.resolve(forKey: .authService) ?? AuthService(),
         userService: IUserService = DIContainer.resolve(forKey: .userService) ?? UserService()
     ) {
         self.router = router
+        self.storage = storage
         self.authService = authService
         self.userService = userService
+        self.isRememberOnMe = storage.isRememberMeOn
     }
     
     func cancelErrorAlert() {

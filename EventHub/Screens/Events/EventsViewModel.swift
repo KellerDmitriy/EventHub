@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 // MARK: - EventsViewModel
 @MainActor
 final class EventsViewModel: ObservableObject {

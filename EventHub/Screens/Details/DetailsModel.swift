@@ -7,27 +7,27 @@
 
 import Foundation
 
-struct DetailEventModel: Identifiable {
+struct DetailsModel: Identifiable {
     let id: Int
     let title: String
     let startDate: Date
     let endDate: Date
-    let participants: [Participant]
-    let description: String
-    let bodyText: String
-    let adress: String
-    let location: String
+    let participants: [Participant]?
+    let description: String?
+    let bodyText: String?
+    let address: String?
+    let location: String?
     let image: String?
 }
 
-extension DetailEventModel: EventConvertible {
+extension DetailsModel: EventConvertible {
     var eventDate: Date { self.startDate }
 }
 
-extension DetailEventModel {
+extension DetailsModel {
     init(dto: EventDTO) {
         self.id = dto.id
-        self.title = dto.title ?? "No Title"
+        self.title = dto.title
        
         let currentDate = Date()
         let closestDate = dto.dates
@@ -35,15 +35,15 @@ extension DetailEventModel {
             .map { Date(timeIntervalSince1970: TimeInterval($0.start!)) }
             .filter { $0 > currentDate }
             .min(by: { abs($0.timeIntervalSince(currentDate)) < abs($1.timeIntervalSince(currentDate)) })
-        self.startDate = closestDate ?? Date(timeIntervalSince1970: 1489312800)
+        self.startDate = closestDate ?? currentDate
    
         let endTimestamp = dto.dates.last?.end
         self.endDate = Date(timeIntervalSince1970: TimeInterval(endTimestamp ?? 1489312800))
-        self.description = dto.description ?? "No Description"
-        self.bodyText = dto.bodyText ?? "No Body Text"
-        self.participants = dto.participants ?? []
-        self.adress = dto.place?.title ?? "Unknown Address"
-        self.location = dto.place?.address ?? "Unknown Location"
+        self.description = dto.description
+        self.bodyText = dto.bodyText
+        self.participants = dto.participants
+        self.address = dto.place?.title
+        self.location = dto.place?.address
         self.image = dto.images.first?.image
     }
 }

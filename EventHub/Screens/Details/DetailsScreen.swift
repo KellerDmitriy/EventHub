@@ -1,5 +1,5 @@
 //
-//  DetailView.swift
+//  DetailsScreen.swift
 //  EventHub
 //
 //  Created by Даниил Сивожелезов on 21.11.2024.
@@ -7,25 +7,24 @@
 
 import SwiftUI
 
-struct DetailView: View {
+struct DetailsScreen: View {
     @EnvironmentObject private var coreDataManager: CoreDataManager
     @StateObject private var viewModel: DetailViewModel
     
-    @State private var isPresented: Bool = false
-    @State private var isShareViewPresented: Bool = false
+    @State private var isSharePresented: Bool = false
+
     @State private var headerHeight: CGFloat = 320
     
-    @State
-    private var headerVisibleRatio: CGFloat = 1
+    @State private var headerVisibleRatio: CGFloat = 1
     
-    @State
-    private var scrollOffset: CGPoint = .zero
+    @State private var scrollOffset: CGPoint = .zero
     
     private var isFavorite: Bool {
         coreDataManager.events.contains { event in
             Int(event.id) == viewModel.event?.id
         }
     }
+    
     // MARK: - Drawing Constants
     private struct Drawing {
         static let titleFontSize: CGFloat = 24
@@ -55,19 +54,19 @@ struct DetailView: View {
                 ShimmerDetailView()
             }
             
-            if isPresented {
+            if isSharePresented {
                 Color.black.opacity(0.5)
                     .edgesIgnoringSafeArea(.all)
                     .transition(.opacity)
                 
-                ShareView(isPresented: $isPresented)
+                ShareView(isPresented: $isSharePresented)
                     .transition(.move(edge: .bottom))
                     .zIndex(1)
                     .ignoresSafeArea()
             }
         }
         .navigationBarBackButtonHidden()
-        .animation(.easeInOut(duration: 0.3), value: isPresented)
+        .animation(.easeInOut(duration: 0.3), value: isSharePresented)
         .task {
             await viewModel.fetchEventDetails()
         }
@@ -123,7 +122,7 @@ struct DetailView: View {
         )
         .overlay(alignment: .topTrailing) {
             WithClipShapeButton(image: .share) {
-                isPresented.toggle()
+                isSharePresented.toggle()
             }
             .padding(.top, 90)
         }
@@ -145,7 +144,7 @@ struct DetailView: View {
 
 #Preview {
     NavigationView {
-        DetailView(detailID: 32532)
+        DetailsScreen(detailID: 32532)
             .environmentObject(CoreDataManager())
     }
 }

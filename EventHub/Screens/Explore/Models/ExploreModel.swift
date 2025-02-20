@@ -11,7 +11,7 @@ protocol EventConvertible {
     var id: Int { get }
     var title: String { get }
     var eventDate: Date { get }
-    var adress: String { get }
+    var address: String? { get }
     var image: String? { get }
 }
 
@@ -20,7 +20,7 @@ struct ExploreModel: Identifiable {
     let title: String
     let visitors: [Visitor]?
     let date: Date
-    let adress: String
+    let address: String?
     let image: String?
     
     static let example = ExploreModel(
@@ -31,7 +31,7 @@ struct ExploreModel: Identifiable {
                    Visitor(image: "visitor", name: "Sonya"),
                    Visitor(image: "visitor", name: "Sonya")],
         date: .now,
-        adress: "36 Guild Street London, UK",
+        address: "36 Guild Street London, UK",
         image: "cardImg1")
 }
 
@@ -42,11 +42,11 @@ extension ExploreModel: EventConvertible {
 extension ExploreModel {
     init(dto: EventDTO) {
         self.id = dto.id
-        self.title = dto.title?.capitalized ?? "No Title"
+        self.title = dto.title.capitalized
         self.visitors = dto.participants?.map { participant in
             Visitor(
-                image: participant.agent?.images?.first?.image ?? "default_visitor_image",
-                name: participant.agent?.title ?? "No participant"
+                image: participant.agent?.images?.first?.image,
+                name: participant.agent?.title
             )
         }
         
@@ -58,9 +58,9 @@ extension ExploreModel {
             .min(by: { abs($0.timeIntervalSince(currentDate)) < abs($1.timeIntervalSince(currentDate)) })
         
         self.date = closestDate ?? Date(timeIntervalSince1970: 1489312800)
-        let location = dto.location?.name ?? ""
-        let place = dto.place?.address ?? ""
-        self.adress = "\(place), \(location)"
+        let location = dto.location?.name
+        let place = dto.place?.address
+        self.address = "\(String(describing: place)), \(String(describing: location))"
         self.image = dto.images.first?.image
     }
 }
@@ -72,7 +72,7 @@ extension ExploreModel {
         self.title = movieDto.title
         self.visitors = []
         self.date = (Date(timeIntervalSince1970: TimeInterval(movieDto.year)))
-        self.adress = movieDto.site_url
+        self.address = movieDto.site_url
         self.image = movieDto.poster.image
     }
 }
@@ -83,7 +83,7 @@ extension ExploreModel {
         self.title = listDto.title
         self.visitors = []
         self.date = listDto.publicationDate
-        self.adress = listDto.siteURL
+        self.address = listDto.siteURL
         self.image = listDto.siteURL
     }
 }
@@ -94,7 +94,7 @@ extension ExploreModel {
         self.title = searchDTO.title
         self.visitors = []
         self.date = (Date(timeIntervalSince1970: TimeInterval(searchDTO.daterange?.start ?? 1489312800)))
-        self.adress = searchDTO.place?.address ?? "Unknown Address"
+        self.address = searchDTO.place?.address
         self.image = searchDTO.firstImage?.image
     }
 }
@@ -105,7 +105,7 @@ extension ExploreModel {
         self.title = model.title
         self.visitors = []
         self.date = model.date
-        self.adress = model.place
+        self.address = model.place
         self.image = model.image
     }
 }
@@ -116,7 +116,7 @@ extension ExploreModel {
         self.title = event.title
         self.visitors = []
         self.date = event.date
-        self.adress = event.location
+        self.address = event.location
         self.image = event.image
     }
 }
@@ -124,10 +124,10 @@ extension ExploreModel {
 extension ExploreModel {
     init(event: FavoriteEvent) {
         self.id = event.id
-        self.title = event.title ?? "No Title"
+        self.title = event.title ?? ""
         self.visitors = []
         self.date = event.date ?? Date()
-        self.adress = event.adress ?? "Unknown Address"
+        self.address = event.adress
         self.image = event.image
     }
 }
@@ -162,6 +162,6 @@ extension ExploreModel {
 }
 
 struct Visitor {
-    let image: String
-    let name: String
+    let image: String?
+    let name: String?
 }

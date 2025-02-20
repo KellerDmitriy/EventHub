@@ -26,6 +26,7 @@ struct FavoritesScreen: View {
             }
             Spacer()
         }
+        .background(.appBackground) 
         .background {
             NavigationLink(
                 destination: SearchView(

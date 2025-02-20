@@ -41,10 +41,7 @@ struct ImageDetailView: View {
             .padding(.top, 65)
             .padding(.bottom, 20)
             .padding(.horizontal, 16)
-        
     }
-    
-    
     
     var url: URL? {
         guard let imageUrl, let url = URL(string: imageUrl) else { return nil }

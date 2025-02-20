@@ -8,7 +8,8 @@ import SwiftUI
 
 struct EventsScreen: View {
     @StateObject var viewModel: EventsViewModel
-    @State private var showAllEvents = false
+    @State private var showAllEvents: Bool? = nil
+    @State private var selectedEventID: Int? = nil
     
     // MARK: - Drawing Constants
     private enum Drawing {
@@ -65,13 +66,14 @@ struct EventsScreen: View {
                             ScrollView(.vertical) {
                                 VStack {
                                     ForEach(events) { event in
-                                        NavigationLink(destination: DetailView(detailID: event.id)) {
-                                            SmallEventCard(
-                                                image: event.image,
-                                                date: event.date,
-                                                title: event.title,
-                                                place: event.location
-                                            )
+                                        SmallEventCard(
+                                            image: event.image,
+                                            date: event.date,
+                                            title: event.title,
+                                            place: event.location
+                                        )
+                                        .onTapGesture {
+                                            self.selectedEventID = event.id
                                         }
                                     }
                                 }
@@ -84,16 +86,17 @@ struct EventsScreen: View {
                             .padding()
                     }
                 }
+                // MARK: - Navigation Links
+                push(trigger: $selectedEventID) { eventID in
+                    DetailsScreen(detailID: eventID)
+                }
                 
+                push(trigger: $showAllEvents) { eventID in
+                    SeeAllEvents(viewModel: viewModel)
+                }
             }
             .background(Color.appBackground)
-            .background(
-                NavigationLink(
-                    destination: SeeAllEvents(viewModel: viewModel),
-                    isActive: $showAllEvents,
-                    label: { EmptyView() }
-                )
-            )
+
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
@@ -120,6 +123,18 @@ struct EventsScreen: View {
     
     
     // MARK: - Helper Methods
+    private func push<T>(trigger: Binding<T?>, @ViewBuilder destination: @escaping (T) -> some View) -> some View {
+        NavigationLink(
+            destination: trigger.wrappedValue.map { destination($0) },
+            isActive: Binding(
+                get: { trigger.wrappedValue != nil },
+                set: { if !$0 { trigger.wrappedValue = nil } }
+            )
+        ) {
+            EmptyView()
+        }
+    }
+    
     private func currentPhase(for mode: EventsMode) -> DataFetchPhase<[EventModel]> {
         switch mode {
         case .upcoming:

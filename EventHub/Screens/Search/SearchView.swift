@@ -43,12 +43,12 @@ struct SearchView: View {
                     ScrollView(showsIndicators: false) {
                         VStack {
                             ForEach(viewModel.searchResults) { event in
-                                NavigationLink(destination: DetailView(detailID: event.id)) {
+                                NavigationLink(destination: DetailsScreen(detailID: event.id)) {
                                     SmallEventCard(
                                         image: event.image ?? "",
                                         date: event.date,
                                         title: event.title,
-                                        place: event.adress,
+                                        place: event.address ?? "",
                                         showPlace: false
                                     )
                                     .padding(.horizontal, 20)

@@ -8,8 +8,8 @@
 import Foundation
 
 protocol IStorageService {
-    func set(value: Any?, forKey key: UDStorageService.Key)
-    func getValue(forKey key: UDStorageService.Key) -> Any?
+    var isRememberMeOn: Bool { get set }
+    var hasCompleteOnboarding: Bool { get set }
 }
 
 final class UDStorageService: IStorageService {
@@ -20,27 +20,21 @@ final class UDStorageService: IStorageService {
         case isRememberMeOn
     }
     
-    func set(value: Any?, forKey key: Key) {
+    func set(value: Bool, forKey key: Key) {
         bd.set(value, forKey: key.rawValue)
     }
     
-    func getValue(forKey key: Key) -> Any? {
-        return bd.object(forKey: key.rawValue)
+    func getValue(forKey key: Key) -> Bool {
+        bd.bool(forKey: key.rawValue)
     }
     
-    func setIsRememberMeOn(_ isOn: Bool) {
-        set(value: isOn, forKey: .isRememberMeOn)
+    var isRememberMeOn: Bool {
+        get { getValue(forKey: .isRememberMeOn) }
+        set { set(value: newValue, forKey: .isRememberMeOn) }
     }
     
-    func getIsRememberMeOn() -> Bool {
-        return (getValue(forKey: .isRememberMeOn) as? Bool) ?? false
-    }
-    
-    func setHasCompletedOnboarding(_ completed: Bool) {
-        set(value: completed, forKey: .hasCompletedOnboarding)
-    }
-    
-    func hasCompletedOnboarding() -> Bool {
-        return (getValue(forKey: .hasCompletedOnboarding) as? Bool) ?? false
+    var hasCompleteOnboarding: Bool {
+        get { getValue(forKey: .hasCompletedOnboarding) }
+        set { set(value: newValue, forKey: .hasCompletedOnboarding) }
     }
 }
