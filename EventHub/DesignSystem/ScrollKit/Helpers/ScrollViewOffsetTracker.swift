@@ -73,8 +73,8 @@ extension View {
 
 
 enum ScrollOffsetNamespace {
-
     static let namespace = "scrollView"
+    static let exploreNamespace = "exploreNamespace"
 }
 
 struct ScrollOffsetPreferenceKey: PreferenceKey {
@@ -85,7 +85,6 @@ struct ScrollOffsetPreferenceKey: PreferenceKey {
 }
 
 #Preview {
-    
     struct Preview: View {
         
         @State

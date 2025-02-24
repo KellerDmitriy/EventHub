@@ -10,9 +10,8 @@ struct ExploreScreen: View {
     @State private var selectedEventID: Int? = nil
     @State private var selectedSeeAllType: SeeAllExploreType? = nil
     
-    @State private var headerHeight: CGFloat = 210
-    @State private var headerVisibleRatio: CGFloat = 1
-    @State private var scrollOffset: CGPoint = .zero
+    @State private var headerHeight: CGFloat = 255
+    @State private var headerOpacity: Double = 1.0
     @State private var showMiniStyleHeader: Bool = false
     
     //    MARK: - INIT
@@ -23,36 +22,50 @@ struct ExploreScreen: View {
     
     // MARK: - BODY
     var body: some View {
-            VStack(spacing: 0) {
+        ZStack(alignment: .top) {
+            Color.appBackground
+                .ignoresSafeArea()
+            
+            VStack {
                 exploreHeader(showMiniStyle: showMiniStyleHeader)
-                    .ignoresSafeArea()
                     .frame(height: headerHeight)
+                
+                    .zIndex(1)
                 
                 ScrollView(showsIndicators: false) {
                     VStack {
                         GeometryReader { proxy in
                             Color.clear
-                                .preference(key: ScrollOffsetKey.self, value: proxy.frame(in: .global).height)
+                                .preference(
+                                    key: ScrollOffsetKey.self,
+                                    value: proxy.frame(in: .named("scroll")).minY
+                                )
                         }
                         .frame(height: 0)
                         upcomingEventsSection
-                            
                         nearbyEventsSection
-                         
+                    }
                 }
+                .coordinateSpace(name: "scroll")
             }
-            .padding(.vertical)
-            .onPreferenceChange(ScrollOffsetKey .self) { value in
-                withAnimation {
-                    print(value)
-                    showMiniStyleHeader = value < -10
-                    headerHeight = max(10, 210 + value)
-                }
-            }
+            
+            .ignoresSafeArea()
+            .onPreferenceChange(ScrollOffsetKey.self) { value in
+                let newShowMiniStyle = value < -20
+                let newHeaderHeight: CGFloat = newShowMiniStyle ? 150 : 255
+                let newOpacity = max(0, min(1, (200 + value) / 200))
                 
+                guard newShowMiniStyle != showMiniStyleHeader || newHeaderHeight != headerHeight || newOpacity != headerOpacity else { return }
+                
+                withAnimation {
+                    showMiniStyleHeader = newShowMiniStyle
+                    headerHeight = newHeaderHeight
+                    headerOpacity = newOpacity
+                }
+            }
+            
             navigationLinks
         }
-        .background(Color.appBackground)
         .task {
             await viewModel.loadAllData()
         }
@@ -62,11 +75,14 @@ struct ExploreScreen: View {
         VStack(spacing: 0) {
             if showMiniStyle {
                 VStack {
-                    Spacer()
+                        cateroryBar
                 }
+                    .padding(.top, 150)
+                
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
-                        ToolBarTitleView(title: getTitle())
+                        ToolBarTitleView(title: viewModel.currentPosition)
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
@@ -78,14 +94,19 @@ struct ExploreScreen: View {
                         )
                     }
                 }
+                
             } else {
-                exploreToolBar
-                cateroryBar
-                Spacer()
-                functionalButtons
-                    .padding(.bottom, 12)
+                VStack {
+                    exploreToolBar
+                    cateroryBar
+                    Spacer()
+                    functionalButtons
+                        .padding(.bottom, 12)
+                }
+                .opacity(headerOpacity)
             }
         }
+        .animation(.easeInOut(duration: 0.3), value: showMiniStyle)
     }
     
     //    MARK: - Components
@@ -125,12 +146,12 @@ struct ExploreScreen: View {
     }
     
     private var upcomingEventsSection: some View {
-        VStack {
+        Group {
             MainCategorySectionView(
                 title: "Upcoming Events",
                 action: { navigateToSeeAll(.upcomingEvents) }
             )
-            .padding(.top, 10)
+            .padding(.top)
             
             if viewModel.emptyUpcoming {
                 NoEventsView()
@@ -146,12 +167,12 @@ struct ExploreScreen: View {
         }
     }
     private var nearbyEventsSection: some View {
-        VStack {
+        Group {
             MainCategorySectionView(
                 title: "Nearby You",
                 action: { navigateToSeeAll(.nearbyYouEvents) }
             )
-            .padding(.bottom, 10)
+            .padding(.top)
             
             if viewModel.emptyNearbyYou {
                 NoEventsView()
@@ -171,8 +192,11 @@ struct ExploreScreen: View {
     // MARK: - Navigation Links
     private var navigationLinks: some View {
         Group {
-            push(trigger: $selectedEventID) { eventID in
-                DetailsScreen(detailID: eventID)
+            NavigationLink(
+                destination: SearchView(searchScreenType: .withoutData),
+                isActive: $isSearchPresented
+            ) {
+                EmptyView()
             }
             
             push(trigger: $selectedEventID) { eventID in
@@ -184,14 +208,7 @@ struct ExploreScreen: View {
             }
         }
     }
-//    MARK: - Helpers
-    private func getTitle() -> String {
-        if headerVisibleRatio < 0.3 {
-            return ""
-        } else {
-            return Resources.Text.explore.localized
-        }
-    }
+    
     
     // MARK: - Helper Methods
     private func push<T>(trigger: Binding<T?>, @ViewBuilder destination: @escaping (T) -> some View) -> some View {

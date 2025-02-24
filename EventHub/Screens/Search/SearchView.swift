@@ -25,8 +25,6 @@ struct SearchView: View {
                     SearchBarViewForMap(
                       isSearchPresented: $isSearchPresented,
                       searchText: $viewModel.searchText,
-                      textColor: .appForegroundStyle,
-                      magnifierColor: .appBlue,
                       shouldHandleTextInput: true,
                       fiterAction: {_ in }
                     )

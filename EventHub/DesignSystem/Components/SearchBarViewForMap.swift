@@ -11,8 +11,8 @@ struct SearchBarViewForMap: View {
     @Binding var isSearchPresented: Bool
     @Binding var searchText: String
     
-    let textColor: Color
-    let magnifierColor: Color
+    let textColor: Color = .appForegroundStyle
+    let magnifierColor: Color = .white
     
     let shouldHandleTextInput: Bool
     let fiterAction: (DisplayOrderType) -> Void
@@ -64,8 +64,6 @@ struct SearchBarViewForMap: View {
     SearchBarViewForMap(
         isSearchPresented: .constant(false),
         searchText: .constant(""),
-        textColor: .white,
-        magnifierColor: .green,
         shouldHandleTextInput: true,
     fiterAction: { _ in }
         )

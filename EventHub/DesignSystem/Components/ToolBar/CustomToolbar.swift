@@ -19,7 +19,6 @@ struct ExploreToolBar: View {
     let isNotifications: Bool
     let filterAction: (DisplayOrderType) -> Void
     
-    let magnifierColor: Color = .white
     let textColor: Color = .white
     
     let locations: [EventLocation]
@@ -113,8 +112,6 @@ struct ExploreToolBar: View {
         SearchBarViewForMap (
             isSearchPresented: $isSearchPresented,
             searchText: .constant(searchText),
-            textColor: textColor,
-            magnifierColor: magnifierColor,
             shouldHandleTextInput: false,
             fiterAction: filterAction
         )
