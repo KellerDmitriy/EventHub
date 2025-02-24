@@ -20,7 +20,7 @@ struct MapEventModel: Identifiable {
 extension MapEventModel {
     init(dto: EventDTO) {
         self.id = dto.id
-        self.title = dto.title ?? ""
+        self.title = dto.title
         
         if let startDate = dto.dates.first?.startDate,
            let startTime = dto.dates.first?.startTime {

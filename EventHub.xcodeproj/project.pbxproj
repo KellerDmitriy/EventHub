@@ -110,6 +110,7 @@
 		E10ED0622CF0E55300AFDBC2 /* Date+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10ED0612CF0E55300AFDBC2 /* Date+Ex.swift */; };
 		E1150B092D12EDAA005561AD /* ProfileError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1150B082D12EDAA005561AD /* ProfileError.swift */; };
 		E12715662CF88A520047FD78 /* DILifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12715652CF88A520047FD78 /* DILifecycle.swift */; };
+		E12EBD6C2D6C8757003FCEC6 /* ScrollOffsetKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12EBD6B2D6C8757003FCEC6 /* ScrollOffsetKey.swift */; };
 		E13ECF9D2D4CE57F00A7988E /* ScrollViewWithStickyHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13ECF9C2D4CE57F00A7988E /* ScrollViewWithStickyHeader.swift */; };
 		E13ECF9F2D4CE57F00A7988E /* ScrollViewWithOffsetTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13ECF9B2D4CE57F00A7988E /* ScrollViewWithOffsetTracking.swift */; };
 		E13ECFA12D4CE57F00A7988E /* ScrollViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13ECF982D4CE57F00A7988E /* ScrollViewHeader.swift */; };
@@ -249,6 +250,7 @@
 		E10ED0612CF0E55300AFDBC2 /* Date+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Ex.swift"; sourceTree = "<group>"; };
 		E1150B082D12EDAA005561AD /* ProfileError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileError.swift; sourceTree = "<group>"; };
 		E12715652CF88A520047FD78 /* DILifecycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DILifecycle.swift; sourceTree = "<group>"; };
+		E12EBD6B2D6C8757003FCEC6 /* ScrollOffsetKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollOffsetKey.swift; sourceTree = "<group>"; };
 		E13ECF982D4CE57F00A7988E /* ScrollViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewHeader.swift; sourceTree = "<group>"; };
 		E13ECF9B2D4CE57F00A7988E /* ScrollViewWithOffsetTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewWithOffsetTracking.swift; sourceTree = "<group>"; };
 		E13ECF9C2D4CE57F00A7988E /* ScrollViewWithStickyHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewWithStickyHeader.swift; sourceTree = "<group>"; };
@@ -431,8 +433,6 @@
 				4831BA532CEB2FEE00141C9A /* Screens */,
 				E1B52ADB2CEE5853001AA8E0 /* Services */,
 				E1F652952D2321F2006589F1 /* DesignSystem */,
-				4831BA4F2CEB2F6700141C9A /* Modifiers */,
-				4831BA4C2CEB2F4000141C9A /* Extensions */,
 				2228386C2CE937A700DCF847 /* Assets.xcassets */,
 				2228386E2CE937A700DCF847 /* Preview Content */,
 				225123AD2CF885F400CD8FE9 /* Localizable.xcstrings */,
@@ -689,7 +689,6 @@
 			isa = PBXGroup;
 			children = (
 				480681972CF5B272001A2D9A /* SocialNetworks */,
-				E13ECF972D4CE56700A7988E /* ScrollKit */,
 				E14D57272CF12272009949BC /* DetailComponentView.swift */,
 				480681952CF4E860001A2D9A /* ShareView.swift */,
 				48C66CFF2CFB293A006339CD /* DetailInformationView.swift */,
@@ -714,6 +713,7 @@
 		E13ECFA32D4CE58B00A7988E /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				E12EBD6B2D6C8757003FCEC6 /* ScrollOffsetKey.swift */,
 				E13ECFA22D4CE58B00A7988E /* ScrollViewOffsetTracker.swift */,
 			);
 			path = Helpers;
@@ -822,7 +822,10 @@
 		E1F652952D2321F2006589F1 /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
+				4831BA4C2CEB2F4000141C9A /* Extensions */,
+				4831BA4F2CEB2F6700141C9A /* Modifiers */,
 				4831BA3D2CEB28C400141C9A /* Font */,
+				E13ECF972D4CE56700A7988E /* ScrollKit */,
 				4831BA582CEB421C00141C9A /* Components */,
 				E1F652932D2321EB006589F1 /* Resources.swift */,
 			);
@@ -867,7 +870,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1610;
+				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					222838642CE937A400DCF847 = {
 						CreatedOnToolsVersion = 15.4;
@@ -881,6 +884,7 @@
 			knownRegions = (
 				en,
 				ru,
+				Base,
 			);
 			mainGroup = 2228385C2CE937A400DCF847;
 			packageReferences = (
@@ -1030,6 +1034,7 @@
 				6CF41E2C2CF4DBC400E58618 /* ShimmerAvatarView.swift in Sources */,
 				E15B59F72CFB4B2200196BF3 /* LocationManager.swift in Sources */,
 				E165D1C92CF5DFEB0030BA88 /* ModeEventsSegmentedControl.swift in Sources */,
+				E12EBD6C2D6C8757003FCEC6 /* ScrollOffsetKey.swift in Sources */,
 				E10ED0532CF0E47F00AFDBC2 /* SearchBarViewForMap.swift in Sources */,
 				E1EB0CF42D0865C6002778AD /* AuthViewModel.swift in Sources */,
 				E10ED0542CF0E47F00AFDBC2 /* MainCategorySectionView.swift in Sources */,
@@ -1057,6 +1062,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1120,6 +1126,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

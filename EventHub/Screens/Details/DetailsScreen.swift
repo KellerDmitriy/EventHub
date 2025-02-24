@@ -14,9 +14,7 @@ struct DetailsScreen: View {
     @State private var isSharePresented: Bool = false
 
     @State private var headerHeight: CGFloat = 320
-    
     @State private var headerVisibleRatio: CGFloat = 1
-    
     @State private var scrollOffset: CGPoint = .zero
     
     private var isFavorite: Bool {

@@ -32,9 +32,9 @@ import SwiftUI
 ///
 /// The offset action will trigger when the list scrolls and
 /// provide you with the scroll offset.
-public struct ScrollViewOffsetTracker<Content: View>: View {
+ struct ScrollViewOffsetTracker<Content: View>: View {
     
-    public init(
+    init(
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.content = content
@@ -42,7 +42,7 @@ public struct ScrollViewOffsetTracker<Content: View>: View {
     
     private var content: () -> Content
 
-    public var body: some View {
+    var body: some View {
         ZStack(alignment: .top) {
             GeometryReader { geo in
                 Color.clear
@@ -58,7 +58,7 @@ public struct ScrollViewOffsetTracker<Content: View>: View {
     }
 }
 
-public extension View {
+extension View {
 
     /// Add this modifier to a `ScrollView`, a `List` or any
     /// view that has a ``ScrollViewOffsetTracker`` to track

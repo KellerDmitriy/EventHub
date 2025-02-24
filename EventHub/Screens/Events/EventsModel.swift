@@ -34,7 +34,7 @@ struct EventModel: Identifiable {
 extension EventModel {
     init(dto: EventDTO) {
         self.id = dto.id
-        self.title = dto.title ?? ""
+        self.title = dto.title
         
         let location = dto.location?.name ?? ""
         let place = dto.place?.address ?? ""
