@@ -37,6 +37,7 @@ struct ExploreScreen: View {
                 exploreHeader(showMiniStyle: showMiniStyleHeader)
                     .edgesIgnoringSafeArea(.top)
                     .frame(height: headerHeight)
+                    .opacity(headerOpacity)
                     .zIndex(1)
                 
                 ScrollView(showsIndicators: false) {
@@ -96,7 +97,7 @@ struct ExploreScreen: View {
                     cateroryBar
                     functionalButtons
                 }
-                .opacity(headerOpacity)
+
             }
         }
         .animation(.easeInOut(duration: 0.3), value: showMiniStyle)
