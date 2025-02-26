@@ -18,9 +18,7 @@ struct ExploreToolBar: View {
     
     let isNotifications: Bool
     let filterAction: (DisplayOrderType) -> Void
-    
     let textColor: Color = .white
-    
     let locations: [EventLocation]
     
     //    MARK: - Body

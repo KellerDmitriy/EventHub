@@ -10,7 +10,7 @@ struct ExploreScreen: View {
     @State private var selectedEventID: Int? = nil
     @State private var selectedSeeAllType: SeeAllExploreType? = nil
     
-    @State private var headerHeight: CGFloat = 255
+    @State private var headerHeight: CGFloat = 265
     @State private var headerOpacity: Double = 1.0
     @State private var showMiniStyleHeader: Bool = false
     
@@ -29,7 +29,6 @@ struct ExploreScreen: View {
             VStack {
                 exploreHeader(showMiniStyle: showMiniStyleHeader)
                     .frame(height: headerHeight)
-                
                     .zIndex(1)
                 
                 ScrollView(showsIndicators: false) {
@@ -52,7 +51,7 @@ struct ExploreScreen: View {
             .ignoresSafeArea()
             .onPreferenceChange(ScrollOffsetKey.self) { value in
                 let newShowMiniStyle = value < -20
-                let newHeaderHeight: CGFloat = newShowMiniStyle ? 150 : 255
+                let newHeaderHeight: CGFloat = newShowMiniStyle ? 150 : 265
                 let newOpacity = max(0, min(1, (200 + value) / 200))
                 
                 guard newShowMiniStyle != showMiniStyleHeader || newHeaderHeight != headerHeight || newOpacity != headerOpacity else { return }
@@ -101,7 +100,7 @@ struct ExploreScreen: View {
                     cateroryBar
                     Spacer()
                     functionalButtons
-                        .padding(.bottom, 12)
+                       
                 }
                 .opacity(headerOpacity)
             }
@@ -142,7 +141,6 @@ struct ExploreScreen: View {
             ],
             selectedEvent: $selectedSeeAllType
         )
-        .frame(height: 44)
     }
     
     private var upcomingEventsSection: some View {
