@@ -14,7 +14,7 @@ struct ToolBarTitleView: View {
     
     // MARK: - Drawing Constants
     private struct Drawing {
-        static let titleFontSize: CGFloat = 24
+        static let titleFontSize: CGFloat = 20
         static let maxToolbarWidth: CGFloat = UIScreen.main.bounds.width * 0.6
         static let maxToolbarHeight: CGFloat = 44 
     }

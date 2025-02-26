@@ -22,7 +22,6 @@ struct ShimmerAvatarView: View {
                 .frame(width: 24, height: 24)
                 .foregroundStyle(.purple)
                 .shimmering()
-            
         }
     }
 }

@@ -8,11 +8,9 @@
 import SwiftUI
 
 struct ScrollEventCardsView: View {
-    
-    let emptyArray: Bool
+
     let events: [ExploreModel]
     var showDetail: (Int) -> Void
-    
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -23,8 +21,11 @@ struct ScrollEventCardsView: View {
                     }
                 } else {
                     ForEach(events) { event in
-                        EventCardView(event: event, showDetail: showDetail)
+                        EventCardView(event: event)
                             .padding(.vertical, 10)
+                            .onTapGesture {
+                                showDetail(event.id)
+                            }
                     }
                 }
             }
@@ -34,5 +35,6 @@ struct ScrollEventCardsView: View {
 }
 
 #Preview {
-    ScrollEventCardsView(emptyArray: true, events: [ExploreModel.example, ExploreModel.example], showDetail: {_ in } )
+    ScrollEventCardsView(events: [ExploreModel.example, ExploreModel.example], showDetail: {_ in } )
+        .environmentObject(CoreDataManager())
 }

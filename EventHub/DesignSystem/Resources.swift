@@ -19,6 +19,9 @@ enum Resources {
         static let eventDetails = "Event Details"
         static let resetPassword = "Reset password"
         static let signUp = "Sign up"
+        
+        static let upcomingEventsTitle = "Upcoming Events"
+        static let nearbyEventsTitle = "Nearby You"
     }
     
 }

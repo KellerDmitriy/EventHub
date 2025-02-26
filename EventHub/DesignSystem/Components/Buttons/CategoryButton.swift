@@ -32,7 +32,6 @@ struct CategoryButton: View {
             .frame(height: 40)
             .background(backgroundColor)
             .clipShape(Capsule())
-            
         }
     }
 }

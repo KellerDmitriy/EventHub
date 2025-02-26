@@ -158,7 +158,6 @@ final class AuthViewModel: ObservableObject{
             authError = .validationSignUpError
             return
         }
-        
         do {
             var authDataResult = try await authService.createUser(email: email, password: password)
             authDataResult.userName = name

@@ -53,9 +53,9 @@ struct ScrollViewWithStickyHeader<Header: View, Content: View>: View {
             scrollView
             navbarOverlay
         }
-        .onAppear {
-            setupNavigationBarAppearance()
-        }
+//        .onAppear {
+//            setupNavigationBarAppearance()
+//        }
         .navigationBarTitleDisplayMode(.inline)
     }
 }
