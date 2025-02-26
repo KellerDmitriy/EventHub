@@ -25,6 +25,7 @@ struct ExploreToolBar: View {
     var body: some View {
         VStack {
             topBar
+                .padding(.top, 35)
             searchBar
         }
         .frame(height: 179)
@@ -37,10 +38,12 @@ struct ExploreToolBar: View {
     private var topBar: some View {
         HStack {
             locationMenu
+              
             Spacer()
             notificationButton
         }
-        .padding(.horizontal,24)
+        
+        .padding(.horizontal, 24)
         .padding(.bottom, 2)
     }
     

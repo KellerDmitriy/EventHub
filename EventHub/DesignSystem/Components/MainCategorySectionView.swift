@@ -9,9 +9,8 @@ import SwiftUI
 
 struct MainCategorySectionView: View {
     
-    let title : String
-    
-    let action: () -> Void
+    let title: String
+    var isShowAll = false
     
     var body: some View {
         HStack {
@@ -22,10 +21,7 @@ struct MainCategorySectionView: View {
                 .opacity(0.84)
             
             Spacer()
-            
-            Button {
-                action()
-            } label: {
+            if isShowAll {
                 Text("See All")
                     .frame(height: 23)
                     .airbnbCerealFont(AirbnbCerealFont.medium, size: 14)
@@ -38,6 +34,6 @@ struct MainCategorySectionView: View {
 }
 
 #Preview {
-    MainCategorySectionView(title: "Upcoming Events", action: {})
+    MainCategorySectionView(title: "Upcoming Events", isShowAll: true)
 }
 

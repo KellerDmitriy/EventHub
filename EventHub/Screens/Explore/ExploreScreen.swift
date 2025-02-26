@@ -2,7 +2,15 @@
 import SwiftUI
 
 struct ExploreScreen: View {
-    
+    private enum Drawing {
+            static let maxHeight: CGFloat = 255
+            static let minHeight: CGFloat = 70
+            static let collapseThreshold: CGFloat = -20
+            static let opacityThreshold: CGFloat = 200
+            static let top: CGFloat = 10
+            static let bottom: CGFloat = 180
+        }
+
     //    MARK: - Propreties
     @StateObject var viewModel: ExploreViewModel
     
@@ -10,7 +18,7 @@ struct ExploreScreen: View {
     @State private var selectedEventID: Int? = nil
     @State private var selectedSeeAllType: SeeAllExploreType? = nil
     
-    @State private var headerHeight: CGFloat = 265
+    @State private var headerHeight: CGFloat = Drawing.maxHeight
     @State private var headerOpacity: Double = 1.0
     @State private var showMiniStyleHeader: Bool = false
     
@@ -24,20 +32,21 @@ struct ExploreScreen: View {
     var body: some View {
         ZStack(alignment: .top) {
             Color.appBackground
-                .ignoresSafeArea()
-            
-            VStack {
+                .ignoresSafeArea(.all)
+            VStack(spacing: 0)  {
                 exploreHeader(showMiniStyle: showMiniStyleHeader)
+                    .edgesIgnoringSafeArea(.top)
                     .frame(height: headerHeight)
+                    .opacity(headerOpacity)
                     .zIndex(1)
                 
                 ScrollView(showsIndicators: false) {
-                    VStack {
+                    VStack(spacing: 0)  {
                         GeometryReader { proxy in
                             Color.clear
                                 .preference(
-                                    key: ScrollOffsetKey.self,
-                                    value: proxy.frame(in: .named("scroll")).minY
+                                    key: ScrollOffsetPreferenceKey.self,
+                                    value: proxy.frame(in: .named(ScrollOffsetNamespace.exploreNamespace)).origin
                                 )
                         }
                         .frame(height: 0)
@@ -45,24 +54,16 @@ struct ExploreScreen: View {
                         nearbyEventsSection
                     }
                 }
-                .coordinateSpace(name: "scroll")
+                .coordinateSpace(name: ScrollOffsetNamespace.exploreNamespace)
             }
             
-            .ignoresSafeArea()
-            .onPreferenceChange(ScrollOffsetKey.self) { value in
-                let newShowMiniStyle = value < -20
-                let newHeaderHeight: CGFloat = newShowMiniStyle ? 150 : 265
-                let newOpacity = max(0, min(1, (200 + value) / 200))
-                
-                guard newShowMiniStyle != showMiniStyleHeader || newHeaderHeight != headerHeight || newOpacity != headerOpacity else { return }
-                
+            .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
                 withAnimation {
-                    showMiniStyleHeader = newShowMiniStyle
-                    headerHeight = newHeaderHeight
-                    headerOpacity = newOpacity
+                    showMiniStyleHeader = value.y < Drawing.collapseThreshold
+                    headerHeight = showMiniStyleHeader ? Drawing.minHeight : Drawing.maxHeight
+                    headerOpacity = max(0, min(1, (Drawing.opacityThreshold + value.y) / Drawing.opacityThreshold))
                 }
             }
-            
             navigationLinks
         }
         .task {
@@ -73,36 +74,30 @@ struct ExploreScreen: View {
     private func exploreHeader(showMiniStyle: Bool) -> some View {
         VStack(spacing: 0) {
             if showMiniStyle {
-                VStack {
-                        cateroryBar
-                }
-                    .padding(.top, 150)
-                
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        ToolBarTitleView(title: viewModel.currentPosition)
+                Spacer()
+                cateroryBar
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .principal) {
+                            ToolBarTitleView(title: viewModel.currentPosition)
+                        }
+                        
+                        ToolbarItem(placement: .topBarTrailing) {
+                            ToolBarButton(action: ToolBarAction(
+                                icon: ToolBarButtonType.search.icon,
+                                action: { isSearchPresented = true },
+                                hasBackground: false,
+                                foregroundStyle: Color.appBlue)
+                            )
+                        }
                     }
-                    
-                    ToolbarItem(placement: .topBarTrailing) {
-                        ToolBarButton(action: ToolBarAction(
-                            icon: ToolBarButtonType.search.icon,
-                            action: { isSearchPresented = true },
-                            hasBackground: false,
-                            foregroundStyle: Color.appBlue)
-                        )
-                    }
-                }
-                
             } else {
-                VStack {
+                VStack(spacing: 0) {
                     exploreToolBar
                     cateroryBar
-                    Spacer()
                     functionalButtons
-                       
                 }
-                .opacity(headerOpacity)
+
             }
         }
         .animation(.easeInOut(duration: 0.3), value: showMiniStyle)
@@ -134,28 +129,29 @@ struct ExploreScreen: View {
     private var functionalButtons: some View {
         FunctionalButtonsView(
             events: viewModel.eventTypes,
-            actions: [
-                .todayEvents: { navigateToSeeAll(.todayEvents) },
-                .movieEvents: { navigateToSeeAll(.movieEvents) },
-                .listEvents:  { navigateToSeeAll(.listEvents) }
-            ],
             selectedEvent: $selectedSeeAllType
         )
+        .onChange(of: selectedSeeAllType) { newValue in
+            if let type = newValue {
+                navigateToSeeAll(type)
+            }
+        }
     }
     
     private var upcomingEventsSection: some View {
         Group {
             MainCategorySectionView(
-                title: "Upcoming Events",
-                action: { navigateToSeeAll(.upcomingEvents) }
-            )
-            .padding(.top)
-            
+                title: Resources.Text.upcomingEventsTitle,
+                isShowAll: viewModel.upcomingEvents.isEmpty == false
+                )
+            .onTapGesture {
+                navigateToSeeAll(.upcomingEvents)
+            }
+
             if viewModel.emptyUpcoming {
                 NoEventsView()
             } else {
                 ScrollEventCardsView(
-                    emptyArray: false,
                     events: viewModel.upcomingEvents,
                     showDetail: { event in
                         selectedEventID = event
@@ -167,22 +163,24 @@ struct ExploreScreen: View {
     private var nearbyEventsSection: some View {
         Group {
             MainCategorySectionView(
-                title: "Nearby You",
-                action: { navigateToSeeAll(.nearbyYouEvents) }
-            )
+                title: Resources.Text.nearbyEventsTitle,
+                isShowAll: viewModel.upcomingEvents.isEmpty == false
+                )
+            .onTapGesture {
+                navigateToSeeAll(.nearbyYouEvents)
+            }
             .padding(.top)
             
             if viewModel.emptyNearbyYou {
                 NoEventsView()
-                    .padding(.bottom, 180)
+                    .padding(.bottom, Drawing.bottom)
             } else {
                 ScrollEventCardsView(
-                    emptyArray: false,
                     events: viewModel.nearbyYouEvents,
                     showDetail: { event in
                         selectedEventID = event
                     })
-                .padding(.bottom, 180)
+                .padding(.bottom, 150)
             }
         }
     }

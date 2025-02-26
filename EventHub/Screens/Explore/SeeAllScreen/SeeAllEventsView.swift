@@ -29,23 +29,28 @@ struct SeeAllEventsView: View {
     
     // MARK: - Body
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: Drawing.cardSpacing) {
-                ForEach(viewModel.getEvents()) { event in
-                   
-                    if allowsDetailNavigation {
-                        NavigationLink(destination: DetailsScreen(detailID: event.id)) {
+        ZStack {
+            Color.appBackground
+                .ignoresSafeArea(.all)
+            
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: Drawing.cardSpacing) {
+                    ForEach(viewModel.getEvents()) { event in
+                        
+                        if allowsDetailNavigation {
+                            NavigationLink(destination: DetailsScreen(detailID: event.id)) {
+                                eventView(for: event)
+                                    .padding(.bottom, Drawing.cardPadding)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        } else {
                             eventView(for: event)
                                 .padding(.bottom, Drawing.cardPadding)
                         }
-                        .buttonStyle(PlainButtonStyle())
-                    } else {
-                        eventView(for: event)
-                            .padding(.bottom, Drawing.cardPadding)
                     }
                 }
+                .padding(Drawing.scrollPadding)
             }
-            .padding(Drawing.scrollPadding)
         }
         .task {
             await viewModel.loadData()
@@ -62,7 +67,7 @@ struct SeeAllEventsView: View {
             )
         }
         
-        .background(Color.appBackground)
+     
         .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {

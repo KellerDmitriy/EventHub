@@ -1,241 +1,215 @@
-//
-//  EventCardView.swift
-//  EventHub
-//
-//  Created by Marat Fakhrizhanov on 20.11.2024.
-//
-
 import SwiftUI
 import Kingfisher
 
 struct EventCardView: View {
     @EnvironmentObject private var coreDataManager: CoreDataManager
-    private var isFavorite: Bool {
-        coreDataManager.events.contains { event in
-            Int(event.id) == self.event.id
-        }
-    }
-    
     let event: ExploreModel
-    var showDetail: (Int) -> Void
     
+    // MARK: - Properties
+    private var isFavorite: Bool {
+        coreDataManager.events.contains { Int($0.id) == event.id }
+    }
+
+    // MARK: - Body
     var body: some View {
-        
         ZStack {
-            Color.appBackground.ignoresSafeArea(.all)
+            Color.appBackground.ignoresSafeArea()
+            
             VStack(alignment: .leading) {
-                
                 ZStack(alignment: .top) {
-                    if let imageUrl = event.image, let url = URL(string: imageUrl) {
-                        KFImage(url)
-                            .placeholder {
-                                ShimmeringImageView()
-                            }
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 218, height: 131)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .clipped()
-                    } else {
-                        Image(.cardImg1)
-                            .resizable()
-                            .frame(width: 218, height: 131)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                    }
-                    
-                    VStack {
-                        Button {
-                            if isFavorite {
-                                coreDataManager.deleteEvent(eventID: event.id)
-                            } else {
-                                coreDataManager.createEvent(event: event)
-                            }
-                        } label: {
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 7)
-                                    .frame(width: 30, height: 30)
-                                    .foregroundStyle(.appOrangeSecondary)
-                                    .opacity(0.7)
-                                Image(isFavorite ? .bookmarkFill : .bookmarkOverlay)
-                                    .resizable()
-                                    .frame(width: 14, height: 14)
-                                    .foregroundStyle(.appRed)
-                            }
-                        }
-                    }
-                    .padding(.top,9)
-                    .offset(x: 85)
-                    
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 10)
-                            .frame(width: 45, height: 45)
-                            .foregroundStyle(.appOrangeSecondary)
-                            .opacity(0.7)
-                        VStack {
-                            Text(event.date.formattedDate(format: "dd\nMMM"))
-                                .foregroundStyle(.appDateText)
-                                .airbnbCerealFont(AirbnbCerealFont.book, size: 18)
-                                .multilineTextAlignment(.center)
-                        }
-                    }
-                    .padding(.top, 9)
-                    .offset(x: -77)
+                    eventImageView
+                    favoriteButton
+                    eventDateView
                 }
-                .padding(.top, 10)
+                .padding(.top, Drawing.topPadding)
                 
-                Text(event.title.localized)
-                    .airbnbCerealFont(AirbnbCerealFont.medium, size: 18)
-                    .frame(width: 207, height: 21, alignment: .leading)
-                    .padding(.bottom,10)
-                    .foregroundStyle(Color.appForegroundStyle)
-                
-                if event.visitors?.count == 0 {
-                    HStack {
-                        ShimmerAvatarView()
-                        
-                        Text("No visitors".localized)
-                            .airbnbCerealFont(AirbnbCerealFont.book, size: 12)
-                    }
-                } else if let visitors = event.visitors { // Visitor Images
-                    HStack {
-                        ZStack {
-                            ForEach(getVisitorsAvatars(visitors: visitors).indices, id:\.self) { index in
-                                
-                                let visitors = getVisitorsAvatars(visitors: visitors)
-                                
-                                let imageURL = visitors[index].image
-                                let url = URL(string: imageURL ?? "")
-                                
-                                KFImage(url)
-                                    .placeholder {
-                                        ShimmerAvatarView()
-                                    }
-                                    .resizable()
-                                    .frame(width: 24, height: 24)
-                                    .clipShape(Circle())
-                                    .overlay {
-                                        Circle().stroke(style: StrokeStyle(lineWidth: 1))
-                                            .foregroundStyle(Color.white)
-                                    }
-                                    .offset(x: getOffset(index: index, visitors: getVisitorsAvatars(visitors: visitors).count))
-                            }
-                        }
-                        
-                        Button {
-                            // show visitors
-                            print(visitors)
-                        } label: {
-                            HStack(spacing: 1) {
-                                Text(visitors.count > 3 ? "+" : "")
-                                    .airbnbCerealFont(AirbnbCerealFont.book, size: 12)
-                                
-                                Text(checkRemainingNumberOfVisitors(
-                                    visitors: visitors) == 0
-                                     ? ""
-                                     : String(checkRemainingNumberOfVisitors(visitors: visitors)))
-                                .airbnbCerealFont(AirbnbCerealFont.book, size: 12)
-                                
-                                Text(visitors.count > 0 ? " "+"Going".localized : "")
-                                    .airbnbCerealFont(AirbnbCerealFont.book, size: 12)
-                            }
-                        }
-                        .padding(.leading, 25)
-                    }
-                } //end if
-                
-                
-                Button {
-                    // show map
-                } label: {
-                    HStack {
-                        Image(.mapPin)
-                            .resizable()
-                            .foregroundStyle(.geolocationText)
-                            .frame(width: 16, height: 16)
-                        Text(event.address?.localized ?? "")
-                            .airbnbCerealFont(AirbnbCerealFont.book, size: 13)
-                            .foregroundStyle(.geolocationText)
-                    }
-                    .frame(width: 185, height: 17, alignment: .leading)
+                eventTitleView
+                visitorsView
+                addressView
+            }
+            .padding([.top, .horizontal, .bottom], Drawing.contentPadding)
+        }
+        .frame(width: Drawing.cardWidth, height: Drawing.cardHeight)
+        .clipShape(RoundedRectangle(cornerRadius: Drawing.cardCornerRadius))
+        .shadow(color: .gray.opacity(Drawing.shadowOpacity), radius: Drawing.shadowRadius, x: 0, y: Drawing.shadowYOffset)
+    }
+
+    // MARK: - Views
+    private var eventImageView: some View {
+        Group {
+            if let imageUrl = event.image, let url = URL(string: imageUrl) {
+                KFImage(url)
+                    .placeholder { ShimmeringImageView() }
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: Drawing.imageWidth, height: Drawing.imageHeight)
+                    .clipShape(RoundedRectangle(cornerRadius: Drawing.imageCornerRadius))
+                    .clipped()
+            } else {
+                Image(.cardImg1)
+                    .resizable()
+                    .frame(width: Drawing.imageWidth, height: Drawing.imageHeight)
+                    .clipShape(RoundedRectangle(cornerRadius: Drawing.imageCornerRadius))
+            }
+        }
+    }
+    
+    private var favoriteButton: some View {
+        Button {
+            isFavorite ? coreDataManager.deleteEvent(eventID: event.id) : coreDataManager.createEvent(event: event)
+        } label: {
+            ZStack {
+                RoundedRectangle(cornerRadius: Drawing.favoriteButtonCornerRadius)
+                    .frame(width: Drawing.favoriteButtonSize, height: Drawing.favoriteButtonSize)
+                    .foregroundStyle(.appOrangeSecondary)
+                    .opacity(Drawing.buttonOpacity)
+                Image(isFavorite ? .bookmarkFill : .bookmarkOverlay)
+                    .resizable()
+                    .frame(width: Drawing.bookmarkIconSize, height: Drawing.bookmarkIconSize)
+                    .foregroundStyle(.appRed)
+            }
+        }
+        .padding(.top, Drawing.topPadding)
+        .offset(x: Drawing.favoriteButtonOffsetX)
+    }
+    
+    private var eventDateView: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: Drawing.dateViewCornerRadius)
+                .frame(width: Drawing.dateViewSize, height: Drawing.dateViewSize)
+                .foregroundStyle(.appOrangeSecondary)
+                .opacity(Drawing.buttonOpacity)
+            Text(event.date.formattedDate(format: "dd\nMMM"))
+                .foregroundStyle(.appDateText)
+                .airbnbCerealFont(AirbnbCerealFont.book, size: 18)
+                .multilineTextAlignment(.center)
+        }
+        .padding(.top, Drawing.topPadding)
+        .offset(x: Drawing.dateViewOffsetX)
+    }
+    
+    private var eventTitleView: some View {
+        Text(event.title.localized)
+            .airbnbCerealFont(AirbnbCerealFont.medium, size: 18)
+            .frame(width: Drawing.titleWidth, height: Drawing.titleHeight, alignment: .leading)
+            .padding(.bottom, Drawing.titleBottomPadding)
+            .foregroundStyle(Color.appForegroundStyle)
+    }
+    
+    private var visitorsView: some View {
+        Group {
+            if let visitors = event.visitors, visitors.isEmpty {
+                HStack {
+                    ShimmerAvatarView()
+                    Text("No visitors".localized)
+                        .airbnbCerealFont(AirbnbCerealFont.book, size: 12)
+                }
+            } else if let visitors = event.visitors {
+                HStack {
+                    visitorsAvatarsView(visitors)
+                    visitorsCountButton(visitors)
                 }
             }
-            .padding(.top,9)
-            .padding(.horizontal, 9)
-            .padding(.bottom, 15)
-        }
-        .onTapGesture {
-            showDetail(event.id)
-        }
-        .frame(width: 237, height: 255)
-        .clipShape(RoundedRectangle(cornerRadius: 18))
-        .shadow(color: .gray.opacity(0.2), radius: 5, x: 0, y: 2)
-    }
-    
-    private func getOffset(index: Int, visitors: Int) -> CGFloat {
-        var offset = 0
-        let ratio = 15
-        
-        if visitors == 1 {
-            offset = 0
-        } else if visitors == 2 {
-            switch index {
-            case 0: offset = ratio
-            default: offset = 0
-            }
-        } else if visitors == 3 {
-            switch index {
-            case 0: offset = 2 * ratio
-            case 1: offset = ratio
-            default: offset = 0
-            }
-        }
-        return CGFloat(offset)
-    }
-    
-    private func checkRemainingNumberOfVisitors(visitors: [Visitor]) -> Int {
-        switch visitors.count {
-        case 0: return 0
-        case 1: return 0
-        case 2: return 0
-        case 3: return 0
-        default: return visitors.count-3
         }
     }
     
-    private func getVisitorsAvatars(visitors: [Visitor]) -> [Visitor] {
-        var randomThreeVisitors: [Visitor] = []
-        
-        if visitors.count > 3 {
-            for i in 0...2 {
-                let visitor = visitors[i]
-                randomThreeVisitors.append(visitor)
+    private func visitorsAvatarsView(_ visitors: [Visitor]) -> some View {
+        ZStack {
+            ForEach(visitors.prefix(3).indices, id: \.self) { index in
+                let visitor = visitors[index]
+                let url = URL(string: visitor.image ?? "")
+                
+                KFImage(url)
+                    .placeholder { ShimmerAvatarView() }
+                    .resizable()
+                    .frame(width: Drawing.avatarSize, height: Drawing.avatarSize)
+                    .clipShape(Circle())
+                    .overlay(Circle().stroke(style: StrokeStyle(lineWidth: 1)).foregroundStyle(Color.white))
+                    .offset(x: getOffset(index: index, visitorsCount: visitors.count))
             }
         }
-        
-        if visitors.count == 3 {
-            for visitor in visitors {
-                randomThreeVisitors.append(visitor)
-            }
-        }
-        
-        if visitors.count == 2 {
-            for visitor in visitors {
-                randomThreeVisitors.append(visitor)
-            }
-        }
-        if visitors.count == 1 {
-            for visitor in visitors {
-                randomThreeVisitors.append(visitor)
-            }
-        }
-        return randomThreeVisitors
     }
     
+    private func visitorsCountButton(_ visitors: [Visitor]) -> some View {
+        Button {
+            print(visitors)
+        } label: {
+            HStack(spacing: 1) {
+                Text(visitors.count > 3 ? "+" : "")
+                    .airbnbCerealFont(AirbnbCerealFont.book, size: 12)
+                Text("\(max(0, visitors.count - 3))")
+                    .airbnbCerealFont(AirbnbCerealFont.book, size: 12)
+                Text(visitors.count > 0 ? " " + "Going".localized : "")
+                    .airbnbCerealFont(AirbnbCerealFont.book, size: 12)
+            }
+        }
+        .padding(.leading, Drawing.visitorsButtonPadding)
+    }
+    
+    private var addressView: some View {
+        Button {
+            // Show map
+        } label: {
+            HStack {
+                Image(.mapPin)
+                    .resizable()
+                    .foregroundStyle(.geolocationText)
+                    .frame(width: Drawing.mapPinSize, height: Drawing.mapPinSize)
+                Text(event.address?.localized ?? "Адрес не доступен")
+                    .airbnbCerealFont(AirbnbCerealFont.book, size: 13)
+                    .foregroundStyle(.geolocationText)
+            }
+            .frame(width: Drawing.addressWidth, height: Drawing.addressHeight, alignment: .leading)
+        }
+    }
+
+    // MARK: - Helpers
+    private func getOffset(index: Int, visitorsCount: Int) -> CGFloat {
+        let ratio: CGFloat = Drawing.avatarOffsetRatio
+        return visitorsCount > 1 ? CGFloat(index) * -ratio : 0
+    }
 }
 
-
+// MARK: - Drawing Constants
+private enum Drawing {
+    static let topPadding: CGFloat = 10
+    static let contentPadding: CGFloat = 15
+    
+    static let cardWidth: CGFloat = 237
+    static let cardHeight: CGFloat = 255
+    static let cardCornerRadius: CGFloat = 18
+    static let shadowOpacity: CGFloat = 0.2
+    static let shadowRadius: CGFloat = 5
+    static let shadowYOffset: CGFloat = 2
+    
+    static let imageWidth: CGFloat = 218
+    static let imageHeight: CGFloat = 131
+    static let imageCornerRadius: CGFloat = 10
+    
+    static let favoriteButtonSize: CGFloat = 30
+    static let favoriteButtonCornerRadius: CGFloat = 7
+    static let favoriteButtonOffsetX: CGFloat = 85
+    static let bookmarkIconSize: CGFloat = 14
+    static let buttonOpacity: CGFloat = 0.7
+    
+    static let dateViewSize: CGFloat = 45
+    static let dateViewCornerRadius: CGFloat = 10
+    static let dateViewOffsetX: CGFloat = -77
+    
+    static let titleWidth: CGFloat = 207
+    static let titleHeight: CGFloat = 21
+    static let titleBottomPadding: CGFloat = 10
+    
+    static let avatarSize: CGFloat = 24
+    static let avatarOffsetRatio: CGFloat = 15
+    static let visitorsButtonPadding: CGFloat = 25
+    
+    static let mapPinSize: CGFloat = 16
+    static let addressWidth: CGFloat = 185
+    static let addressHeight: CGFloat = 17
+}
 
 #Preview {
-    EventCardView(event: ExploreModel.example, showDetail: {_ in })
+    EventCardView(event: ExploreModel.example)
         .environmentObject(CoreDataManager())
 }

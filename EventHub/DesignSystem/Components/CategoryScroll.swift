@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct CategoryScroll: View {
     let categories: [CategoryUIModel]
     let onCategorySelected: (CategoryUIModel) -> Void
@@ -15,21 +14,40 @@ struct CategoryScroll: View {
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
-                ForEach(categories) { category in
-                    CategoryButton(
-                        categoryName: category.category.name.localized,
-                        imageName: category.image,
-                        backgroundColor: category.color,
-                        onTap: {
-                            onCategorySelected(category)
+                if categories.isEmpty {
+                    ForEach(1..<5) { _ in
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.appBackground)
+                                .frame(width: 100, height: 40)
+                           
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.appRed)
+                                .frame(width: 100, height: 40)
+                                .shimmering()
                         }
-                    )
+                    }
+                } else {
+                    ForEach(categories) { category in
+                        CategoryButton(
+                            categoryName: category.category.name.localized,
+                            imageName: category.image,
+                            backgroundColor: category.color,
+                            onTap: {
+                                onCategorySelected(category)
+                            }
+                        )
+                        .background(category.color) 
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .zIndex(1)
+                    }
+                    .clipped()
                 }
-                .clipped()
             }
             .padding(.leading, 24)
         }
     }
+    
 }
 
 #Preview {

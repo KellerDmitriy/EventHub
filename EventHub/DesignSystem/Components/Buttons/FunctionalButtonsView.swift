@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FunctionalButtonsView: View {
     let events: [SeeAllExploreType]
-    let actions: [SeeAllExploreType: () -> Void]
+
     @Binding var selectedEvent: SeeAllExploreType?
 
     var body: some View {
@@ -17,7 +17,6 @@ struct FunctionalButtonsView: View {
             ForEach(events, id: \.self) { event in
                 Button {
                     selectedEvent = event
-                    actions[event]?()
                 } label: {
                     ZStack {
                         Capsule()
@@ -33,17 +32,10 @@ struct FunctionalButtonsView: View {
     }
 }
 
-// Пример использования
-#Preview {
-    var selectedEvent: SeeAllExploreType = .movieEvents
 
+#Preview {
     FunctionalButtonsView(
         events: SeeAllExploreType.buttonCases,
-        actions: [
-            .todayEvents: { print("Today tapped") },
-            .movieEvents: { print("Movies tapped") },
-            .listEvents: { print("Lists tapped") }
-        ],
-        selectedEvent:  .constant(selectedEvent)
+        selectedEvent: .constant(.upcomingEvents)
     )
 }
