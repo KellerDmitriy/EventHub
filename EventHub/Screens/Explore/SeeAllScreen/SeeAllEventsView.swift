@@ -110,7 +110,7 @@ struct SeeAllEventsView: View {
         case .upcomingEvents, .nearbyYouEvents, .todayEvents:
             SmallEventCard(
                 image: event.image ?? Drawing.noImageCrashPlaceholder,
-                date: event.date,
+                date: event.eventDate,
                 title: event.title,
                 place: event.address ?? "No address"
             )

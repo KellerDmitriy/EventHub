@@ -110,7 +110,7 @@ struct ExploreToolBar: View {
     
     //    MARK: - Search Bar
     private var searchBar: some View {
-        SearchBarViewForMap (
+        CustomSearchBarView (
             isSearchPresented: $isSearchPresented,
             searchText: .constant(searchText),
             shouldHandleTextInput: false,

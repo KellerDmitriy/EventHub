@@ -49,7 +49,8 @@ final class ExploreViewModel: ObservableObject {
     
     let language = Language.ru
     
-    private var page: Int = 1
+    private var upcomingPage = 1
+    private var nearbyPage = 1
     
     // MARK: - INIT
     init(apiService: IAPIServiceForExplore = DIContainer.resolve(forKey: .networkService) ?? EventAPIService()) {
@@ -58,13 +59,14 @@ final class ExploreViewModel: ObservableObject {
     
     // MARK: - Filter Events
     func filterEvents(orderType: DisplayOrderType) {
+        
         switch orderType {
         case .alphabetical:
             upcomingEvents = upcomingEvents.sorted(by: { $0.title < $1.title })
             nearbyYouEvents = nearbyYouEvents.sorted(by: { $0.title < $1.title })
         case .date:
-            upcomingEvents = upcomingEvents.sorted(by: { $0.date < $1.date })
-            nearbyYouEvents = nearbyYouEvents.sorted(by: { $0.date < $1.date })
+            upcomingEvents.sort { Date?.compareAscending( $0.eventDate, $1.eventDate )}
+            nearbyYouEvents.sort { Date?.compareAscending( $0.eventDate, $1.eventDate )}
         }
     }
     
@@ -119,14 +121,13 @@ final class ExploreViewModel: ObservableObject {
             let fetchedEvents = try await apiService.getUpcomingEvents(
                 with: currentCategory,
                 language,
-                page
+                upcomingPage
             )
             
             let mappedEvents = fetchedEvents.map { ExploreModel(dto: $0) }
             
-            let filteredEvents = ExploreModel.filterExploreEvents(mappedEvents)
             
-            self.upcomingEvents = filteredEvents
+            self.upcomingEvents = mappedEvents
             
         } catch {
             self.error = error
@@ -139,11 +140,11 @@ final class ExploreViewModel: ObservableObject {
                 with: language,
                 currentLocation,
                 currentCategory,
-                page
+                nearbyPage
             )
             let mappedEvents = eventsDTO.map { ExploreModel(dto: $0) }
-            let filteredEvents = ExploreModel.filterExploreEvents(mappedEvents)
-            nearbyYouEvents = filteredEvents
+         
+            nearbyYouEvents = mappedEvents
             
         } catch {
             self.error = error
@@ -169,17 +170,17 @@ final class ExploreViewModel: ObservableObject {
         defer { isLoadingNextPage = false }
         
         do {
-            page += 1
+            upcomingPage += 1
             let fetchedEvents = try await apiService.getUpcomingEvents(
                 with: currentCategory,
                 language,
-                page
+                upcomingPage
             )
             if fetchedEvents.isEmpty {
                 hasMoreUpcomingEvents = false
             } else {
                 let mappedEvents = fetchedEvents.map { ExploreModel(dto: $0) }
-                upcomingEvents.append(contentsOf: ExploreModel.filterExploreEvents(mappedEvents))
+                upcomingEvents.append(contentsOf: mappedEvents)
             }
         } catch {
             self.error = error
@@ -193,18 +194,18 @@ final class ExploreViewModel: ObservableObject {
         defer { isLoadingNextPage = false }
         
         do {
-            page += 1
+            nearbyPage += 1
             let fetchedEvents = try await apiService.getNearbyYouEvents(
                 with: language,
                 currentLocation,
                 currentCategory,
-                page
+                nearbyPage
             )
             if fetchedEvents.isEmpty {
                 hasMoreNearbyYouEvents = false
             } else {
                 let mappedEvents = fetchedEvents.map { ExploreModel(dto: $0) }
-                nearbyYouEvents.append(contentsOf: ExploreModel.filterExploreEvents(mappedEvents))
+                nearbyYouEvents.append(contentsOf: mappedEvents)
             }
         } catch {
             self.error = error

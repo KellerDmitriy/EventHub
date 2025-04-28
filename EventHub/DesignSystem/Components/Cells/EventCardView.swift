@@ -79,7 +79,7 @@ struct EventCardView: View {
                 .frame(width: Drawing.dateViewSize, height: Drawing.dateViewSize)
                 .foregroundStyle(.appOrangeSecondary)
                 .opacity(Drawing.buttonOpacity)
-            Text(event.date.formattedDate(format: "dd\nMMM"))
+            Text(event.eventDate?.formattedDate(format: "dd\nMMM") ?? "no date")
                 .foregroundStyle(.appDateText)
                 .airbnbCerealFont(AirbnbCerealFont.book, size: 18)
                 .multilineTextAlignment(.center)

@@ -13,17 +13,23 @@ enum NetworkError: Error, LocalizedError {
     case invalidResponse
     case serverError(statusCode: Int, description: String)
     case dataConversionFailure
-    
-    var errorDescription: String? {
-        switch self {
-        case .invalidURL:
-            return "The URL is invalid."
-        case .invalidResponse:
-            return "The server response is invalid."
-        case .serverError(let statusCode, let description):
-            return "Server error (\(statusCode)): \(description)"
-        case .dataConversionFailure:
-            return "Failed to decode the server response."
+}
+
+extension NetworkError {
+    init?(_ statusCode: Int) {
+        switch statusCode {
+        case 400:
+            self = .serverError(statusCode: statusCode, description: "Bad Request")
+        case 401:
+            self = .serverError(statusCode: statusCode, description: "Unauthorized")
+        case 403:
+            self = .serverError(statusCode: statusCode, description: "Forbidden")
+        case 404:
+            self = .serverError(statusCode: statusCode, description: "Not Found")
+        case 500:
+            self = .serverError(statusCode: statusCode, description: "Internal Server Error")
+        default:
+            return nil
         }
     }
 }

@@ -38,8 +38,9 @@ extension EventModel {
         
         let location = dto.location?.name ?? ""
         let place = dto.place?.address ?? ""
-        self.location = "\(String(describing: place)), \(String(describing: location))"
-        
+        self.location = [place, location]
+            .compactMap { $0 }
+            .joined(separator: ", ")
         let currentDate = Date()
         let closestDate = dto.dates
             .filter { $0.start != nil }

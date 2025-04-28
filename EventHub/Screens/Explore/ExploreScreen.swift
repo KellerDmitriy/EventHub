@@ -37,7 +37,6 @@ struct ExploreScreen: View {
                 exploreHeader(showMiniStyle: showMiniStyleHeader)
                     .edgesIgnoringSafeArea(.top)
                     .frame(height: headerHeight)
-                    .opacity(headerOpacity)
                     .zIndex(1)
                 
                 ScrollView(showsIndicators: false) {
@@ -97,7 +96,7 @@ struct ExploreScreen: View {
                     cateroryBar
                     functionalButtons
                 }
-
+                .opacity(headerOpacity)
             }
         }
         .animation(.easeInOut(duration: 0.3), value: showMiniStyle)
@@ -147,6 +146,7 @@ struct ExploreScreen: View {
             .onTapGesture {
                 navigateToSeeAll(.upcomingEvents)
             }
+            .padding(.top, 4)
 
             if viewModel.emptyUpcoming {
                 NoEventsView()
@@ -164,7 +164,7 @@ struct ExploreScreen: View {
         Group {
             MainCategorySectionView(
                 title: Resources.Text.nearbyEventsTitle,
-                isShowAll: viewModel.upcomingEvents.isEmpty == false
+                isShowAll: viewModel.nearbyYouEvents.isEmpty == false
                 )
             .onTapGesture {
                 navigateToSeeAll(.nearbyYouEvents)

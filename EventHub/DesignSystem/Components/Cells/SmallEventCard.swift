@@ -10,14 +10,14 @@ import Kingfisher
 
 struct SmallEventCard: View {
     let image: String
-    let date: Date
+    let date: Date?
     let title: String
     let place: String
     let showPlace: Bool
     let showBookmark: Bool
     let bookmarkAction: (() -> Void)?
     
-    init(image: String, date: Date, title: String, place: String, showPlace: Bool = true, showBookmark: Bool = false, bookmarkAction: (() -> Void)? = nil) {
+    init(image: String, date: Date?, title: String, place: String, showPlace: Bool = true, showBookmark: Bool = false, bookmarkAction: (() -> Void)? = nil) {
         self.image = image
         self.date = date
         self.title = title
@@ -44,8 +44,9 @@ struct SmallEventCard: View {
                     .frame(width: 80, height: 92)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 
+                
                 VStack( alignment: .leading, spacing: 4) {
-                    Text(showPlace ? date.formattedDate(format: "E, MMM d • h:mm a") : date.formattedWithSuffix())
+                    Text(((showPlace ? date?.formattedDate(format: "E, MMM d • h:mm a") : date?.formattedWithSuffix()) ?? "no date"))
                         .airbnbCerealFont(showPlace ? .book : .medium, size: 13)
                         .foregroundStyle(.appBlue)
                     

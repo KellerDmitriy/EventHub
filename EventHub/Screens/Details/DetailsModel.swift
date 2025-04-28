@@ -21,7 +21,7 @@ struct DetailsModel: Identifiable {
 }
 
 extension DetailsModel: EventConvertible {
-    var eventDate: Date { self.startDate }
+    var eventDate: Date? { self.startDate }
 }
 
 extension DetailsModel {

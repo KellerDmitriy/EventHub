@@ -10,16 +10,16 @@ import Foundation
 protocol EventConvertible {
     var id: Int { get }
     var title: String { get }
-    var eventDate: Date { get }
+    var eventDate: Date? { get }
     var address: String? { get }
     var image: String? { get }
 }
 
-struct ExploreModel: Identifiable {
+struct ExploreModel: Identifiable, EventConvertible {
     let id: Int
     let title: String
     let visitors: [Visitor]?
-    let date: Date
+    let eventDate: Date?
     let address: String?
     let image: String?
     
@@ -30,14 +30,12 @@ struct ExploreModel: Identifiable {
                    Visitor(image: "visitor", name: "Sonya"),
                    Visitor(image: "visitor", name: "Sonya"),
                    Visitor(image: "visitor", name: "Sonya")],
-        date: .now,
+        eventDate: .now,
         address: "36 Guild Street London, UK",
         image: "cardImg1")
 }
+                      
 
-extension ExploreModel: EventConvertible {
-    var eventDate: Date { self.date }
-}
 
 extension ExploreModel {
     init(dto: EventDTO) {
@@ -45,7 +43,7 @@ extension ExploreModel {
         self.title = dto.title.capitalized
         self.visitors = dto.participants?.map { participant in
             Visitor(
-                image: participant.agent?.images?.first?.image,
+                image: participant.agent?.images?.last?.image,
                 name: participant.agent?.title
             )
         }
@@ -57,10 +55,12 @@ extension ExploreModel {
             .filter { $0 > currentDate }
             .min(by: { abs($0.timeIntervalSince(currentDate)) < abs($1.timeIntervalSince(currentDate)) })
         
-        self.date = closestDate ?? Date(timeIntervalSince1970: 1489312800)
+        self.eventDate = closestDate
         let location = dto.location?.name
         let place = dto.place?.address
-        self.address = "\(String(describing: place)), \(String(describing: location))"
+        self.address = [place, location]
+            .compactMap { $0 }
+            .joined(separator: ", ")
         self.image = dto.images.first?.image
     }
 }
@@ -71,7 +71,7 @@ extension ExploreModel {
         self.id = movieDto.id
         self.title = movieDto.title
         self.visitors = []
-        self.date = (Date(timeIntervalSince1970: TimeInterval(movieDto.year)))
+        self.eventDate = (Date(timeIntervalSince1970: TimeInterval(movieDto.year)))
         self.address = movieDto.site_url
         self.image = movieDto.poster.image
     }
@@ -82,7 +82,7 @@ extension ExploreModel {
         self.id = listDto.id
         self.title = listDto.title
         self.visitors = []
-        self.date = listDto.publicationDate
+        self.eventDate = listDto.publicationDate
         self.address = listDto.siteURL
         self.image = listDto.siteURL
     }
@@ -93,7 +93,7 @@ extension ExploreModel {
         self.id = searchDTO.id
         self.title = searchDTO.title
         self.visitors = []
-        self.date = (Date(timeIntervalSince1970: TimeInterval(searchDTO.daterange?.start ?? 1489312800)))
+        self.eventDate = searchDTO.daterange?.start.flatMap { (Date(timeIntervalSince1970: TimeInterval($0))) }
         self.address = searchDTO.place?.address
         self.image = searchDTO.firstImage?.image
     }
@@ -104,7 +104,7 @@ extension ExploreModel {
         self.id = model.id
         self.title = model.title
         self.visitors = []
-        self.date = model.date
+        self.eventDate = model.date
         self.address = model.place
         self.image = model.image
     }
@@ -115,7 +115,7 @@ extension ExploreModel {
         self.id = event.id
         self.title = event.title
         self.visitors = []
-        self.date = event.date
+        self.eventDate = event.date
         self.address = event.location
         self.image = event.image
     }
@@ -126,7 +126,7 @@ extension ExploreModel {
         self.id = event.id
         self.title = event.title ?? ""
         self.visitors = []
-        self.date = event.date ?? Date()
+        self.eventDate = event.date ?? Date()
         self.address = event.adress
         self.image = event.image
     }
@@ -137,29 +137,29 @@ struct EventIdentifier: Hashable {
     let title: String
 }
 
-extension ExploreModel {
-    static func filterExploreEvents(_ events: [ExploreModel]) -> [ExploreModel] {
-        let currentDate = Date()
-        var seenIdsAndTitles: Set<EventIdentifier> = []
-        
-        let groupedEvents = Dictionary(grouping: events) { EventIdentifier(id: $0.id, title: $0.title) }
-        
-        let filteredEvents = groupedEvents.values.compactMap { group -> ExploreModel? in
-            group.filter { $0.date >= currentDate }
-                 .min(by: { abs($0.date.timeIntervalSince(currentDate)) < abs($1.date.timeIntervalSince(currentDate)) })
-        }
-        
-        return filteredEvents.filter { event in
-            let eventPair = EventIdentifier(id: event.id, title: event.title)
-            if seenIdsAndTitles.contains(eventPair) {
-                return false
-            } else {
-                seenIdsAndTitles.insert(eventPair)
-                return true
-            }
-        }
-    }
-}
+//extension ExploreModel {
+//    static func filterExploreEvents(_ events: [ExploreModel]) -> [ExploreModel] {
+//        let currentDate = Date()
+//        var seenIdsAndTitles: Set<EventIdentifier> = []
+//        
+//        let groupedEvents = Dictionary(grouping: events) { EventIdentifier(id: $0.id, title: $0.title) }
+//        
+//        let filteredEvents = groupedEvents.values.compactMap { group -> ExploreModel? in
+//            group.filter { $0.date >= currentDate }
+//                 .min(by: { abs($0.date.timeIntervalSince(currentDate)) < abs($1.date.timeIntervalSince(currentDate)) })
+//        }
+//        
+//        return filteredEvents.filter { event in
+//            let eventPair = EventIdentifier(id: event.id, title: event.title)
+//            if seenIdsAndTitles.contains(eventPair) {
+//                return false
+//            } else {
+//                seenIdsAndTitles.insert(eventPair)
+//                return true
+//            }
+//        }
+//    }
+//}
 
 struct Visitor {
     let image: String?

@@ -57,7 +57,7 @@ struct APIClient {
     private let cache = URLCache(
         memoryCapacity: 10 * 1024 * 1024, // 10 MB
         diskCapacity: 50 * 1024 * 1024,  // 50 MB
-        diskPath: "api_cache"
+        directory: FileManager.default.temporaryDirectory
     )
     
     // MARK: - Initializer
@@ -69,10 +69,7 @@ struct APIClient {
     }
     
     // MARK: - Sending API Request
-    func sendRequest<T: Decodable>(
-        _ spec: APISpec,
-        responseType: T.Type
-    ) async throws -> T {
+    func sendRequest<T: Decodable>(_ spec: APISpec, responseType: T.Type) async throws -> T {
         // Construct the full URL
         guard let url = spec.path.url(with: spec.queryItems) else {
             throw NetworkError.invalidURL
@@ -91,33 +88,19 @@ struct APIClient {
         // Execute the request
         let (data, response) = try await session.data(for: request)
         // Validate the response
-        try validateResponse(response)
+        try validate(response)
         
         // Decode and return the data
         return try jsonDecoder.decode(T.self, from: data)
     }
     
     // MARK: - Response Validation
-    private func validateResponse(_ response: URLResponse) throws(NetworkError) {
-        guard let httpResponse = response as? HTTPURLResponse else {
+    private func validate(_ response: URLResponse) throws(NetworkError) {
+        guard let response = response as? HTTPURLResponse else {
             throw .invalidResponse
         }
-        
-        switch httpResponse.statusCode {
-        case 200...299:
-            return // OK
-        case 400:
-            throw .serverError(statusCode: httpResponse.statusCode, description: "Bad Request")
-        case 401:
-            throw .serverError(statusCode: httpResponse.statusCode, description: "Unauthorized")
-        case 403:
-            throw .serverError(statusCode: httpResponse.statusCode, description: "Forbidden")
-        case 404:
-            throw .serverError(statusCode: httpResponse.statusCode, description: "Not Found")
-        case 500:
-            throw .serverError(statusCode: httpResponse.statusCode, description: "Internal Server Error")
-        default:
-            throw .serverError(statusCode: httpResponse.statusCode, description: "Unhandled Error")
+        if let error = NetworkError(response.statusCode) {
+            throw error
         }
     }
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SearchBarViewForMap: View {
+struct CustomSearchBarView: View {
     @Binding var isSearchPresented: Bool
     @Binding var searchText: String
     
@@ -19,10 +19,9 @@ struct SearchBarViewForMap: View {
     let placeholderColor: Color = .searchBarPlaceholder
     
     var body: some View {
-        
         HStack {
             Button {
-                isSearchPresented = true
+                isSearchPresented.toggle()
             } label: {
                 Image(.searchWhite)
                     .resizable()
@@ -42,6 +41,15 @@ struct SearchBarViewForMap: View {
                     .placeholder(when: searchText.isEmpty) {
                         Text("Search...").foregroundColor(placeholderColor)
                     }
+                if !searchText.isEmpty {
+                    Button {
+                        searchText = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .airbnbCerealFont( AirbnbCerealFont.book, size: 18)
+                            .foregroundStyle(textColor)
+                    }
+                }
             } else {
                 TextField("", text: .constant(""))
                     .airbnbCerealFont( AirbnbCerealFont.book, size: 18)
@@ -61,7 +69,7 @@ struct SearchBarViewForMap: View {
 }
 
 #Preview {
-    SearchBarViewForMap(
+    CustomSearchBarView(
         isSearchPresented: .constant(false),
         searchText: .constant(""),
         shouldHandleTextInput: true,

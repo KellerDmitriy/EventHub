@@ -1,5 +1,5 @@
 //
-//  SearchBarViewForMap 2.swift
+//  CustomSearchBarView 2.swift
 //  EventHub
 //
 //  Created by Келлер Дмитрий on 02.12.2024.

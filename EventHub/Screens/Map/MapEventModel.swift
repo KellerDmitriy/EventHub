@@ -7,11 +7,11 @@
 
 import MapKit
 import CoreLocation
+
 struct MapEventModel: Identifiable {
     var id: Int
-//    let typeImage: String
     let title: String
-    let date: Date
+    let date: Date?
     let place: String
     let coords: CLLocationCoordinate2D
     let image: String
